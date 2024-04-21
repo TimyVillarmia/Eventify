@@ -1,0 +1,111 @@
+﻿.navbar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem 15%;
+    width: 100%;
+    height: auto;
+    background-color: #FFFFFE;
+    border-width: 0px 0px 1px 0px;
+    border-color: #2723434d;
+    border-style: solid;
+    margin-top:0;
+    box-sizing:border-box;
+}
+
+.navbar-links {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+}
+
+.navbar-cta {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+}
+
+.navlink, .nav-cta {
+    text-decoration: none;
+    color: #272343;
+    cursor: pointer;
+}
+
+.navlink {
+    margin-right: 2rem;
+}
+
+.nav-cta:last-child {
+    margin-left: 2rem;
+    padding: .5rem 1.5rem;
+    background-color: #4263EB;
+    border-radius: 8px;
+    color: #FFFFFE
+}
+
+#logo {
+    height: 48px;
+    width: auto;
+}
+.nav-button{
+    border-style:none;
+    background-color:white;
+    display:none;
+}
+
+@media(max-width:768px){
+    .nav-button {
+        display: block;
+        margin-left: auto;
+    }
+    .navbar-container {
+        flex-direction: column;
+        align-items: center;
+        justify-content:center;
+        padding:5px 10px 5px 10px;
+        width:100%;
+    }
+    .navbar-links {
+        display: flex;
+        flex-direction: row;
+        justify-content: start;
+        align-items: center;
+        width: 100%;
+    }
+    .navlink {
+        margin-right: 1rem;
+    }
+    .navbar-cta {
+        display: none;
+    }
+    .navbar-cta-visible {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 1rem 0 0 0;
+        padding: 3rem 0;
+        width:100%;
+    }
+    .nav-cta:last-child {
+        margin: 2rem 0 0 0;
+        width: 60%;
+        text-align: center;
+        padding: .5rem 0;
+    }
+    .nav-cta:first-child {
+        margin-left: 0;
+        padding: .5rem 0;
+        width:60%;
+        border: solid 1px #4263EB;
+        border-radius: 8px;
+        text-align:center;
+    }
+    #logo {
+        height: 38px;
+        width: auto;
+    }
+}
