@@ -1,0 +1,43 @@
+﻿@rendermode InteractiveServer
+<!--NavBar-->
+<div class="navbar-container" style="@style">
+    <div class="navbar-links" style="">
+        <a class="navlink" href=""><img id="logo" src="Logo.png" /></a>
+        <a class="navlink">About</a>
+        <a class="navlink">Features</a>
+        <button class="nav-button" type="button" @onclick="showNav">
+            <img src="images/person.png" alt="Alternate Text" />
+        </button>
+    </div>
+    <div class="@navCTAClass">
+        <a class="nav-cta" href="Account/Login" target="_parent">Log In</a>
+        <a class="nav-cta" href="Account/Register" target="_parent">Create Account</a>
+    </div>
+</div>
+
+@code{
+    //Customize Navbar style
+    [Parameter]
+    public string style {get; set;} = "";
+
+    //Navbar style extension
+    string navbarStyleExt { get; set; } = "";
+
+    //DISPLAY HIDDEN BUTTONS ON CLICK
+    string navCTAClass { get; set; } = "navbar-cta";
+    bool isInvisible = true;
+    private void showNav(){
+        if (isInvisible)
+        {
+            navCTAClass = "navbar-cta-visible";
+            isInvisible = false;
+        }
+        else
+        {
+            navCTAClass = "navbar-cta";
+            isInvisible = true;
+        }
+    }
+    //DISPLAY HIDDEN BUTTONS ON CLICK END
+}
+

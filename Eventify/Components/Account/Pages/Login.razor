@@ -1,4 +1,5 @@
 ﻿@page "/Account/Login"
+@layout Eventify.Components.Layout.LandingLayout
 
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.Authentication
@@ -93,7 +94,7 @@
         if (result.Succeeded)
         {
             Logger.LogInformation("User logged in.");
-            RedirectManager.RedirectTo(ReturnUrl);
+            RedirectManager.RedirectTo("/home");
         }
         else if (result.RequiresTwoFactor)
         {
