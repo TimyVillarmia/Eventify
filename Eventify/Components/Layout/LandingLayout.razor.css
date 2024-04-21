@@ -14,6 +14,7 @@
     width:100%;
     height:auto;
     position: fixed;
+    z-index: 999;
 }
 main {
     position: relative;
