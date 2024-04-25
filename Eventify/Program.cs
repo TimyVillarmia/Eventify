@@ -27,8 +27,8 @@ builder.Services.AddAuthentication(options =>
     })
     .AddGoogle(googleoptions =>
     {
-        googleoptions.ClientId = configuration["web:client_id"];
-        googleoptions.ClientSecret = configuration["web:client_secret"];
+        googleoptions.ClientId = configuration["Google:client_id"];
+        googleoptions.ClientSecret = configuration["Google:client_secret"];
     })
     .AddIdentityCookies();
 
