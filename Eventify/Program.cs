@@ -18,17 +18,17 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-services.AddAuthentication().AddGoogle(googleOptions =>
-{
-    googleOptions.ClientId = configuration["Google:client_id"];
-    googleOptions.ClientSecret = configuration["Google:client_secret"];
-});
 
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 
+    })
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = configuration["Google:client_id"];
+        googleOptions.ClientSecret = configuration["Google:client_secret"];
     })
     .AddIdentityCookies();
 
@@ -61,7 +61,7 @@ else
 }
 
 app.UseHttpsRedirection();
-
+    
 app.UseStaticFiles();
 app.UseAntiforgery();
 
