@@ -18,11 +18,11 @@ builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
-//services.AddAuthentication().AddGoogle(googleOptions =>
-//{
-//    googleOptions.ClientId = configuration["Google:client_id"];
-//    googleOptions.ClientSecret = configuration["Google:client_secret"];
-//});
+services.AddAuthentication().AddGoogle(googleOptions =>
+{
+    googleOptions.ClientId = configuration["Google:client_id"];
+    googleOptions.ClientSecret = configuration["Google:client_secret"];
+});
 
 builder.Services.AddAuthentication(options =>
     {

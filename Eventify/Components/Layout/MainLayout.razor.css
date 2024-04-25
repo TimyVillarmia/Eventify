@@ -8,11 +8,6 @@
 .mainlayout-navbar-container{
     grid-column: span 2;
 }
-.mainlayout-navbar {
-    width: 100%;
-    height: 75px;
-    background-color: #2342C0;
-}
 
 .mainlayout-maincontent {
     background-color: #F1F1F1;
