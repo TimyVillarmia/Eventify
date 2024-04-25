@@ -25,10 +25,10 @@ builder.Services.AddAuthentication(options =>
         options.DefaultSignInScheme = IdentityConstants.ExternalScheme;
 
     })
-    .AddGoogle(googleOptions =>
+    .AddGoogle(googleoptions =>
     {
-        googleOptions.ClientId = configuration["Google:client_id"];
-        googleOptions.ClientSecret = configuration["Google:client_secret"];
+        googleoptions.ClientId = configuration["web:client_id"];
+        googleoptions.ClientSecret = configuration["web:client_secret"];
     })
     .AddIdentityCookies();
 
