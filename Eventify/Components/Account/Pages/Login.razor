@@ -13,10 +13,10 @@
 
 <PageTitle>Log in</PageTitle>
 
-<div class="formcontainer">
-    <div class="wrapper">
+<div class="Signin-formcontainer">
+    <div class="Singin-wrapper">
         <h1>Welcome Back</h1>
-        <p>Lorem ipsum dolor sit amet consectetur. Enim bibendum gravida donec quam  </p>
+        <p>Continue your Journey here.  </p>
         <ExternalLoginPicker />
         <div class="row">
             <div class="col-md-4">
@@ -26,16 +26,16 @@
                         <DataAnnotationsValidator />
                         <hr />
                         <ValidationSummary class="text-danger" role="alert" />
-                        <div class="form-floating mb-3">
-                            <InputText @bind-Value="Input.Email" class="form-control form-control-lg" autocomplete="username" aria-required="true" placeholder="Enter email" />
+                        <div class="Signin-inputbox">
+                            <InputText @bind-Value="Input.Email" class="Signin-inputEmail" autocomplete="username" aria-required="true" placeholder="Enter email" />
                             <ValidationMessage For="() => Input.Email" class="text-danger" />
                         </div>
-                        <div class="form-floating mb-3">
-                            <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
+                        <div class="Signin-inputbox">
+                            <InputText type="password" @bind-Value="Input.Password" class="Signin-inputPassword" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
                             <ValidationMessage For="() => Input.Password" class="text-danger" />
                         </div>
-                        <div class="forgot_container">
-                            <label class="form-label">
+                        <div class="Signin-forgot_container">
+                            <label class="Signin-remember">
                                 <InputCheckbox @bind-Value="Input.RememberMe" class="darker-border-checkbox form-check-input" />
                                 Remember me
                             </label>
@@ -44,7 +44,7 @@
                             </p>
                         </div>
                         <div>
-                            <button type="submit" class="w-100 btn btn-lg btn-primary">Log in</button>
+                            <button type="submit" class="btn-login">Log in</button>
                         </div>
                     </EditForm>
                 </section>
