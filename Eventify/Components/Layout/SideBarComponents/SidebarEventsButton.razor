@@ -1,0 +1,17 @@
+﻿<a class="Sidebar-events-button" href="@href?">
+    <div class="EventProfile">
+        <strong>@EventTitle[0]</strong>
+        
+    </div>
+    <div class="EventTitle">
+        @EventTitle
+    </div>
+</a>
+
+@code{
+    [Parameter]
+    public string href {get;set;} = "";
+
+    [Parameter]
+    public string EventTitle{get;set;} = "";
+}
