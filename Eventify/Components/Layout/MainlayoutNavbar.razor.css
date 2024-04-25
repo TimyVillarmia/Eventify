@@ -1,0 +1,40 @@
+﻿.mainlayout-navbar {
+    width: 100%;
+    height: 75px;
+    background-color: #2342C0;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem 0 2rem;
+    box-sizing: border-box;
+}
+
+.mainlayout-burger {
+    background-color: transparent;
+    cursor: pointer;
+    border: none;
+    display: none;
+    padding: 0;
+}
+
+.mainlayout-logo {
+    height: 45px;
+    width: auto;
+}
+
+.mainlayout-userProfile {
+    height: 45px;
+    width: 45px;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+@media(max-width:1000px) {
+    .mainlayout-burger {
+        display: block;
+    }
+
+    .mainlayout-navbar {
+        padding: 0 1rem 0 1rem;
+    }
+}
