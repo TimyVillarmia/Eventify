@@ -9,14 +9,10 @@
     padding: 0 2rem 0 2rem;
     box-sizing: border-box;
 }
-
-.mainlayout-burger {
-    background-color: transparent;
-    cursor: pointer;
-    border: none;
+.mainlayout-invisible-object {
     display: none;
-    padding: 0;
 }
+
 
 .mainlayout-logo {
     height: 45px;
@@ -30,11 +26,7 @@
     border: 1px solid white;
 }
 @media(max-width:1000px) {
-    .mainlayout-burger {
-        display: block;
-    }
-
-    .mainlayout-navbar {
-        padding: 0 1rem 0 1rem;
+    .mainlayout-invisible-object{
+        display:block;
     }
 }

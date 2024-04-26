@@ -1,8 +1,12 @@
 ﻿@using Eventify.Components.Layout.SideBarComponents
+@rendermode InteractiveServer
 
-<div class="mainlayout-sidebar" id="mainLayoutSidebar">
-    <div class="mainlayout-sidebar-section mainlayout-sidebar-top-section">
-        <a class="mainlayout-sidebar-buttons" href="home">
+<div class="mainlayout-sidebar" id="mainLayoutSidebar" style="@bg">
+    <button class="mainlayout-burger" @onclick="ShowSidebar" style="@btnBG">
+        <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 32 32"><path fill="none" stroke="@btnStroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M5 8h22M5 16h22M5 24h22" /></svg>
+    </button>
+    <div class="mainlayout-sidebar-section mainlayout-sidebar-top-section" style="@display">
+        <a class="mainlayout-sidebar-buttons" href="home" target="_parent">
             <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-button-icon" style="" width="30" height="30" viewBox="0 0 24 24"><path fill="black" d="m12 5.69l5 4.5V18h-2v-6H9v6H7v-7.81zM12 3L2 12h3v8h6v-6h2v6h6v-8h3" /></svg>
             <span class="mainlayout-sidebar-buttonlabel">Home</span>
         </a>
@@ -11,7 +15,7 @@
             <span class="mainlayout-sidebar-buttonlabel">Announcements</span>
         </a>
     </div>
-    <div class="mainlayout-sidebar-section mainlayout-sidebar-mid-section">
+    <div class="mainlayout-sidebar-section mainlayout-sidebar-mid-section" style="@display">
         <a class="mainlayout-sidebar-buttons-events">
             <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-button-icon" style="" width="30" height="30" viewBox="0 0 24 24"><path fill="black" d="M21 17V8H7v9zm0-14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h1V1h2v2h8V1h2v2zm-3.47 8.06l-4.44 4.44l-2.68-2.68l1.06-1.06l1.62 1.62L16.47 10zM3 21h14v2H3a2 2 0 0 1-2-2V9h2z" /></svg>
             <span class="mainlayout-sidebar-buttonlabel">Events</span>
@@ -22,7 +26,7 @@
         
         
     </div>
-    <div class="mainlayout-sidebar-section mainlayout-sidebar-last-section">
+    <div class="mainlayout-sidebar-section mainlayout-sidebar-last-section" style="@display">
         <a class="mainlayout-sidebar-buttons">
             <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-button-icon" style="" width="30" height="30" viewBox="0 0 48 48"><g fill="none" stroke="black" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M42 24V9a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h15" /><circle cx="32" cy="32" r="6" /><path stroke-linecap="round" stroke-linejoin="round" d="m37 36l5 4M14 16h20m-20 8h8" /></g></svg>
             <span class="mainlayout-sidebar-buttonlabel">History</span>
@@ -35,3 +39,31 @@
         </a>
     </div>
 </div>
+@code{
+    string display {get;set;} = "";
+    string bg {get;set;} = "";
+    string btnBG { get; set; } = "";
+    string btnStroke { get; set; } = "white";
+
+    bool isInvisible = true;
+
+    private void ShowSidebar(){
+        if (isInvisible)
+        {
+            display = "display:block";
+            bg = "background-color: #FFFFFE;height:100%;border:1px solid #7D7D7D;border-width:0 1px 0 0";
+            isInvisible = false;
+            btnBG = "background-color:transparent;";
+            btnStroke = "black";
+        }
+        else
+        {
+            display = "";
+            bg = "";
+            isInvisible = true;
+            btnBG = "background-color:transparent;";
+            btnStroke = "white";
+        }
+
+    }
+}
