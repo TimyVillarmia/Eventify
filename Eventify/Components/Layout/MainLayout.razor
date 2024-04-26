@@ -1,7 +1,18 @@
 ﻿@inherits LayoutComponentBase
 
+<div class="mainlayout">
+    <div class="mainlayout-navbar-container">
+        <MainlayoutNavbar/>
+    </div>
+    <div class="mainlayout-sidebar-container">
+        <MainLayoutSidebar />
+    </div>
+    <div class="mainlayout-maincontent">
+        @Body
+    </div>
+</div>
 
-@Body
+
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.

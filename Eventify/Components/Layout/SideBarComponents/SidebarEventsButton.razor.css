@@ -1,0 +1,40 @@
+﻿.Sidebar-events-button {
+    width: 250px;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    font-size: 16px;
+    padding: 10px 0 10px 2rem;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: black;
+}
+.Sidebar-events-button:hover {
+    background-color: #F1F1F1;
+    cursor: pointer;
+}
+.EventProfile{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    margin-right: 1rem;
+    border: 1px solid black;
+}
+@media(max-width:1000px) and (min-width:766px){
+    .Sidebar-events-button {
+        width: auto;
+        padding: 10px 1rem 10px 1rem;
+    }
+    .EventTitle {
+        display: none;
+    }
+    .EventProfile{
+        margin-right:0;
+    }
+}
