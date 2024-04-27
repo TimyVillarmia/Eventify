@@ -5,17 +5,20 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding-top: 20rem;
-    /*padding-bottom: 20rem;*/
+    padding: 5rem 0 3rem 0;
+    margin-top: 65px;
     text-align: center;
+    box-sizing: border-box;
 }
 
-.Singin-wrapper {
-    width: 300px;
-    height: 370px;
+.Singin-wrapper{
+    width: 375px;
+    height: auto;
     padding: 25px 25px 25px 25px;
     border: 2px solid black;
     border-radius: 10px;
+    background-color: #FFFFFE;
+    box-sizing:border-box;
 }
 
 .Singin-wrapper h1 {
@@ -62,10 +65,17 @@
     cursor: pointer;
     background-color: #4263EB;
     color: white;
+    box-sizing:border-box;
+}
+.row{
+    width:100%;
+}
+.col-md-4{
+    width:100%;
 }
 
 .Signin-CreateAccount p {
-    font-size: 13px;  
+    font-size: 13px;
 }
 
 .Signin-CreateAccount p span a {
@@ -73,5 +83,10 @@
 }
 .Signin-CreateAccount p span a:hover{
     text-decoration: underline;
+}
+@media(max-width:500px){
+    .Singin-wrapper{
+        width:100%;
+    }
 }
 
