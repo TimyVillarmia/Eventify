@@ -1,12 +1,13 @@
 ﻿.Signin-btn_google {
     display: inline-flex;
-    width: 100%;
+    width: 99%;
     height: 50px;
     background: white;
     border: 1px solid black;
     border-radius: 5px;
     font-size: 15px;
     cursor: pointer;
+    box-sizing: border-box;
 }
 
 .btn-Icon, .btn-text {
