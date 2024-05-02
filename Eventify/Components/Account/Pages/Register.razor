@@ -21,7 +21,7 @@
 <div class="Register-formcontainer">
     <div class="Register-wrapper">
         <h1>Register</h1>
-        <p>Continue your Journey here.  </p>
+        <p>Create your Account.  </p>
         <ExternalLoginPicker />
         <hr />
         <div class="row">
@@ -30,19 +30,19 @@
                 <EditForm Model="Input" asp-route-returnUrl="@ReturnUrl" method="post" OnValidSubmit="RegisterUser" FormName="register">
                     <DataAnnotationsValidator />
                     <ValidationSummary class="text-danger" role="alert" />
-                    <div class="form-floating mb-3">
-                        <InputText @bind-Value="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
+                    <div class="Register-inputbox">
+                        <InputText @bind-Value="Input.Email" class="Register-inputEmail" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="email" aria-required="true" placeholder="Enter email" />
                         <ValidationMessage For="() => Input.Email" class="text-danger" />
                     </div>
-                    <div class="form-floating mb-3">
-                        <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <div class="Register-inputbox">
+                        <InputText type="password" @bind-Value="Input.Password" class="form-control" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
                         <ValidationMessage For="() => Input.Password" class="text-danger" />
                     </div>
-                    <div class="form-floating mb-3">
-                        <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
+                    <div class="Register-inputbox">
+                        <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="username" aria-required="true" placeholder="Confirm Password" />
                         <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
                     </div>
-                    <button type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
+                    <button type="submit" class="btn-register">Register</button>
                     <p>
                         Don’t have an account? <span><a href="Account/Login">Login</a></span>
                     </p>
