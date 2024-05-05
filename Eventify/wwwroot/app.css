@@ -32,3 +32,38 @@ h1:focus {
 .darker-border-checkbox.form-check-input {
     border-color: #929292;
 }
+.Primary-Background {
+    background-color: #4263eb;
+}
+
+.PrimaryVaiant-Background {
+    background-color: #2342c0;
+}
+
+.Secondary-Background {
+    background-color: #ffd803;
+}
+
+.SecondaryVariant-Background {
+    background-color: #d6b500;
+}
+
+.Tertiary-Background {
+    background-color: #272343;
+}
+
+.Main-Background {
+    background-color: #fffffe;
+}
+
+.Primary-Text {
+    color: #272343;
+}
+
+.Secondary-Text {
+    color: #2d334a;
+}
+
+.Button-Text {
+    color: #fffffe;
+}
