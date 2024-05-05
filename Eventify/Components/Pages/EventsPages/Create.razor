@@ -63,6 +63,9 @@
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task AddEvents()
     {
+
+
+
         DB.Events.Add(Events);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("/events");
