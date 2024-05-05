@@ -27,7 +27,7 @@
     border: 1px solid black;
 }
 @media(max-width:1000px) and (min-width:766px){
-    .Sidebar-events-button {
+/*    .Sidebar-events-button {
         width: auto;
         padding: 10px 1rem 10px 1rem;
     }
@@ -36,5 +36,5 @@
     }
     .EventProfile{
         margin-right:0;
-    }
+    }*/
 }

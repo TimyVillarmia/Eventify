@@ -111,7 +111,10 @@
                 "{Name} logged in with {LoginProvider} provider.",
                 externalLoginInfo.Principal.Identity?.Name,
                 externalLoginInfo.LoginProvider);
-            RedirectManager.RedirectTo(ReturnUrl);
+             
+
+            // after login redirect to home
+            RedirectManager.RedirectTo("/home");
         }
         else if (result.IsLockedOut)
         {
