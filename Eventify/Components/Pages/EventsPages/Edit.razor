@@ -1,0 +1,111 @@
+﻿@page "/Events/edit"
+@inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Edit</PageTitle>
+
+<h1>Edit</h1>
+
+<h4>Events</h4>
+<hr />
+@if (Events is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <EditForm method="post" Model="Events" OnValidSubmit="UpdateEvents" FormName="edit" Enhance>
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <input type="hidden" name="Events.Id" value="@Events.Id" />
+                <div class="mb-3">
+                    <label for="eventname" class="form-label">EventName:</label>
+                    <InputText id="eventname" @bind-Value="Events.EventName" class="form-control" />
+                    <ValidationMessage For="() => Events.EventName" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="status" class="form-label">Status:</label>
+                    <InputText id="status" @bind-Value="Events.Status" class="form-control" />
+                    <ValidationMessage For="() => Events.Status" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="date" class="form-label">Date:</label>
+                    <InputDate id="date" @bind-Value="Events.Date" class="form-control" />
+                    <ValidationMessage For="() => Events.Date" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="starttime" class="form-label">StartTime:</label>
+                    <InputDate id="starttime" @bind-Value="Events.StartTime" class="form-control" />
+                    <ValidationMessage For="() => Events.StartTime" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="endtime" class="form-label">EndTime:</label>
+                    <InputDate id="endtime" @bind-Value="Events.EndTime" class="form-control" />
+                    <ValidationMessage For="() => Events.EndTime" class="text-danger" />
+                </div>
+                <div class="mb-3">
+                    <label for="venue" class="form-label">Venue:</label>
+                    <InputText id="venue" @bind-Value="Events.Venue" class="form-control" />
+                    <ValidationMessage For="() => Events.Venue" class="text-danger" />
+                </div>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </EditForm>
+        </div>
+    </div>
+}
+
+<div>
+    <a href="/events">Back to List</a>
+</div>
+
+@code {
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [SupplyParameterFromForm]
+    public Events? Events { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Events ??= await DB.Events.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (Events is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see https://aka.ms/RazorPagesCRUD.
+    public async Task UpdateEvents()
+    {
+        DB.Attach(Events!).State = EntityState.Modified;
+
+        try
+        {
+            await DB.SaveChangesAsync();
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            if (!EventsExists(Events!.Id))
+            {
+                NavigationManager.NavigateTo("notfound");
+            }
+            else
+            {
+                throw;
+            }
+        }
+
+        NavigationManager.NavigateTo("/events");
+    }
+
+    bool EventsExists(int id)
+    {
+        return DB.Events.Any(e => e.Id == id);
+    }
+}

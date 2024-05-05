@@ -1,0 +1,71 @@
+﻿@page "/events/create"
+@inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Data
+@using System.ComponentModel.DataAnnotations
+
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Events</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Events" OnValidSubmit="AddEvents" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="eventname" class="form-label">EventName:</label> 
+                <InputText id="eventname" @bind-Value="Events.EventName" class="form-control" /> 
+                <ValidationMessage For="() => Events.EventName" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="status" class="form-label">Status:</label> 
+                <InputText id="status" @bind-Value="Events.Status" class="form-control" /> 
+                <ValidationMessage For="() => Events.Status" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="date" class="form-label">Date:</label> 
+                <InputDate id="date" @bind-Value="Events.Date" class="form-control" /> 
+                <ValidationMessage For="() => Events.Date" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="starttime" class="form-label">StartTime:</label> 
+                <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Events.StartTime" class="form-control" />
+                <ValidationMessage For="() => Events.StartTime" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="endtime" class="form-label">EndTime:</label> 
+                <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Events.EndTime" class="form-control" /> 
+                <ValidationMessage For="() => Events.EndTime" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="venue" class="form-label">Venue:</label> 
+                <InputText id="venue" @bind-Value="Events.Venue" class="form-control" /> 
+                <ValidationMessage For="() => Events.Venue" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/events">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Events Events { get; set; } = new();
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddEvents()
+    {
+        DB.Events.Add(Events);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/events");
+    }
+
+}

@@ -1,0 +1,55 @@
+﻿@page "/events/details"
+@inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Events</h4>
+    <hr />
+    @if (events is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">EventName</dt>
+            <dd class="col-sm-10">@events.EventName</dd>
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@events.Status</dd>
+            <dt class="col-sm-2">Date</dt>
+            <dd class="col-sm-10">@events.Date</dd>
+            <dt class="col-sm-2">StartTime</dt>
+            <dd class="col-sm-10">@events.StartTime</dd>
+            <dt class="col-sm-2">EndTime</dt>
+            <dd class="col-sm-10">@events.EndTime</dd>
+            <dt class="col-sm-2">Venue</dt>
+            <dd class="col-sm-10">@events.Venue</dd>
+        </dl>
+        <div>
+            <a href="@($"/events/edit?id={events.Id}")">Edit</a> |
+            <a href="@($"/events")">Back to List</a>
+        </div>
+    }
+</div>
+
+@code {
+    Events? events;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await DB.Events.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (events is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+}
