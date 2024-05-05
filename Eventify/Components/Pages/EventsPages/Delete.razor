@@ -1,0 +1,73 @@
+﻿@page "/events/delete"
+@inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Delete</PageTitle>
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Events</h4>
+    <hr />
+    @if (events is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">EventName</dt>
+            <dd class="col-sm-10">@events.EventName</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Status</dt>
+            <dd class="col-sm-10">@events.Status</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Date</dt>
+            <dd class="col-sm-10">@events.Date</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">StartTime</dt>
+            <dd class="col-sm-10">@events.StartTime</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">EndTime</dt>
+            <dd class="col-sm-10">@events.EndTime</dd>
+        </dl>
+        <dl class="row">
+            <dt class="col-sm-2">Venue</dt>
+            <dd class="col-sm-10">@events.Venue</dd>
+        </dl>
+        <EditForm method="post" Model="events" OnValidSubmit="DeleteEvents" FormName="delete" Enhance>
+            <button type="submit" class="btn btn-danger" disabled="@(events is null)">Delete</button> |
+            <a href="/events">Back to List</a>
+        </EditForm>
+    }
+</div>
+
+@code {
+    Events? events;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        events = await DB.Events.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (events is null)
+        {
+            NavigationManager.NavigateTo("notfound");
+        }
+    }
+
+    public async Task DeleteEvents()
+    {
+        DB.Events.Remove(events!);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo("/events");
+    }
+}
