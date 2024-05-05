@@ -1,5 +1,7 @@
 ﻿using Eventify.DataAnnotations;
+using Humanizer.Localisation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Eventify.Data
@@ -15,15 +17,17 @@ namespace Eventify.Data
         public string? Status { get; set; }
 
         [DataType(DataType.Date), Required, CustomDateAttribute]
-        public DateTime Date { get; set; }
+        public DateTime Date { get; set; } = DateTime.Now.Date;
 
         [DataType(DataType.Time) , Required]
         public TimeOnly StartTime { get; set; }
 
-        [DataType(DataType.Time ), Required]
+        [DataType(DataType.Time ), Required, CustomTimeValidation("StartTime")]
         public TimeOnly EndTime { get; set; }
 
         [Required]
         public string? Venue { get; set; }
+
+   
     }
 }
