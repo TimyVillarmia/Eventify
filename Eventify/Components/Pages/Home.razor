@@ -1,14 +1,21 @@
 ﻿@page "/home"
 @layout Eventify.Components.Layout.MainLayout
+@inject Eventify.Data.ApplicationDbContext db
+@using Eventify.Data
 @using Eventify.Components.Pages.HomeComponents
 
 <PageTitle>Home</PageTitle>
-<div style="display:flex;flex-direction:column;width:100%;height:auto;justify-content:center;align-items:center;">
-    <div style="display:flex;flex-direction:row;flex-wrap:wrap;padding:2rem 2rem 2rem 2rem;width:auto;height:auto;box-sizing:border-box;">
-        @for (int i = 0; i < 5; i++)
+<div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;position:relative;">
+    <div class="home-container" style="">
+        @foreach(var Event in db.Events)
+        {
+            <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event"/>
+        }
+@*         @for (int i = 0; i < 5; i++)
         {
             <EventCardView style="margin: 0 1.5rem 1.5rem 0;" />
-        }
+        } *@
+        
     </div>
+    <a href="/events/create" style="position:absolute;bottom:4rem;right:1rem;">Add Event</a>
 </div>
-

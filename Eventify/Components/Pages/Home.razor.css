@@ -1,0 +1,21 @@
+﻿.home-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 2rem 2rem 2rem 2rem;
+    width: auto;
+    height: auto;
+    box-sizing: border-box;
+    position:relative;
+}
+
+@media(max-width:500px){
+    .home-container {
+        display:flex;
+        flex-direction:column;
+        justify-content:start;
+        align-items:center;
+        padding: 2rem 5px;
+        width:100%;
+    }
+}
