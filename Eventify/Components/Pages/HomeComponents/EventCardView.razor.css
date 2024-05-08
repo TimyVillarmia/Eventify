@@ -39,14 +39,48 @@
     align-content:center;
     cursor:pointer;
 }
+.event-cardview-menu-container {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    overflow:visible;
+}
+.event-cardview-menubar{
+    display:flex;
+    flex-direction: column;
+    justify-content:start;
+    background-color: #fffffe;
+    align-items:start;
+    width:auto;
+    height:auto;
+    position:absolute;
+    bottom: -60%;
+    left: -280%;
+    border-radius: 7px;
+    overflow:hidden;
+    display:none;
+}
+.event-cardview-menubar button{
+    padding: 8px 2rem;
+    width:100%;
+    height:auto;
+    border:none;
+    display:flex;
+    flex-direction:row;
+}
+.event-cardview-menubar button:hover{
+    background-color:lightgray;
+    cursor:pointer;
+}
 /*HEADER STYLES END*/
 /*MID SECTION STYLES*/
 .event-cardview-mid {
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:start;
-    padding:1rem 1rem 3rem 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 1rem 1rem 3rem 1rem;
 }
 .event-cardview-mid h3{
     font-weight:400;
@@ -101,3 +135,9 @@
     margin:0 0 0 10px;
 }
 /*FOOTER STYLES END*/
+
+@media(max-width:500px){
+    .event-cardview-container{
+        width:100%;
+    }
+}
