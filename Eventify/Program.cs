@@ -1,9 +1,11 @@
 using Eventify.Components;
 using Eventify.Components.Account;
 using Eventify.Data;
+using Eventify.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -17,7 +19,22 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration);
 
+builder.Services.AddHttpClient("MailTrapApiClient", (services, client) =>
+{
+    var mailSettings = services.GetRequiredService<IOptions<AuthMessageSenderOptions>>().Value;
+    client.BaseAddress = new Uri(mailSettings.ApiBaseUrl);
+    client.DefaultRequestHeaders.Add("Api-Token", mailSettings.ApiToken);
+});
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+    options.TokenLifespan = TimeSpan.FromHours(3));
+
+builder.Services.ConfigureApplicationCookie(options => {
+    options.ExpireTimeSpan = TimeSpan.FromDays(5);
+    options.SlidingExpiration = true;
+});
 
 builder.Services.AddAuthentication(options =>
     {
@@ -46,7 +63,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+builder.Services.AddSingleton<IEmailSender<ApplicationUser>, EmailSender>();
 
 var app = builder.Build();
 
