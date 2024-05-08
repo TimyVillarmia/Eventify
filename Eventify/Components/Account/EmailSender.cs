@@ -1,7 +1,9 @@
 ﻿using Eventify.Data;
 using Eventify.Services;
+using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using Newtonsoft.Json;
 using Org.BouncyCastle.Asn1.Pkcs;
 using System.Net.Http;
@@ -9,17 +11,18 @@ using System.Net.Http;
 namespace Eventify.Components.Account
 {
     public class EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor,
-    ILogger<EmailSender> logger, IHttpClientFactory httpClientFactory) : IEmailSender<ApplicationUser>
+    ILogger<EmailSender> logger) : IEmailSender<ApplicationUser>
     {
         private readonly ILogger logger = logger;
-        private readonly IHttpClientFactory _httpClient;
 
         public AuthMessageSenderOptions Options { get; } = optionsAccessor.Value;
+
+
 
         public Task SendConfirmationLinkAsync(ApplicationUser user, string email,
             string confirmationLink) => SendEmailAsync(email, "Confirm your email",
             $"Please confirm your account by " +
-            "<a href='{confirmationLink}'>clicking here</a>.");
+            $"<a href='{confirmationLink}'>clicking here</a>.");
 
         public Task SendPasswordResetLinkAsync(ApplicationUser user, string email,
             string resetLink) => SendEmailAsync(email, "Reset your password",
@@ -39,30 +42,42 @@ namespace Eventify.Components.Account
             await Execute(Options.ApiToken, subject, message, toEmail);
         }
 
-        public async Task<bool> Execute(string apiKey, string subject, string message,
+        public async Task Execute(string apiKey, string subject, string message,
             string toEmail)
         {
 
-            var apiEmail = new
+            try
             {
-                From = new { Email = Options.SenderEmail, Name = Options.SenderEmail },
-                To = new[] { new { Email = toEmail, Name = toEmail } },
-                Subject = subject,
-                Text = message
-            };
+                using (MimeMessage emailMessage = new MimeMessage())
+                {
+                    MailboxAddress emailFrom = new MailboxAddress(Options.SenderName, Options.SenderEmail);
+                    emailMessage.From.Add(emailFrom);
+                    MailboxAddress emailTo = new MailboxAddress(toEmail, toEmail);
+                    emailMessage.To.Add(emailTo);
+
+                    emailMessage.Subject = subject;
+
+                    BodyBuilder emailBodyBuilder = new BodyBuilder();
+                    emailBodyBuilder.TextBody = message;
+
+                    emailMessage.Body = emailBodyBuilder.ToMessageBody();
+                    //this is the SmtpClient from the Mailkit.Net.Smtp namespace, not the System.Net.Mail one
+                    using (SmtpClient mailClient = new SmtpClient())
+                    {
+                        mailClient.Connect(Options.Server, Options.Port, MailKit.Security.SecureSocketOptions.StartTls);
+                        mailClient.Authenticate(Options.UserName, Options.Password);
+                        mailClient.Send(emailMessage);
+                        mailClient.Disconnect(true);
+                    }
+                }
 
 
-            var httpResponse = await _httpClient.CreateClient("MailTrapApiClient").PostAsJsonAsync("send", apiEmail);
 
-            var responseJson = await httpResponse.Content.ReadAsStringAsync();
-            var response = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseJson);
-
-            if (response != null && response.TryGetValue("success", out object? success) && success is bool boolSuccess && boolSuccess)
-            {
-                return true;
             }
-
-            return false;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
