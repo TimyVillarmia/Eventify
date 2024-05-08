@@ -32,15 +32,15 @@
                     <ValidationSummary class="text-danger" role="alert" />
                     <div class="Register-inputbox">
                         <InputText @bind-Value="Input.Email" class="Register-inputEmail" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="email" aria-required="true" placeholder="Enter email" />
-                        <ValidationMessage For="() => Input.Email" class="text-danger" />
+                        
                     </div>
                     <div class="Register-inputbox">
                         <InputText type="password" @bind-Value="Input.Password" class="form-control" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
-                        <ValidationMessage For="() => Input.Password" class="text-danger" />
+                        
                     </div>
                     <div class="Register-inputbox">
                         <InputText type="password" @bind-Value="Input.ConfirmPassword" class="form-control" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="username" aria-required="true" placeholder="Confirm Password" />
-                        <ValidationMessage For="() => Input.ConfirmPassword" class="text-danger" />
+                        
                     </div>
                     <button type="submit" class="btn-register">Register</button>
                     <p>
