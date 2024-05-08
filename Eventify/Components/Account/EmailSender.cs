@@ -11,10 +11,9 @@ using System.Net.Http;
 namespace Eventify.Components.Account
 {
     public class EmailSender(IOptions<AuthMessageSenderOptions> optionsAccessor,
-    ILogger<EmailSender> logger, IHttpClientFactory httpClientFactory) : IEmailSender<ApplicationUser>
+    ILogger<EmailSender> logger) : IEmailSender<ApplicationUser>
     {
         private readonly ILogger logger = logger;
-        private readonly IHttpClientFactory _httpClient;
 
         public AuthMessageSenderOptions Options { get; } = optionsAccessor.Value;
 
@@ -23,7 +22,7 @@ namespace Eventify.Components.Account
         public Task SendConfirmationLinkAsync(ApplicationUser user, string email,
             string confirmationLink) => SendEmailAsync(email, "Confirm your email",
             $"Please confirm your account by " +
-            "<a href='{confirmationLink}'>clicking here</a>.");
+            $"<a href='{confirmationLink}'>clicking here</a>.");
 
         public Task SendPasswordResetLinkAsync(ApplicationUser user, string email,
             string resetLink) => SendEmailAsync(email, "Reset your password",

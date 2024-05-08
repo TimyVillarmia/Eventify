@@ -21,12 +21,6 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.Configure<AuthMessageSenderOptions>(builder.Configuration.GetSection("MailSettings"));
 
-builder.Services.AddHttpClient("MailTrapApiClient", (services, client) =>
-{
-    var mailSettings = services.GetRequiredService<IOptions<AuthMessageSenderOptions>>().Value;
-    client.BaseAddress = new Uri(mailSettings.ApiBaseUrl);
-    client.DefaultRequestHeaders.Add("Api-Token", mailSettings.ApiToken);
-});
 
 builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
     options.TokenLifespan = TimeSpan.FromHours(3));
