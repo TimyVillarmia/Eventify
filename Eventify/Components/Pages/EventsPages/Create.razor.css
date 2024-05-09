@@ -1,0 +1,31 @@
+﻿.Event-Creation-wrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #fffffe;
+    max-width: 400px;
+}
+.Event-Creation-Form-Container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    border: solid 1px black;
+    border-radius: 10px;
+}
+.EventNameInput-Container {
+    display: flex;
+    flex-direction: column;
+}
+.EventNameInput-Container label{
+    font-size: 18px;
+}
+#eventname {
+    padding: 1rem;
+    box-sizing: border-box;
+}

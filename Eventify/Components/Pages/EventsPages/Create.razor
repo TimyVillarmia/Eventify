@@ -7,50 +7,47 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
-
-<h1>Create</h1>
-
-<h4>Events</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<div class="Event-Creation-wrapper">
+    <h4>Events Creation</h4>
+    <div class="Event-Creation-Form-Container">
         <EditForm method="post" Model="Events" OnValidSubmit="AddEvents" FormName="create" Enhance>
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" />
+            <div class="EventNameInput-Container">
+                <label for="eventname" class="form-label">Event Name:</label>
+                <InputText id="eventname" @bind-Value="Events.EventName" style="padding:9px;box-sizing:border-box;"/>
+                <ValidationMessage For="() => Events.EventName" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="eventname" class="form-label">EventName:</label> 
-                <InputText id="eventname" @bind-Value="Events.EventName" class="form-control" /> 
-                <ValidationMessage For="() => Events.EventName" class="text-danger" /> 
-            </div>        
+                <label for="status" class="form-label">Status:</label>
+                <InputText id="status" @bind-Value="Events.Status" class="form-control" />
+                <ValidationMessage For="() => Events.Status" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="status" class="form-label">Status:</label> 
-                <InputText id="status" @bind-Value="Events.Status" class="form-control" /> 
-                <ValidationMessage For="() => Events.Status" class="text-danger" /> 
-            </div>        
+                <label for="date" class="form-label">Date:</label>
+                <InputDate id="date" @bind-Value="Events.Date" class="form-control" />
+                <ValidationMessage For="() => Events.Date" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="date" class="form-label">Date:</label> 
-                <InputDate id="date" @bind-Value="Events.Date" class="form-control" /> 
-                <ValidationMessage For="() => Events.Date" class="text-danger" /> 
-            </div>        
-            <div class="mb-3">
-                <label for="starttime" class="form-label">StartTime:</label> 
+                <label for="starttime" class="form-label">StartTime:</label>
                 <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Events.StartTime" class="form-control" />
-                <ValidationMessage For="() => Events.StartTime" class="text-danger" /> 
-            </div>        
+                <ValidationMessage For="() => Events.StartTime" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="endtime" class="form-label">EndTime:</label> 
-                <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Events.EndTime" class="form-control" /> 
-                <ValidationMessage For="() => Events.EndTime" class="text-danger" /> 
-            </div>        
+                <label for="endtime" class="form-label">EndTime:</label>
+                <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Events.EndTime" class="form-control" />
+                <ValidationMessage For="() => Events.EndTime" class="text-danger" />
+            </div>
             <div class="mb-3">
-                <label for="venue" class="form-label">Venue:</label> 
-                <InputText id="venue" @bind-Value="Events.Venue" class="form-control" /> 
-                <ValidationMessage For="() => Events.Venue" class="text-danger" /> 
-            </div>        
+                <label for="venue" class="form-label">Venue:</label>
+                <InputText id="venue" @bind-Value="Events.Venue" class="form-control" />
+                <ValidationMessage For="() => Events.Venue" class="text-danger" />
+            </div>
             <button type="submit" class="btn btn-primary">Create</button>
         </EditForm>
     </div>
 </div>
+
 
 <div>
     <a href="/events">Back to List</a>
