@@ -1,11 +1,16 @@
-﻿using Eventify.Data;
+﻿using Azure;
+using Azure.Communication.Email;
+using Eventify.Data;
 using Eventify.Services;
 using MailKit.Net.Smtp;
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Newtonsoft.Json;
+using NuGet.Protocol.Plugins;
 using Org.BouncyCastle.Asn1.Pkcs;
+using Org.BouncyCastle.Cms;
 using System.Net.Http;
 
 namespace Eventify.Components.Account
@@ -34,50 +39,42 @@ namespace Eventify.Components.Account
 
         public async Task SendEmailAsync(string toEmail, string subject, string message)
         {
-            if (string.IsNullOrEmpty(Options.ApiToken))
+            if (string.IsNullOrEmpty(Options.COMMUNICATION_SERVICES_CONNECTION_STRING))
             {
                 throw new Exception("Null EmailAuthKey");
             }
 
-            await Execute(Options.ApiToken, subject, message, toEmail);
+            await Execute(Options.COMMUNICATION_SERVICES_CONNECTION_STRING, subject, message, toEmail);
         }
 
         public async Task Execute(string apiKey, string subject, string message,
             string toEmail)
         {
+            EmailClient emailClient = new EmailClient(apiKey);
+
 
             try
             {
-                using (MimeMessage emailMessage = new MimeMessage())
-                {
-                    MailboxAddress emailFrom = new MailboxAddress(Options.SenderName, Options.SenderEmail);
-                    emailMessage.From.Add(emailFrom);
-                    MailboxAddress emailTo = new MailboxAddress(toEmail, toEmail);
-                    emailMessage.To.Add(emailTo);
+                EmailSendOperation emailSendOperation = await emailClient.SendAsync(
+                    Azure.WaitUntil.Completed,
+                    "DoNotReply@b351b59a-c5ae-4b0b-a47a-4c4707db09d7.azurecomm.net",
+                    toEmail,
+                    subject,
+                    message);
+                EmailSendResult statusMonitor = emailSendOperation.Value;
 
-                    emailMessage.Subject = subject;
+                Console.WriteLine($"Email Sent. Status = {emailSendOperation.Value.Status}");
 
-                    BodyBuilder emailBodyBuilder = new BodyBuilder();
-                    emailBodyBuilder.TextBody = message;
-
-                    emailMessage.Body = emailBodyBuilder.ToMessageBody();
-                    //this is the SmtpClient from the Mailkit.Net.Smtp namespace, not the System.Net.Mail one
-                    using (SmtpClient mailClient = new SmtpClient())
-                    {
-                        mailClient.Connect(Options.Server, Options.Port, MailKit.Security.SecureSocketOptions.StartTls);
-                        mailClient.Authenticate(Options.UserName, Options.Password);
-                        mailClient.Send(emailMessage);
-                        mailClient.Disconnect(true);
-                    }
-                }
-
-
-
+                /// Get the OperationId so that it can be used for tracking the message for troubleshooting
+                string operationId = emailSendOperation.Id;
             }
-            catch (Exception ex)
+            catch (RequestFailedException ex)
             {
-                throw ex;
+                /// OperationID is contained in the exception message and can be used for troubleshooting purposes
+                Console.WriteLine($"Email send operation failed with error code: {ex.ErrorCode}, message: {ex.Message}");
             }
+
+
         }
     }
 }
