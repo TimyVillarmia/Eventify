@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Eventify.Migrations
 {
     /// <inheritdoc />
-    public partial class test : Migration
+    public partial class CreateEventSchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
