@@ -12,15 +12,25 @@
 
 <PageTitle>Register confirmation</PageTitle>
 
-<h1>Create your account</h1>
-<p>
-    We sent a temporary login code to @Email.
-    <span><a href="Account/Register">Not you?</a></span>
-</p>
+<div class="RegisterConfirmation_formContainer">
+    <div class="Confirmation-wrapper">
 
-<StatusMessage Message="@statusMessage" />
+        <p>
+            We sent a temporary login code to <span class="email">@Email.</span>
+            <span><a href="Account/Register">Not you?</a></span>
+        </p>
 
-<p>Please check your email to confirm your account.</p>
+        <StatusMessage Message="@statusMessage" />
+
+        <p>Please check your email to confirm your account.</p>
+
+        <p>
+            Didn't receive mail? <span><a href="Account/ResendEmailConfirmation">Resend Confirmation.</a></span>
+        </p>
+
+    </div>
+
+</div>
 
 
 @code {
