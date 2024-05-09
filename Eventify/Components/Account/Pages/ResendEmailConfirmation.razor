@@ -14,7 +14,7 @@
 
 <PageTitle>Resend email confirmation</PageTitle>
 
-<h1>Resend email confirmation</h1>
+<h1 style="margin-top: 150px">Resend email confirmation</h1>
 <h2>Enter your email.</h2>
 <hr />
 <StatusMessage Message="@message" />
@@ -24,11 +24,10 @@
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" role="alert" />
             <div class="form-floating mb-3">
-                <InputText @bind-Value="Input.Email" class="form-control" aria-required="true" placeholder="name@example.com" />
+                <InputText @bind-Value="Input.Email" class="form-control" style="border-radius: 5px;" aria-required="true" placeholder="name@example.com" />
                 <label for="email" class="form-label">Email</label>
-                <ValidationMessage For="() => Input.Email" class="text-danger" />
             </div>
-            <button type="submit" class="w-100 btn btn-lg btn-primary">Resend</button>
+            <button type="submit" class="w-100 btn btn-lg btn-primary" style="margin-top: 10px; width: 100%; ">Resend</button>
         </EditForm>
     </div>
 </div>
