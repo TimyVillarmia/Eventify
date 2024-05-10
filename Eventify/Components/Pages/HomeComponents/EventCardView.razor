@@ -7,7 +7,9 @@
     <section class="event-cardview-header PrimaryVariant-Background">
         <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" viewBox="0 0 24 24"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5t.725-1.775T14.5 13t1.775.725T17 15.5t-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z" /></svg>
         <div class="event-cardview-header-details">
-            <h1>@Event.EventName</h1>
+            <a href="@($"events/details?id={Event.Id}")" style="text-decoration:none;cursor:pointer;">
+                <h1>@Event.EventName</h1>
+            </a>
             <h4>@Event.Date.ToShortDateString()</h4>
         </div>
         <div class="event-cardview-menu-container">
@@ -49,7 +51,7 @@
                 @Event.Status
             </div>
         </div>
-        <a>
+        <a href="@($"events/details?id={Event.Id}")" target="_blank">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48"><g fill="none" stroke="#6F6F6F" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"><path d="M28 6H42V20" /><path d="M42 29.4737V39C42 40.6569 40.6569 42 39 42H9C7.34315 42 6 40.6569 6 39V9C6 7.34315 7.34315 6 9 6L18 6" /><path d="M25.7998 22.1999L41.0998 6.8999" /></g></svg>
         </a>
 
