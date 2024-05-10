@@ -3,54 +3,63 @@
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @using System.ComponentModel.DataAnnotations
-
 @inject NavigationManager NavigationManager
 
 <PageTitle>Create</PageTitle>
 <div class="Event-Creation-wrapper">
-    <h4>Events Creation</h4>
+    <h1 style="margin:0 0 10px 0;">Events Creation</h1>
     <div class="Event-Creation-Form-Container">
-        <EditForm method="post" Model="Events" OnValidSubmit="AddEvents" FormName="create" Enhance>
+        <EditForm method="post" Model="Events" OnValidSubmit="AddEvents" FormName="create" Enhance style="width:100%;">
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" />
-            <div class="EventNameInput-Container">
+            <div class="EventNameInput-Container field">
                 <label for="eventname" class="form-label">Event Name:</label>
-                <InputText id="eventname" @bind-Value="Events.EventName" style="padding:9px;box-sizing:border-box;"/>
+                <InputText id="eventname" @bind-Value="Events.EventName" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
                 <ValidationMessage For="() => Events.EventName" class="text-danger" />
             </div>
-            <div class="mb-3">
+            <div class="DateTime-Picker field">
+                <div class="mb-3" style="display:flex;flex-direction:column;">
+                    <label for="date" class="form-label">Date:</label>
+                    <InputDate id="date" @bind-Value="Events.Date" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
+                    <ValidationMessage For="() => Events.Date" class="text-danger" />
+                </div>
+                <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;">
+                    <div class="mb-3" style="display:flex;flex-direction:column;margin:0 1rem 0 0;">
+                        <label for="starttime" class="form-label">StartTime:</label>
+                        <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Events.StartTime" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
+                        <ValidationMessage For="() => Events.StartTime" class="text-danger" />
+                    </div>
+                    <div class="mb-3" style="margin-top:auto;">
+                        <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Events.EndTime" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
+                        <ValidationMessage For="() => Events.EndTime" class="text-danger" />
+                    </div>
+                </div>
+                
+            </div>
+            <div class="Event-Status field" style="display:flex;flex-direction:column;">
                 <label for="status" class="form-label">Status:</label>
-                <InputText id="status" @bind-Value="Events.Status" class="form-control" />
+                <InputText id="status" @bind-Value="Events.Status" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
+@*                 <select style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;">
+                    <option value="option1">Option 1</option>
+                    <option value="option2">Option 2</option>
+                    <option value="option3">Option 3</option>
+                </select> *@
                 <ValidationMessage For="() => Events.Status" class="text-danger" />
             </div>
-            <div class="mb-3">
-                <label for="date" class="form-label">Date:</label>
-                <InputDate id="date" @bind-Value="Events.Date" class="form-control" />
-                <ValidationMessage For="() => Events.Date" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="starttime" class="form-label">StartTime:</label>
-                <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Events.StartTime" class="form-control" />
-                <ValidationMessage For="() => Events.StartTime" class="text-danger" />
-            </div>
-            <div class="mb-3">
-                <label for="endtime" class="form-label">EndTime:</label>
-                <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Events.EndTime" class="form-control" />
-                <ValidationMessage For="() => Events.EndTime" class="text-danger" />
-            </div>
-            <div class="mb-3">
+            
+            <div class="Event-Venue field" style="display:flex;flex-direction:column;">
                 <label for="venue" class="form-label">Venue:</label>
-                <InputText id="venue" @bind-Value="Events.Venue" class="form-control" />
+                <InputText id="venue" @bind-Value="Events.Venue" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
                 <ValidationMessage For="() => Events.Venue" class="text-danger" />
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
+            <div class="create-events-formButtons">
+                <a href="home" type="button" class="creat-events-cancelbutton">Cancel</a>
+                <button type="submit" class="creat-events-savebutton">Save</button>
+            </div>
         </EditForm>
+        
     </div>
-</div>
 
-
-<div>
-    <a href="/events">Back to List</a>
 </div>
 
 @code {
@@ -66,7 +75,10 @@
 
         DB.Events.Add(Events);
         await DB.SaveChangesAsync();
-        NavigationManager.NavigateTo("/events");
+        NavigationManager.NavigateTo("home");
     }
-
+    void cancelCreation()
+    {
+        
+    }
 }
