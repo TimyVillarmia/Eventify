@@ -4,6 +4,7 @@ using Eventify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240511111258_CreateActivitySchema")]
+    partial class CreateActivitySchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace Eventify.Migrations
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<int?>("EventId")
+                    b.Property<int?>("Event_IdId")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -52,7 +55,7 @@ namespace Eventify.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("Event_IdId");
 
                     b.ToTable("Activity");
                 });
@@ -291,11 +294,11 @@ namespace Eventify.Migrations
 
             modelBuilder.Entity("Eventify.Data.Activity", b =>
                 {
-                    b.HasOne("Eventify.Data.Events", "Event")
+                    b.HasOne("Eventify.Data.Events", "Event_Id")
                         .WithMany()
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("Event_IdId");
 
-                    b.Navigation("Event");
+                    b.Navigation("Event_Id");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

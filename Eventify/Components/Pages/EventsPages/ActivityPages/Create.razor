@@ -1,0 +1,68 @@
+﻿@page "/{Event_Id}/activities/create"
+@inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Data
+@using Microsoft.EntityFrameworkCore
+@inject NavigationManager NavigationManager
+
+<PageTitle>Create</PageTitle>
+
+<h1>Create</h1>
+
+<h4>Activity</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <EditForm method="post" Model="Activity" OnValidSubmit="AddActivity" FormName="create" Enhance>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+            <div class="mb-3">
+                <label for="name" class="form-label">Name:</label> 
+                <InputText id="name" @bind-Value="Activity.Name" class="form-control" /> 
+                <ValidationMessage For="() => Activity.Name" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="date" class="form-label">Date:</label> 
+                <InputDate id="date" @bind-Value="Activity.Date" class="form-control" /> 
+                <ValidationMessage For="() => Activity.Date" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="starttime" class="form-label">StartTime:</label> 
+                <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Activity.StartTime" class="form-control" /> 
+                <ValidationMessage For="() => Activity.StartTime" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="endtime" class="form-label">EndTime:</label> 
+                <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Activity.EndTime" class="form-control" />
+                <ValidationMessage For="() => Activity.EndTime" class="text-danger" /> 
+            </div>        
+            <div class="mb-3">
+                <label for="venue" class="form-label">Venue:</label> 
+                <InputText id="venue" @bind-Value="Activity.Venue" class="form-control" /> 
+                <ValidationMessage For="() => Activity.Venue" class="text-danger" /> 
+            </div>        
+            <button type="submit" class="btn btn-primary">Create</button>
+        </EditForm>
+    </div>
+</div>
+
+<div>
+    <a href="/activities">Back to List</a>
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    public Activity Activity { get; set; } = new();
+
+    [Parameter]
+    public string Event_Id { get; set; }
+
+    // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    public async Task AddActivity()
+    {
+        Activity.Event = DB.Events.FirstOrDefault(x => x.Id == Int32.Parse(Event_Id));
+        DB.Activity.Add(Activity);
+        await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+    }
+}

@@ -1,0 +1,56 @@
+﻿@page "/{Event_Id}/activities/details"
+@inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Data
+@inject NavigationManager NavigationManager
+@using Microsoft.EntityFrameworkCore
+
+<PageTitle>Details</PageTitle>
+
+<h1>Details</h1>
+
+<div>
+    <h4>Activity</h4>
+    <hr />
+    @if (activity is null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else {
+        <dl class="row">
+            <dt class="col-sm-2">Name</dt>
+            <dd class="col-sm-10">@activity.Name</dd>
+            <dt class="col-sm-2">Date</dt>
+            <dd class="col-sm-10">@activity.Date</dd>
+            <dt class="col-sm-2">StartTime</dt>
+            <dd class="col-sm-10">@activity.StartTime</dd>
+            <dt class="col-sm-2">EndTime</dt>
+            <dd class="col-sm-10">@activity.EndTime</dd>
+            <dt class="col-sm-2">Venue</dt>
+            <dd class="col-sm-10">@activity.Venue</dd>
+        </dl>
+        <div>
+            <a href="@($"/activities/edit?id={activity.Id}")">Edit</a> |
+        </div>
+    }
+</div>
+
+@code {
+    Activity? activity;
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [Parameter]
+    public string Event_Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        activity = await DB.Activity.FirstOrDefaultAsync(m => m.Id == Id);
+
+        if (activity is null)
+        {
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+
+        }
+    }
+}

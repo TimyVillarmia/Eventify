@@ -2,6 +2,7 @@
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 
 <PageTitle>Details</PageTitle>
@@ -15,7 +16,8 @@
     {
         <p><em>Loading...</em></p>
     }
-    else {
+    else
+    {
         <dl class="row">
             <dt class="col-sm-2">EventName</dt>
             <dd class="col-sm-10">@events.EventName</dd>
@@ -31,8 +33,22 @@
             <dd class="col-sm-10">@events.Venue</dd>
         </dl>
         <div>
-            <a href="@($"/events/edit?id={events.Id}")">Edit</a> |
-            <a href="@($"/events")">Back to List</a>
+            <QuickGrid Class="table" Items="DB.Activity">
+                <PropertyColumn Property="activity => activity.Name" />
+                <PropertyColumn Property="activity => activity.Date" />
+                <PropertyColumn Property="activity => activity.StartTime" />
+                <PropertyColumn Property="activity => activity.EndTime" />
+                <PropertyColumn Property="activity => activity.Venue" />
+
+                <TemplateColumn Context="activity">
+                    <a href="@($"/{events.Id}/activities/details?id={activity.Id}")">Details</a> |
+                    <a href="@($"/{events.Id}/activities/edit?id={activity.Id}")">Edit</a> |
+                    <a href="@($"/{events.Id}/activities/delete?id={activity.Id}")">Delete</a>
+                </TemplateColumn>
+            </QuickGrid>
+        </div>
+        <div>
+            <a href="@($"/{events.Id}/activities/create")">Create Activity</a>
         </div>
     }
 </div>
