@@ -13,6 +13,9 @@
 }
 table{
     width:100%;
+    border-collapse:collapse;
+    border:none;
+    min-width:500px;
 }
 table tr:nth-child(even) {
     background-color: #fffffe;
@@ -22,4 +25,13 @@ table tr:nth-child(even) {
 table tr:nth-child(odd) {
     background-color: #E9E9E9;
     padding: 10px 10px;
+}
+td{
+    border:none;
+}
+
+@media(max-width:600px){
+    .ActivitiesSection-Container{
+        padding: 1rem 10px;
+    }
 }
