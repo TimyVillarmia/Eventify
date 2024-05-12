@@ -69,3 +69,32 @@
     cursor: pointer;
     text-decoration:none;
 }
+.DatePicker {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: 0 1rem 0 0;
+}
+.TimePickers {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+@media(max-width:680px) {
+    .Event-Creation-wrapper{
+        width:100%;
+    }
+    .DateTime-Picker{
+        flex-direction: column;
+        align-items:start;
+    }
+    .TimePickers {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        margin:1rem 0 0 0;
+    }
+}
