@@ -1,5 +1,6 @@
 ﻿using Eventify.DataAnnotations;
 using Humanizer.Localisation;
+using Microsoft.Extensions.Hosting;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -30,6 +31,9 @@ namespace Eventify.Data
 
         public string? ACCESS_CODE { get; set; }
 
-   
+        // For One to Many Relatioship
+        public IList<UserEventsRoles> UserEventsRoles { get; } = new List<UserEventsRoles>();
+        public IList<Activity> Activities { get; } = new List<Activity>();
+
     }
 }
