@@ -3,20 +3,25 @@
 @inject Eventify.Data.ApplicationDbContext db
 @using Eventify.Data
 @using Eventify.Components.Pages.HomeComponents
+@using Microsoft.AspNetCore.Authorization
 @inject NavigationManager NavManager
 
+@attribute [Authorize]
+
 <PageTitle>Home</PageTitle>
+
+
 <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;position:relative;">
     <div class="home-container" style="">
-        @foreach(var Event in db.Events.OrderBy(date => date.Date))
+        @foreach (var Event in db.Events.OrderBy(date => date.Date))
         {
-            <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event"/>
+            <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
         }
-@*         @for (int i = 0; i < 5; i++)
+        @*         @for (int i = 0; i < 5; i++)
         {
-            <EventCardView style="margin: 0 1.5rem 1.5rem 0;" />
+        <EventCardView style="margin: 0 1.5rem 1.5rem 0;" />
         } *@
-        
+
     </div>
     <a href="/events/create" style="position:absolute;
                                     bottom:4rem;

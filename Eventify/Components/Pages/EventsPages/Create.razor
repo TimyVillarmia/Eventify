@@ -1,6 +1,7 @@
 ﻿@page "/events/create"
 @layout Eventify.Components.Layout.ModalLayout
 @inject Eventify.Data.ApplicationDbContext DB
+@using Eventify.Common
 @using Eventify.Data
 @using System.ComponentModel.DataAnnotations
 @inject NavigationManager NavigationManager
@@ -72,7 +73,7 @@
     {
 
 
-
+        Events.ACCESS_CODE = AccessCode.CreateAccessCode();
         DB.Events.Add(Events);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("home");
