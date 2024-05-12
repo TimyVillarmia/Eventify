@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240511114716_AddEventId")]
-    partial class AddEventId
+    [Migration("20240512132831_CustomSchema")]
+    partial class CustomSchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,10 +39,7 @@ namespace Eventify.Migrations
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<int?>("EventId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("Event_Id")
+                    b.Property<int>("EventID")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -58,7 +55,7 @@ namespace Eventify.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventID");
 
                     b.ToTable("Activity");
                 });
@@ -136,6 +133,9 @@ namespace Eventify.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("ACCESS_CODE")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
@@ -160,6 +160,41 @@ namespace Eventify.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Events");
+                });
+
+            modelBuilder.Entity("Eventify.Data.UserEventsRoles", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EventId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("RoleID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("RolesId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("User_ID")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("RolesId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserEventsRoles");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -298,10 +333,37 @@ namespace Eventify.Migrations
             modelBuilder.Entity("Eventify.Data.Activity", b =>
                 {
                     b.HasOne("Eventify.Data.Events", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId");
+                        .WithMany("Activities")
+                        .HasForeignKey("EventID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Event");
+                });
+
+            modelBuilder.Entity("Eventify.Data.UserEventsRoles", b =>
+                {
+                    b.HasOne("Eventify.Data.Events", "Event")
+                        .WithMany("UserEventsRoles")
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", "Roles")
+                        .WithMany()
+                        .HasForeignKey("RolesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventify.Data.ApplicationUser", "User")
+                        .WithMany("UserEventsRoles")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -353,6 +415,18 @@ namespace Eventify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Eventify.Data.ApplicationUser", b =>
+                {
+                    b.Navigation("UserEventsRoles");
+                });
+
+            modelBuilder.Entity("Eventify.Data.Events", b =>
+                {
+                    b.Navigation("Activities");
+
+                    b.Navigation("UserEventsRoles");
                 });
 #pragma warning restore 612, 618
         }
