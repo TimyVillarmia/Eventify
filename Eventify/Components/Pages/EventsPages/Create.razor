@@ -4,7 +4,10 @@
 @using Eventify.Common
 @using Eventify.Data
 @using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.Authorization
+
 @inject NavigationManager NavigationManager
+@attribute [Authorize]
 
 <PageTitle>Create</PageTitle>
 <div class="Event-Creation-wrapper">

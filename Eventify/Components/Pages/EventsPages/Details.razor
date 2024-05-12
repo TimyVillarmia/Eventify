@@ -1,10 +1,13 @@
-﻿@page "/events/details"
+@page "/events/details"
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @rendermode InteractiveServer
+
 
 <PageTitle>Details</PageTitle>
 @if (events is null)
