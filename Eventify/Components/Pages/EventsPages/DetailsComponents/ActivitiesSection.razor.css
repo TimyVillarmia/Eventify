@@ -1,0 +1,25 @@
+﻿*{
+    box-sizing:border-box;
+}
+.ActivitiesSection-Container {
+    width: 100%;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding:2rem;
+    border-radius: 10px;
+}
+table{
+    width:100%;
+}
+table tr:nth-child(even) {
+    background-color: #fffffe;
+    padding: 10px 10px;
+}
+
+table tr:nth-child(odd) {
+    background-color: #E9E9E9;
+    padding: 10px 10px;
+}
