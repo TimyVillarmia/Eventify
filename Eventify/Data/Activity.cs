@@ -10,7 +10,8 @@ namespace Eventify.Data
         [Required]
         public string? Name { get; set; }
 
-        public Events? Event { get; set; }      
+        public int EventID { get; set; }      
+        public Events Event { get; set; }         
 
         [DataType(DataType.Date), Required, CustomDateAttribute]
         public DateTime Date { get; set; } = DateTime.Now.Date;
