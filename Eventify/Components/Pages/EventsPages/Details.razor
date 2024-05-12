@@ -1,16 +1,65 @@
-﻿@page "/events/details"
+@page "/events/details"
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @inject NavigationManager NavigationManager
 @using Microsoft.AspNetCore.Components.QuickGrid
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.AspNetCore.Authorization
-
 @attribute [Authorize]
+@rendermode InteractiveServer
+
 
 <PageTitle>Details</PageTitle>
+@if (events is null)
+{
+    <p><em>Loading...</em></p>
+}
+else {
 
-<h1>Details</h1>
+    <div class="Details-Container">
+        <div class="Details-Container-Header">
+            <div class="TopDetails-Container">
+                <img src="EventDetailsIcon.png"/>
+                <div style="width:auto;height:100%; display:flex;flex-direction:column;justify-content:start;margin:-7px 0 0 2rem;box-sizing:border-box;">
+                    <h1 style="font-size:50px;color:#fffffe;padding:0;font-weight:400;word-wrap:nowrap;">@events.EventName</h1>
+                    <h4 style="font-size:17px;font-weight:300;margin:0 0 0 3px;color:#fffffe;">@events.Date.ToLongDateString()</h4>
+                </div>
+                <button type="button" style="background-color:transparent;
+                                            border:none;
+                                            padding:0;
+                                            width: auto;
+                                            height: 40px;
+                                            margin-left: auto;
+                                            align-content:center;
+                                            cursor:pointer;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
+                </button>
+            </div>
+            <div class="BottomDetails-Container">
+                <h5 style="margin-right:auto;">Venue: @events.Venue</h5>
+                <h5>Start time: @events.StartTime</h5>
+                <hr />
+                <h5>End time: @events.EndTime</h5>
+            </div>
+        </div>
+        <div class="Details-ControlsNav">
+            <button @onclick="@ActivitiesClicked" style="@ActivitiesBtnStyle">Activities</button>
+            <button @onclick="@ResultsClicked" style="@ResultsBtnStyle">Results</button>
+        </div>
+        <div style="width:100%;">
+            <Eventify.Components.Pages.EventsPages.DetailsComponents.ActivitiesSection Event="events" style="@ActivitiesDisplay" />
+            <Eventify.Components.Pages.EventsPages.DetailsComponents.ResultsSection style="@ResultsDisplay" />
+        </div>
+
+    </div>
+
+    <a href="@($"/{events.Id}/activities/create")" style="position:fixed;bottom:1rem;right:1rem;">
+        Add Activity
+    </a>
+}
+
+
+@* <h1>Details</h1>
 
 <div>
     <h4>Events</h4>
@@ -21,20 +70,6 @@
     }
     else
     {
-        <dl class="row">
-            <dt class="col-sm-2">EventName</dt>
-            <dd class="col-sm-10">@events.EventName</dd>
-            <dt class="col-sm-2">Status</dt>
-            <dd class="col-sm-10">@events.Status</dd>
-            <dt class="col-sm-2">Date</dt>
-            <dd class="col-sm-10">@events.Date</dd>
-            <dt class="col-sm-2">StartTime</dt>
-            <dd class="col-sm-10">@events.StartTime</dd>
-            <dt class="col-sm-2">EndTime</dt>
-            <dd class="col-sm-10">@events.EndTime</dd>
-            <dt class="col-sm-2">Venue</dt>
-            <dd class="col-sm-10">@events.Venue</dd>
-        </dl>
         <div>
             <QuickGrid Class="table" Items="DB.Activity">
                 <PropertyColumn Property="activity => activity.Name" />
@@ -54,13 +89,19 @@
             <a href="@($"/{events.Id}/activities/create")">Create Activity</a>
         </div>
     }
-</div>
+</div> *@
 
 @code {
     Events? events;
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
+
+    private string ActivitiesDisplay { get; set; } = "display:block;";
+    private string ResultsDisplay { get; set; } = "display:none;";
+
+    private string ActivitiesBtnStyle { get; set; } = "border: solid 1px blue;border-width:0 0 2px 0;";
+    private string ResultsBtnStyle { get; set; } = "border:none;";
 
     protected override async Task OnInitializedAsync()
     {
@@ -70,5 +111,22 @@
         {
             NavigationManager.NavigateTo("notfound");
         }
+    }
+
+    void ActivitiesClicked()
+    {
+        ActivitiesDisplay = "display:block";
+        ResultsDisplay = "display:none;";
+
+        ActivitiesBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;";
+        ResultsBtnStyle = "border:none;";
+    }
+    void ResultsClicked()
+    {
+        ActivitiesDisplay = "display:none";
+        ResultsDisplay = "display:block;";
+
+        ActivitiesBtnStyle = "border:none;";
+        ResultsBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;";
     }
 }
