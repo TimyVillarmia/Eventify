@@ -1,5 +1,4 @@
 ﻿@page "/events/details"
-@inherits LayoutComponentBase
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @inject NavigationManager NavigationManager
@@ -17,7 +16,7 @@ else {
             <div class="TopDetails-Container">
                 <img src="EventDetailsIcon.png"/>
                 <div style="width:auto;height:100%; display:flex;flex-direction:column;justify-content:start;margin:-7px 0 0 2rem;box-sizing:border-box;">
-                    <h1 style="font-size:50px;color:#fffffe;padding:0;font-weight:400;word-wrap:nowrap;">@events.EventName</h1>
+                    <h1 style="font-size:50px;color:#fffffe;padding:0;font-weight:400;">@events.EventName</h1>
                     <h4 style="font-size:17px;font-weight:300;margin:0 0 0 3px;color:#fffffe;">@events.Date.ToLongDateString()</h4>
                 </div>
                 <button type="button" style="background-color:transparent;
