@@ -1,4 +1,4 @@
-using Eventify.Components;
+﻿using Eventify.Components;
 using Eventify.Components.Account;
 using Eventify.Data;
 using Eventify.Services;
