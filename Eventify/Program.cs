@@ -30,6 +30,11 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.SlidingExpiration = true;
 });
 
+services.Configure<CookiePolicyOptions>(options =>
+{
+    options.Secure = CookieSecurePolicy.Always;
+});
+
 builder.Services.AddAuthentication(options =>
     {
         options.DefaultScheme = IdentityConstants.ApplicationScheme;
