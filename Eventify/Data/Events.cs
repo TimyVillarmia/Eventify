@@ -28,6 +28,8 @@ namespace Eventify.Data
         [Required]
         public string? Venue { get; set; }
 
+        public string? ACCESS_CODE { get; set; }
+
    
     }
 }
