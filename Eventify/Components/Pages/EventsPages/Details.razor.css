@@ -6,7 +6,7 @@
     flex-direction:column;
     justify-content: start;
     align-items:center;
-    padding:2rem 2rem 0 2rem;
+    padding:2rem 2rem 2rem 2rem;
     width:100%;
 }
 .Details-Container-Header {
@@ -57,7 +57,52 @@
     padding: 1rem 2rem;
     border:none;
     cursor:pointer;
+    color:#8f8f8f;
+    font-size:20px;
 }
 .Details-ControlsNav button:checked {
     background-color: #000000; /* Change background color for selected button */
+}
+.eventname {
+    font-size: 50px;
+    color: #fffffe;
+    padding: 0;
+    font-weight: 400;
+}
+.eventdate {
+    font-size: 17px;
+    font-weight: 300;
+    margin: 0 0 0 3px;
+    color: #fffffe;
+}
+.eventicon{
+    width:90px;
+    height:auto;
+}
+
+@media(max-width:600px){
+    .BottomDetails-Container{
+        flex-direction:column;
+        justify-content:center;
+        align-items:start;
+    }
+    .time-details{
+        margin: 10px 0 0 0;
+    }
+    .eventname{
+        font-size:30px;
+    }
+    .eventdate {
+        font-size: 13px;
+    }
+    .eventicon {
+        width: 50px;
+        height: auto;
+    }
+    .Details-Container{
+        padding: 10px;
+    }
+    .Details-Container-Header{
+        padding:1rem;
+    }
 }

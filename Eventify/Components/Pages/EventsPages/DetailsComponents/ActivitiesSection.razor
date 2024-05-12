@@ -2,27 +2,36 @@
 @inject Eventify.Data.ApplicationDbContext db
 
 <div class="ActivitiesSection-Container" style="@style">
-    <h3>Activities</h3>
-    <table>
-        @foreach(var act in db.Activity.Where(i => i.Event.Id == Event.Id))
-        {
-            <tr style="border:solid 2px black;row-gap:5px;">
-                <td style="display:flex;flex-direction:row;justify-content:start;align-items:center;padding:1rem 0 1rem 1rem;">
-                    <img src="activityIcon.png" style="width:30px;height:30px;margin:0 1rem 0 0;"/>
-                    <h5>@act.Name</h5>
-                </td>
-                <td>
-                    <h6>@act.Date.ToLongDateString()</h6>
-                </td>
-                <td>
-                    <h6>@act.StartTime - @act.EndTime</h6>
-                </td>
-                <td style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
-                </td>
-            </tr>
-        }
-    </table>
+    <div style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;margin:0 0 1rem 0;">
+        <h3>Activities</h3>
+        <a href="@($"/{Event.Id}/activities/create")" style="display:flex;flex-direction:row;justify-content:center;align-items:center; text-decoration:none;cursor:pointer;background-color:#FFD803;color:black;font-size:12px;font-weight:bold;padding:7px 12px;border-radius:10px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 24 24"><path fill="black" d="M11.5 12.5H6v-1h5.5V6h1v5.5H18v1h-5.5V18h-1z" /></svg>
+            New Activity
+        </a>
+    </div>
+    <div style="width:100%;height:auto;overflow-x:auto;">
+        <table>
+            @foreach (var act in db.Activity.Where(i => i.Event.Id == Event.Id))
+            {
+                <tr style="">
+                    <td style="display:flex;flex-direction:row;justify-content:start;align-items:center;padding:1rem 0 1rem 1rem;">
+                        <img src="activityIcon.png" style="width:30px;height:30px;margin:0 1rem 0 0;" />
+                        <a href="@($"/{Event.Id}/activities/details?id={act.Id}")" style="text-decoration:none;cursor:pointer;color:black;" target="_blank"><h5>@act.Name</h5></a>
+                    </td>
+                    <td>
+                        <h6>@act.Date.ToLongDateString()</h6>
+                    </td>
+                    <td>
+                        <h6>@act.StartTime - @act.EndTime</h6>
+                    </td>
+                    <td style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    
 </div>
 
 @code{
