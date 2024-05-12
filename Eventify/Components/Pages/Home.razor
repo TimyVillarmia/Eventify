@@ -11,7 +11,7 @@
 <PageTitle>Home</PageTitle>
 
 
-<div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;position:relative;">
+<div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
     <div class="home-container" style="">
         @foreach (var Event in db.Events.OrderBy(date => date.Date))
         {
@@ -23,7 +23,7 @@
         } *@
 
     </div>
-    <a href="/events/create" style="position:absolute;
+    <a href="/events/create" style="position:fixed;
                                     bottom:4rem;
                                     right:1rem;
                                     display:flex;

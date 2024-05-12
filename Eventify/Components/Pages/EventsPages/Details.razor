@@ -19,10 +19,10 @@ else {
     <div class="Details-Container">
         <div class="Details-Container-Header">
             <div class="TopDetails-Container">
-                <img src="EventDetailsIcon.png"/>
+                <img class="eventicon" src="EventDetailsIcon.png"/>
                 <div style="width:auto;height:100%; display:flex;flex-direction:column;justify-content:start;margin:-7px 0 0 2rem;box-sizing:border-box;">
-                    <h1 style="font-size:50px;color:#fffffe;padding:0;font-weight:400;word-wrap:nowrap;">@events.EventName</h1>
-                    <h4 style="font-size:17px;font-weight:300;margin:0 0 0 3px;color:#fffffe;">@events.Date.ToLongDateString()</h4>
+                    <h1 class="eventname" style="">@events.EventName</h1>
+                    <h4 class="eventdate" style="">@events.Date.ToLongDateString()</h4>
                 </div>
                 <button type="button" style="background-color:transparent;
                                             border:none;
@@ -37,9 +37,12 @@ else {
             </div>
             <div class="BottomDetails-Container">
                 <h5 style="margin-right:auto;">Venue: @events.Venue</h5>
-                <h5>Start time: @events.StartTime</h5>
-                <hr />
-                <h5>End time: @events.EndTime</h5>
+                <div class="time-details" style="display:flex;flex-direction:row;justify-content:center;align-items:center;">
+                    <h5>Start time: @events.StartTime</h5>
+                    <hr />
+                    <h5>End time: @events.EndTime</h5>
+                </div>
+                
             </div>
         </div>
         <div class="Details-ControlsNav">
@@ -53,9 +56,7 @@ else {
 
     </div>
 
-    <a href="@($"/{events.Id}/activities/create")" style="position:fixed;bottom:1rem;right:1rem;">
-        Add Activity
-    </a>
+
 }
 
 
@@ -100,8 +101,8 @@ else {
     private string ActivitiesDisplay { get; set; } = "display:block;";
     private string ResultsDisplay { get; set; } = "display:none;";
 
-    private string ActivitiesBtnStyle { get; set; } = "border: solid 1px blue;border-width:0 0 2px 0;";
-    private string ResultsBtnStyle { get; set; } = "border:none;";
+    private string ActivitiesBtnStyle { get; set; } = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
+    private string ResultsBtnStyle { get; set; } = "border:none;color:#8f8f8f;";
 
     protected override async Task OnInitializedAsync()
     {
@@ -118,15 +119,15 @@ else {
         ActivitiesDisplay = "display:block";
         ResultsDisplay = "display:none;";
 
-        ActivitiesBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;";
-        ResultsBtnStyle = "border:none;";
+        ActivitiesBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
+        ResultsBtnStyle = "border:none;color:#8f8f8f;";
     }
     void ResultsClicked()
     {
         ActivitiesDisplay = "display:none";
         ResultsDisplay = "display:block;";
 
-        ActivitiesBtnStyle = "border:none;";
-        ResultsBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;";
+        ActivitiesBtnStyle = "border:none;color:#8f8f8f;";
+        ResultsBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
     }
 }
