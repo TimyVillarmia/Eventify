@@ -12,12 +12,13 @@
 
 <PageTitle>Home</PageTitle>
 
-
 <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
     <div class="home-container" style="">
-        @foreach (var Event in Events!)
+        @foreach (var Event in Events)
         {
+
             <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
+            
         }
         @*         @for (int i = 0; i < 5; i++)
         {
@@ -52,18 +53,10 @@
     protected override async Task OnInitializedAsync()
     {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-
-        foreach(var users in db.UserEventsRoles)
-        {
-            if(users.User.Id == user.Id)
-            {
-                USR.Add(users);
-            }
-        }
-
-        foreach(var i in USR)
-        {
-            
-        }
+        GetEvents();
+    }
+    void GetEvents()
+    {
+        Events = db.Events.ToList();
     }
 }
