@@ -10,7 +10,7 @@
         </a>
     </div>
     <div style="width:100%;height:auto;overflow-x:auto;">
-        <table>
+        <table style="">
             @foreach (var act in db.Activity.Where(i => i.Event.Id == Event.Id))
             {
                 <tr style="">
@@ -25,7 +25,7 @@
                         <h6>@act.StartTime - @act.EndTime</h6>
                     </td>
                     <td style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
+                        <RightMenu Event="@Event" DeleteRef="@($"/{Event.Id}/activities/delete?id={act.Id}")" ModifyRef="@($"/{Event.Id}/activities/edit?id={act.Id}")" menuBarPosition="" />
                     </td>
                 </tr>
             }
