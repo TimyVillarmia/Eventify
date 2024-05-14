@@ -1,0 +1,45 @@
+﻿.event-cardview-menu-container {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    overflow: visible;
+    display:flex;
+    flex-direction:column;
+    justify-content:start;
+    align-items:center;
+}
+.event-cardview-menu {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    width: auto;
+    height: 40px;
+    margin-left: auto;
+    align-content: center;
+    cursor: pointer;
+}
+.event-cardview-menubar{
+    display:flex;
+    flex-direction: column;
+    justify-content:start;
+    background-color: #fffffe;
+    align-items:start;
+    width:auto;
+    height:auto;
+    border-radius: 7px;
+    overflow:hidden;
+    display:none;
+}
+.event-cardview-menubar button{
+    padding: 8px 2rem;
+    width:100%;
+    height:auto;
+    border:none;
+    display:flex;
+    flex-direction:row;
+}
+.event-cardview-menubar button:hover{
+    background-color:lightgray;
+    cursor:pointer;
+}
