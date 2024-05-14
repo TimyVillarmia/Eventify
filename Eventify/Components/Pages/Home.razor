@@ -1,10 +1,12 @@
 ﻿@page "/home"
 @layout Eventify.Components.Layout.MainLayout
 @inject Eventify.Data.ApplicationDbContext db
+@using Eventify.Components.Account
 @using Eventify.Data
 @using Eventify.Components.Pages.HomeComponents
 @using Microsoft.AspNetCore.Authorization
 @inject NavigationManager NavManager
+@inject IdentityUserAccessor UserAccessor
 
 @attribute [Authorize]
 
@@ -13,7 +15,7 @@
 
 <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
     <div class="home-container" style="">
-        @foreach (var Event in db.Events.OrderBy(date => date.Date))
+        @foreach (var Event in Events!)
         {
             <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
         }
@@ -38,3 +40,30 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24"><path fill="black" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" /></svg>
     </a>
 </div>
+@code{
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    ApplicationUser? user { get; set; }
+
+    List<Events>? Events = new();
+    List<UserEventsRoles> USR = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+
+        foreach(var users in db.UserEventsRoles)
+        {
+            if(users.User.Id == user.Id)
+            {
+                USR.Add(users);
+            }
+        }
+
+        foreach(var i in USR)
+        {
+            
+        }
+    }
+}
