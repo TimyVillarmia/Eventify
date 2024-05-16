@@ -1,41 +1,13 @@
-﻿@using Eventify.Data
+@using Eventify.Data
 @using Microsoft.AspNetCore.Identity
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.WebUtilities
-
 
 @inject Eventify.Data.ApplicationDbContext db
 @inject UserManager<ApplicationUser> UserManager
 @inject IUserStore<ApplicationUser> UserStore
 
 <div class="JudgesSection-Container" style="@style">
-
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>User Name</th>
-                <th>Email</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var user in ColUsers)
-            {
-                <tr>
-                    <td>@user.Id.Substring(0, 5) ...</td>
-                    <td>@user.UserName</td>
-                    <td>@user.Email</td>
-                    <td>
-                        <!-- Edit the current forecast -->
-                        <button class="btn btn-primary"
-                                @onclick="(() => EditUser(user))">
-                            Edit
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
 
     @if (ShowPopup)
     {
@@ -367,6 +339,9 @@
         public string Roles { get; set; } = "";
     }
 
+</div>
 
-
+@code {
+    [Parameter]
+    public string? style { get; set; }
 }
