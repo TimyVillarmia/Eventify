@@ -63,6 +63,6 @@
         Activity.Event = DB.Events.FirstOrDefault(x => x.Id == Int32.Parse(Event_Id));
         DB.Activity.Add(Activity);
         await DB.SaveChangesAsync();
-        NavigationManager.NavigateTo($"/events/details?id={Int32.Parse(Event_Id)}");
+        NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
     }
 }
