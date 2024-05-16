@@ -28,9 +28,11 @@
                         <ValidationSummary class="text-danger" role="alert" />
                         <div class="Signin-inputbox">
                             <InputText type="text" @bind-Value="Input.Email" class="Signin-inputEmail" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="username" aria-required="true" placeholder="Enter email" />
+                           
                         </div>
                         <div class="Signin-inputbox">
                             <InputText type="password" @bind-Value="Input.Password" class="Signin-inputPassword" style="width: 92%; height: 50px; border: 1px solid gray; border-radius: 5px; margin-top: 15px; padding-left: 20px" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
+                            
                         </div>
                         <div class="Signin-ForgotPassword">
                             <a href="Account/ForgotPassword">Forgot Password?</a>
@@ -43,8 +45,8 @@
                                 Don’t have an account? <span><a href="Account/Register">Create account</a></span>
                             </p>
                         </div>
-
-
+                        
+                       
 
                     </EditForm>
                 </section>
