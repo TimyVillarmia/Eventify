@@ -56,7 +56,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddQuickGridEntityFrameworkAdapter();;
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddSignInManager()
@@ -102,6 +102,24 @@ using (var scope = app.Services.CreateScope())
             await roleManager.CreateAsync(roleRole);
         }
     }
+
+
+    // Ensure a user named Admin@eventify.com is an Administrator
+    var user = await userManager.FindByEmailAsync("Admin@eventify.com");
+    if (user != null)
+    {
+        // Is Admin@BlazorHelpWebsite.com in administrator role?
+        var UserResult = await userManager.IsInRoleAsync(user, "Organizer");
+        if (!UserResult)
+        {
+            // Put admin in Administrator role
+            await userManager.AddToRoleAsync(user, "Organizer");
+        }
+    }
+
+    var result = userManager.CreateAsync(user);
+
+
 }
 
 app.Run();

@@ -81,7 +81,6 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    public UserEventsRoles UserEvents { get; set; } = new();
 
     private ApplicationUser user = default!;
 
@@ -96,14 +95,7 @@
 
 
         Events.ACCESS_CODE = AccessCode.CreateAccessCode();
-        var UserEvents = new UserEventsRoles
-        {
-            User = user,
-            Event = Events,
-            Roles = await _RoleManager.FindByNameAsync("Organizer")
 
-        };
-        DB.UserEventsRoles.Add(UserEvents);
         DB.Events.Add(Events);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("home");

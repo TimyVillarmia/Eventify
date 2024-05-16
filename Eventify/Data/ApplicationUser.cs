@@ -7,7 +7,6 @@ namespace Eventify.Data
     {
         // For One to Many Relatioship
 
-        public ICollection<UserEventsRoles> UserEventsRoles { get; } = new List<UserEventsRoles>();
 
     }
 
