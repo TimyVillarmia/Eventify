@@ -53,28 +53,25 @@
                     </div>
                     <!-- Edit form for the current user -->
                     <div class="modal-body">
-                        <EditForm Model="Input" method="post" OnValidSubmit="SaveUser" FormName="register">
+                        <EditForm Model="objUser" method="post" OnValidSubmit="SaveUser" FormName="register">
                             <DataAnnotationsValidator />
                             <ValidationSummary class="text-danger" role="alert" />
                             <div class="Register-inputbox">
-                                <InputText @bind-Value="Input.Username" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" />
+                                <InputText @bind-Value="objUser.UserName" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" />
                             </div>
                             <div class="Register-inputbox">
-                                <InputText @bind-Value="Input.Email" class="Register-inputEmail" autocomplete="email" aria-required="true" placeholder="Enter email" />
+                                <InputText @bind-Value="objUser.Email" class="Register-inputEmail" autocomplete="email" aria-required="true" placeholder="Enter email" />
                             </div>
                             <div class="Register-inputbox">
-                                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
+                                <InputText type="password" @bind-Value="objUser.PasswordHash" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
                             </div>
                             <div class="Register-inputbox">
-                                <InputSelect @bind-Value="Input.Roles" class="form-control">
-                                    @if (Input?.Roles != null)
+                                <InputSelect @bind-Value="@CurrentUserRole" class="form-control">
+                                    @foreach (var option in Options)
                                     {
-                                        @foreach (var option in Options)
-                                        {
-                                            <option value="@option">
-                                                @option
-                                            </option>
-                                        }
+                                        <option value="@option">
+                                            @option
+                                        </option>
                                     }
                                 </InputSelect>
                             </div>
@@ -108,14 +105,13 @@
     private IEnumerable<IdentityError>? identityErrors;
 
 
-    [SupplyParameterFromForm]
-    private InputModel Input { get; set; } = new();
-
     private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
 
 
     // Property used to add or edit the currently selected user
     ApplicationUser objUser = new ApplicationUser();
+    // Tracks the selected role for the currently selected user
+    string CurrentUserRole { get; set; } = "Users";
     // Collection to display the existing users
     List<ApplicationUser> ColUsers = new List<ApplicationUser>();
     // Options to display in the roles dropdown when editing a user
@@ -151,7 +147,7 @@
         }
     }
 
-    public async Task SaveUser(EditContext editContext)
+    public async Task SaveUser()
     {
         // Is this an existing user?
         if (objUser.Id != "")
@@ -159,7 +155,7 @@
             // Get the user
             var user = await UserManager.FindByIdAsync(objUser.Id);
             // Update Email
-            user.Email = Input.Email;
+            user.Email = objUser.Email;
             // Update the user
             await UserManager.UpdateAsync(user);
 
@@ -191,7 +187,7 @@
             // Is Organizer role selected
             // but user is not an Organizer?
             if (
-                (Input.Roles == ORGANIZER_ROLE)
+                (CurrentUserRole == ORGANIZER_ROLE)
                 &
                 (!UserResult))
             {
@@ -203,7 +199,7 @@
             {
                 // Is Organizer role not selected
                 // but user is an Administrator?
-                if ((Input.Roles != ORGANIZER_ROLE)
+                if ((CurrentUserRole != ORGANIZER_ROLE)
                     &
                     (UserResult))
                 {
@@ -221,21 +217,21 @@
         {
             var user = CreateUser();
 
-            await UserStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+            await UserStore.SetUserNameAsync(user, objUser.UserName, CancellationToken.None);
             var emailStore = GetEmailStore();
-            await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
-            var result = await UserManager.CreateAsync(user, Input.Password);
+            await emailStore.SetEmailAsync(user, objUser.Email, CancellationToken.None);
+            var result = await UserManager.CreateAsync(user, objUser.PasswordHash);
 
             if (result.Succeeded)
             {
                 // Handle Roles
-                if (Input.Roles == ORGANIZER_ROLE)
+                if (CurrentUserRole == ORGANIZER_ROLE)
                 {
                     // Put user in ORGANIZER_ROLE role
                     await UserManager
                         .AddToRoleAsync(user, ORGANIZER_ROLE);
                 }
-                if (Input.Roles == JUDGE_ROLE)
+                if (CurrentUserRole == JUDGE_ROLE)
                 {
                     // Put user in ORGANIZER_ROLE role
                     await UserManager
@@ -267,6 +263,7 @@
         objUser = _IdentityUser;
         // Get the user
         var user = await UserManager.FindByIdAsync(objUser.Id);
+        
         if (user != null)
         {
             // Is user in administrator role?
@@ -275,11 +272,11 @@
                 .IsInRoleAsync(user, ORGANIZER_ROLE);
             if (UserResult)
             {
-                Input.Roles = ORGANIZER_ROLE;
+                CurrentUserRole = ORGANIZER_ROLE;
             }
             else
             {
-                Input.Roles = JUDGE_ROLE;
+                CurrentUserRole = JUDGE_ROLE;
             }
         }
         // Open the Popup
@@ -345,27 +342,7 @@
         return (IUserEmailStore<ApplicationUser>)UserStore;
     }
 
-    private sealed class InputModel
-    {
-
-        [Required]
-        [Display(Name = "Username")]
-        public string Username { get; set; } = "";
-
-        [Required]
-        [EmailAddress]
-        [Display(Name = "Email")]
-        public string Email { get; set; } = "";
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; } = "";
-
-        [Required]
-        public string Roles { get; set; } = "";
-    }
+    
 
 
 
