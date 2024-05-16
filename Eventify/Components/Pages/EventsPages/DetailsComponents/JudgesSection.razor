@@ -1,7 +1,12 @@
 ﻿@using Eventify.Data
 @using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.WebUtilities
+
+
 @inject Eventify.Data.ApplicationDbContext db
 @inject UserManager<ApplicationUser> UserManager
+@inject IUserStore<ApplicationUser> UserStore
 
 <div class="JudgesSection-Container" style="@style">
 
@@ -48,45 +53,44 @@
                     </div>
                     <!-- Edit form for the current user -->
                     <div class="modal-body">
-                        <!-- Only show Id if not a new user -->
-                        @if (objUser.Id != "")
-                        {
-                            <p>@objUser.Id</p>
-                        }
-                        <!-- Only allow edit if a new user -->
-                        @if (objUser.Id != "")
-                        {
-                            <p>@objUser.UserName</p>
-                        }
-                        else
-                        {
-                            <input class="form-control" type="text"
-                                   placeholder="UserName"
-                                   @bind="objUser.UserName" />
-                        }
-                        <input class="form-control" type="text"
-                               placeholder="Email"
-                               @bind="objUser.Email" />
-                        <input class="form-control" type="password"
-                               placeholder="Password"
-                               @bind="objUser.PasswordHash" />
-                        <br /><br />
-                        <!-- Button to save the user -->
-                        <button class="btn btn-primary"
-                                @onclick="SaveUser">
-                            Save
-                        </button>
-                        <!-- Only show delete button if not a new record -->
-                        @if (objUser.Id != "")
-                        {
-                            <!-- Button to delete the forecast -->
-                            <button class="btn btn-danger"
-                                    @onclick="DeleteUser">
-                                Delete
-                            </button>
-                        }
-                        <br />
-                        <span style="color:red">@strError</span>
+                        <EditForm Model="Input" method="post" OnValidSubmit="SaveUser" FormName="register">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="text-danger" role="alert" />
+                            <div class="Register-inputbox">
+                                <InputText @bind-Value="Input.Username" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" />
+                            </div>
+                            <div class="Register-inputbox">
+                                <InputText @bind-Value="Input.Email" class="Register-inputEmail" autocomplete="email" aria-required="true" placeholder="Enter email" />
+                            </div>
+                            <div class="Register-inputbox">
+                                <InputText type="password" @bind-Value="Input.Password" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
+                            </div>
+                            <div class="Register-inputbox">
+                                <InputSelect @bind-Value="Input.Roles" class="form-control">
+                                    @if (Input?.Roles != null)
+                                    {
+                                        @foreach (var option in Options)
+                                        {
+                                            <option value="@option">
+                                                @option
+                                            </option>
+                                        }
+                                    }
+                                </InputSelect>
+                            </div>
+                            <button type="submit" class="btn-register">Save</button>
+                            <!-- Only show delete button if not a new record -->
+                            @if (objUser.Id != "")
+                            {
+                                <!-- Button to delete the forecast -->
+                                <button class="btn btn-danger"
+                                        @onclick="DeleteUser">
+                                    Delete
+                                </button>
+                            }
+                        </EditForm>
+                        
+
                     </div>
                 </div>
             </div>
@@ -97,16 +101,33 @@
 
 @code {
 
+
     [Parameter]
     public string? style { get; set; }
-    List<IdentityUser> ColUsers = new List<IdentityUser>();
+
+    private IEnumerable<IdentityError>? identityErrors;
+
+
+    [SupplyParameterFromForm]
+    private InputModel Input { get; set; } = new();
+
+    private string? Message => identityErrors is null ? null : $"Error: {string.Join(", ", identityErrors.Select(error => error.Description))}";
+
+
     // Property used to add or edit the currently selected user
-    IdentityUser objUser = new IdentityUser();
-    string strError = "";
+    ApplicationUser objUser = new ApplicationUser();
+    // Collection to display the existing users
+    List<ApplicationUser> ColUsers = new List<ApplicationUser>();
+    // Options to display in the roles dropdown when editing a user
+    List<string> Options = new List<string>() { "Judge", "Organizer" };
+
+    string ORGANIZER_ROLE = "Organizer";
+    string JUDGE_ROLE = "Judge";
+
     // To enable showing the Popup
     bool ShowPopup = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         GetUsers();
     }
@@ -115,9 +136,9 @@
     {
 
         // Collection to hold users
-        ColUsers = new List<IdentityUser>();
+        ColUsers = new List<ApplicationUser>();
         // get users from _UserManager
-        var user = UserManager.Users.Select(x => new IdentityUser
+        var user = UserManager.Users.Select(x => new ApplicationUser
             {
                 Id = x.Id,
                 UserName = x.UserName,
@@ -130,65 +151,158 @@
         }
     }
 
-    async Task SaveUser()
+    public async Task SaveUser(EditContext editContext)
     {
-        try
+        // Is this an existing user?
+        if (objUser.Id != "")
         {
-            // Is this an existing user?
-            if (objUser.Id != "")
+            // Get the user
+            var user = await UserManager.FindByIdAsync(objUser.Id);
+            // Update Email
+            user.Email = Input.Email;
+            // Update the user
+            await UserManager.UpdateAsync(user);
+
+            // Only update password if the current value
+            // is not the default value
+            if (objUser.PasswordHash != "*****")
             {
-                // To be implemented later...
-            }
-            else
-            {
-                // Insert new user
-                var NewUser =
-                    new ApplicationUser
-                        {
-                            UserName = objUser.UserName,
-                            Email = objUser.Email
-                        };
-                var CreateResult =
-                    await UserManager
-                    .CreateAsync(NewUser, objUser.PasswordHash);
-                if (!CreateResult.Succeeded)
+                var resetToken =
+                    await UserManager.GeneratePasswordResetTokenAsync(user);
+                var result =
+                    await UserManager.ResetPasswordAsync(
+                        user,
+                        resetToken,
+                        objUser.PasswordHash);
+
+
+                if (!result.Succeeded)
                 {
-                    if (CreateResult
-                        .Errors
-                        .FirstOrDefault() != null)
-                    {
-                        strError =
-                            CreateResult
-                            .Errors
-                            .FirstOrDefault()
-                            .Description;
-                    }
-                    else
-                    {
-                        strError = "Create error";
-                    }
+                    identityErrors = result.Errors;
                     // Keep the popup opened
                     return;
                 }
+            }
+            // Handle Roles
+            // Is user in administrator role?
+            var UserResult =
+                await UserManager
+                .IsInRoleAsync(user, ORGANIZER_ROLE);
+            // Is Organizer role selected
+            // but user is not an Organizer?
+            if (
+                (Input.Roles == ORGANIZER_ROLE)
+                &
+                (!UserResult))
+            {
+                // Put user in Organizer role
+                await UserManager
+                    .AddToRoleAsync(user, ORGANIZER_ROLE);
+            }
+            else
+            {
+                // Is Organizer role not selected
+                // but user is an Administrator?
+                if ((Input.Roles != ORGANIZER_ROLE)
+                    &
+                    (UserResult))
+                {
+                    // Remove user from Organizer role
+                    await UserManager
+                        .RemoveFromRoleAsync(user, ORGANIZER_ROLE);
+                    // Put user in Judge role
+                    await UserManager
+                        .AddToRoleAsync(user, JUDGE_ROLE);
+
+                }
+            }
+        }
+        else
+        {
+            var user = CreateUser();
+
+            await UserStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
+            var emailStore = GetEmailStore();
+            await emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+            var result = await UserManager.CreateAsync(user, Input.Password);
+
+            if (result.Succeeded)
+            {
+                // Handle Roles
+                if (Input.Roles == ORGANIZER_ROLE)
+                {
+                    // Put user in ORGANIZER_ROLE role
+                    await UserManager
+                        .AddToRoleAsync(user, ORGANIZER_ROLE);
+                }
+                if (Input.Roles == JUDGE_ROLE)
+                {
+                    // Put user in ORGANIZER_ROLE role
+                    await UserManager
+                        .AddToRoleAsync(user, ORGANIZER_ROLE);
+                }
 
             }
+            else
+            {
+                identityErrors = result.Errors;
+                return;
+            }
+
+
             // Close the Popup
             ShowPopup = false;
             // Refresh Users
             GetUsers();
+
         }
-        catch (Exception ex)
-        {
-            strError = ex.GetBaseException().Message;
-        }
+
+
     }
 
-    async Task EditUser(IdentityUser _IdentityUser)
+    async Task EditUser(ApplicationUser _IdentityUser)
     {
+        // Set the selected user
+        // as the current user
+        objUser = _IdentityUser;
+        // Get the user
+        var user = await UserManager.FindByIdAsync(objUser.Id);
+        if (user != null)
+        {
+            // Is user in administrator role?
+            var UserResult =
+                await UserManager
+                .IsInRoleAsync(user, ORGANIZER_ROLE);
+            if (UserResult)
+            {
+                Input.Roles = ORGANIZER_ROLE;
+            }
+            else
+            {
+                Input.Roles = JUDGE_ROLE;
+            }
+        }
+        // Open the Popup
+        ShowPopup = true;
     }
     async Task DeleteUser()
     {
         
+        // Close the Popup
+        ShowPopup = false;
+        // Get the user
+        var user = await UserManager.FindByIdAsync(objUser.Id);
+        if (user != null)
+        {
+            // Delete the user
+            var result = await UserManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                throw new InvalidOperationException("Unexpected error occurred deleting user.");
+            }
+        }
+        // Refresh Users
+        GetUsers();
     }
     void ClosePopup()
     {
@@ -199,12 +313,60 @@
     void AddNewUser()
     {
         // Make new user
-        objUser = new IdentityUser();
+        objUser = CreateUser();
         objUser.PasswordHash = "*****";
         // Set Id to blank so we know it is a new record
         objUser.Id = "";
         // Open the Popup
         ShowPopup = true;
     }
+
+
+
+    private ApplicationUser CreateUser()
+    {
+        try
+        {
+            return Activator.CreateInstance<ApplicationUser>();
+        }
+        catch
+        {
+            throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
+                $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor.");
+        }
+    }
+
+    private IUserEmailStore<ApplicationUser> GetEmailStore()
+    {
+        if (!UserManager.SupportsUserEmail)
+        {
+            throw new NotSupportedException("The default UI requires a user store with email support.");
+        }
+        return (IUserEmailStore<ApplicationUser>)UserStore;
+    }
+
+    private sealed class InputModel
+    {
+
+        [Required]
+        [Display(Name = "Username")]
+        public string Username { get; set; } = "";
+
+        [Required]
+        [EmailAddress]
+        [Display(Name = "Email")]
+        public string Email { get; set; } = "";
+
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Password")]
+        public string Password { get; set; } = "";
+
+        [Required]
+        public string Roles { get; set; } = "";
+    }
+
+
 
 }
