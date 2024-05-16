@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Components\Pages\EventsPages\ActivityPages\DetailsComponents\" />
     <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
