@@ -4,7 +4,7 @@
 
 <div class="event-cardview-menu-container">
     <button type="button" class="event-cardview-menu" @onclick="menuClick">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="@menuColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
     </button>
     <!--This is a hidden element-->
     <div class="event-cardview-menubar" style="@menuBarPosition @menustyle">
@@ -40,6 +40,9 @@
     public string? menuBarPosition { get; set; }
 
     private string? menustyle { get; set; }
+
+    [Parameter]
+    public string? menuColor { get; set; } = "white";
     bool menuHidden = true;
 
     void menuClick()
