@@ -54,7 +54,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("EventID");
 
-                    b.ToTable("Activity");
+                    b.ToTable("Activity", (string)null);
                 });
 
             modelBuilder.Entity("Eventify.Data.ApplicationUser", b =>
@@ -156,7 +156,7 @@ namespace Eventify.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events");
+                    b.ToTable("Events", (string)null);
                 });
 
             modelBuilder.Entity("Eventify.Data.UserEventsRoles", b =>
@@ -185,7 +185,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserEventsRoles");
+                    b.ToTable("UserEventsRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
