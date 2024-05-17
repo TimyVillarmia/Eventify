@@ -4,6 +4,7 @@ using Eventify.Data;
 using Eventify.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -94,6 +95,8 @@ using (var scope = app.Services.CreateScope())
     string[] roles = ["Organizer", "Judge"];
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var UserStore = scope.ServiceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
+
     foreach (var role in roles)
     {
         if (!await roleManager.RoleExistsAsync(role))
@@ -104,20 +107,27 @@ using (var scope = app.Services.CreateScope())
     }
 
 
+    // This part of the code is only for development
+    // Will Remove Aftre Deployment
     // Ensure a user named Admin@eventify.com is an Administrator
     var user = await userManager.FindByEmailAsync("Admin@eventify.com");
-    if (user != null)
+    if (user == null)
     {
-        // Is Admin@BlazorHelpWebsite.com in administrator role?
-        var UserResult = await userManager.IsInRoleAsync(user, "Organizer");
-        if (!UserResult)
+        var newuser = Activator.CreateInstance<ApplicationUser>();
+
+        await UserStore.SetUserNameAsync(newuser, "Admin@eventify.com", CancellationToken.None);
+        var emailStore = (IUserEmailStore<ApplicationUser>)UserStore;
+        await emailStore.SetEmailAsync(newuser, "Admin@eventify.com", CancellationToken.None);
+        var identityResult = await userManager.CreateAsync(newuser, "Admin123!");
+
+        if (identityResult.Succeeded)
         {
-            // Put admin in Administrator role
-            await userManager.AddToRoleAsync(user, "Organizer");
+            // Put Admin@eventify.com in Organizer role
+            await userManager.AddToRoleAsync(newuser, "Organizer");
         }
+        
     }
 
-    var result = userManager.CreateAsync(user);
 
 
 }
