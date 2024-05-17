@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.Extensions.Hosting;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Eventify.Data
@@ -7,13 +8,9 @@ namespace Eventify.Data
     {
         [Key]
         public int ID { get; set; }
-
-        [ForeignKey("User")]
-        public int UserId { get; set; }
         public ApplicationUser User { get; set; }
 
-        [ForeignKey("Activity")]
-        public int ActivityId { get; set; }
-        public Activity Activity { get; set; }
+        public ICollection<Activity> Activities { get; } = new List<Activity>(); // Collection navigation containing dependents
+
     }
 }

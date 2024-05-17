@@ -1,6 +1,7 @@
 ﻿@page "/"
 @layout Eventify.Components.Layout.LandingLayout
 
+
 <div class="landingPage-container">
     <div class="landingPage-contentContainer">
         <div class="text-container">
@@ -17,10 +18,30 @@
                     features, you can focus on celebrating talent and
                     achieving excellence.
                 </p>
-            </div>   
+            </div>
         </div>
         <div class="illustration-container">
-            <img id="illustration" style="" src="images/illustration1.png"/>
+            <img id="illustration" style="" src="images/illustration1.png" />
         </div>
     </div>
 </div>
+
+@code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authenticationState = await authenticationStateTask;
+
+        if (authenticationState.User.Identity.IsAuthenticated)
+        {
+            NavigationManager.NavigateTo("/home");
+        }
+
+        // rest of the code
+    }
+}

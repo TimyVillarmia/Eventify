@@ -5,7 +5,7 @@
 namespace Eventify.Migrations
 {
     /// <inheritdoc />
-    public partial class migrati : Migration
+    public partial class CreateEventifySchema : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
