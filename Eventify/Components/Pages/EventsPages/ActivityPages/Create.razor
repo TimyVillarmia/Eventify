@@ -1,4 +1,4 @@
-﻿@page "/{Event_Id}/activities/create"
+﻿@page "/{Event_Id:int}/activities/create"
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @using Microsoft.EntityFrameworkCore
@@ -55,14 +55,15 @@
     public Activity Activity { get; set; } = new();
 
     [Parameter]
-    public string Event_Id { get; set; }
+    public int Event_Id { get; set; }
 
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
     public async Task AddActivity()
     {
-        Activity.Event = DB.Events.FirstOrDefault(x => x.Id == Int32.Parse(Event_Id));
+        Activity.EventID = Event_Id;
         DB.Activity.Add(Activity);
         await DB.SaveChangesAsync();
-        NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        NavigationManager.NavigateTo($"events/details?id={Event_Id}", forceLoad: true);
+
     }
 }

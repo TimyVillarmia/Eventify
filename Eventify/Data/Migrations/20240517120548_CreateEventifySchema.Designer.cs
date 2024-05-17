@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240512100605_migra")]
-    partial class migra
+    [Migration("20240517120548_CreateEventifySchema")]
+    partial class CreateEventifySchema
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,7 +39,7 @@ namespace Eventify.Migrations
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
 
-                    b.Property<int?>("EventId")
+                    b.Property<int>("EventID")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
@@ -55,7 +55,7 @@ namespace Eventify.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("EventID");
 
                     b.ToTable("Activity");
                 });
@@ -298,8 +298,10 @@ namespace Eventify.Migrations
             modelBuilder.Entity("Eventify.Data.Activity", b =>
                 {
                     b.HasOne("Eventify.Data.Events", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId");
+                        .WithMany("Activities")
+                        .HasForeignKey("EventID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Event");
                 });
@@ -353,6 +355,11 @@ namespace Eventify.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Eventify.Data.Events", b =>
+                {
+                    b.Navigation("Activities");
                 });
 #pragma warning restore 612, 618
         }

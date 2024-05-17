@@ -1,5 +1,6 @@
 ﻿using Eventify.DataAnnotations;
 using System.ComponentModel.DataAnnotations;
+using System.Reflection.Metadata;
 
 namespace Eventify.Data
 {
@@ -13,9 +14,10 @@ namespace Eventify.Data
 
         [Required]
         public string? Name { get; set; }
+        public string? Description { get; set; }
 
-        public int EventID { get; set; }      
-        public Events Event { get; set; }         
+        public int EventID { get; set; } 
+        public Events Event { get; set; } 
 
         [DataType(DataType.Date), Required, CustomDateAttribute]
         public DateTime Date { get; set; } = DateTime.Now.Date;
@@ -28,5 +30,10 @@ namespace Eventify.Data
 
         [Required]
         public string? Venue { get; set; }
+
+
+        public ICollection<Participants> Participants { get; set; }
+
+
     }
 }
