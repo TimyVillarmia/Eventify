@@ -4,7 +4,7 @@
 <div class="ActivitiesSection-Container" style="@style">
     <div style="display:flex;flex-direction:row;justify-content:space-between;align-items:center;margin:0 0 1rem 0;">
         <h3>Activities</h3>
-        <a href="@($"/{Event.Id}/activities/create")" style="display:flex;flex-direction:row;justify-content:center;align-items:center; text-decoration:none;cursor:pointer;background-color:#FFD803;color:black;font-size:12px;font-weight:bold;padding:7px 12px;border-radius:10px;">
+        <a href="@($"/{Event!.Id}/activities/create")" style="display:flex;flex-direction:row;justify-content:center;align-items:center; text-decoration:none;cursor:pointer;background-color:#FFD803;color:black;font-size:12px;font-weight:bold;padding:7px 12px;border-radius:10px;">
             <svg xmlns="http://www.w3.org/2000/svg" width="15px" height="15px" viewBox="0 0 24 24"><path fill="black" d="M11.5 12.5H6v-1h5.5V6h1v5.5H18v1h-5.5V18h-1z" /></svg>
             New Activity
         </a>
@@ -19,13 +19,13 @@
                         <a href="@($"/{Event.Id}/activities/details?id={act.Id}")" style="text-decoration:none;cursor:pointer;color:black;" target="_blank"><h5>@act.Name</h5></a>
                     </td>
                     <td>
-                        <h6>@act.Date.ToLongDateString()</h6>
+                        <h6 style="color:#1e1e1e;font-weight:500;">@act.Date.ToLongDateString()</h6>
                     </td>
                     <td>
-                        <h6>@act.StartTime - @act.EndTime</h6>
+                        <h6 style="color:#1e1e1e;font-weight:500;">@act.StartTime - @act.EndTime</h6>
                     </td>
                     <td style="display:flex;flex-direction:column;justify-content:center;align-items:center;">
-                        <RightMenu Event="@Event" DeleteRef="@($"/{Event.Id}/activities/delete?id={act.Id}")" ModifyRef="@($"/{Event.Id}/activities/edit?id={act.Id}")" menuBarPosition="" />
+                        <RightMenu Event="@Event" DeleteRef="@($"/{Event.Id}/activities/delete?id={act.Id}")" ModifyRef="@($"/{Event.Id}/activities/edit?id={act.Id}")" menuBarPosition="" menuColor="black" />
                     </td>
                 </tr>
             }

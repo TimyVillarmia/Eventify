@@ -24,16 +24,7 @@ else {
                     <h1 class="eventname" style="">@events.EventName</h1>
                     <h4 class="eventdate" style="">@events.Date.ToLongDateString()</h4>
                 </div>
-                <button type="button" style="background-color:transparent;
-                                            border:none;
-                                            padding:0;
-                                            width: auto;
-                                            height: 40px;
-                                            margin-left: auto;
-                                            align-content:center;
-                                            cursor:pointer;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 16 16"><g fill="none" stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"><circle cx="8" cy="2.5" r=".75" /><circle cx="8" cy="8" r=".75" /><circle cx="8" cy="13.5" r=".75" /></g></svg>
-                </button>
+                <Eventify.Components.Pages.EventsPages.RightMenu Event="@events" DeleteRef="@($"events/delete?id={events!.Id}")" ModifyRef="@($"Events/edit?id={events!.Id}")" menuBarPosition="position:absolute;bottom: -180%;right: 70%;" />
             </div>
             <div class="BottomDetails-Container">
                 <h5 style="margin-right:auto;">Venue: @events.Venue</h5>

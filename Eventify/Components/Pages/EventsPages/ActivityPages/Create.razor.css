@@ -1,0 +1,17 @@
+﻿.ActivityCreation-Container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 677px;
+    border-radius: 10px;
+    background-color: #fffffe;
+    box-sizing: border-box;
+    padding: 2rem;
+}
+
+@media(max-width:500px){
+    .ActivityCreation-Container {
+        width: 100%;
+    }
+}

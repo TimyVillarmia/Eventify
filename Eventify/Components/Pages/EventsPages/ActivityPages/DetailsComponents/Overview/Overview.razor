@@ -1,0 +1,16 @@
+﻿@using Eventify.Data
+
+<div style="display:flex;flex-direction:column;justify-content:start;align-items:center; width:100%;height:auto;@style">
+    <DetailsOverview Activity="Activity" />
+</div>
+
+@code {
+    [Parameter]
+    public Activity? Activity { get; set; }
+
+    [Parameter]
+    public Events? Event { get; set; }
+
+    [Parameter]
+    public string? style { get; set; }
+}
