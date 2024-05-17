@@ -16,11 +16,14 @@ else {
     <div class="ActivityDetails-Container">
         <div class="ActivityDetails-Header">
             <img src="activityIcon.png" style="width:48px;height:auto;margin:0 1rem 0 0;"/>
-            <h3>@activity.Name</h3>
+            <h3 style="font-size:32px;font-weight:400;">@activity.Name.ToUpper()</h3>
             <RightMenu DeleteRef="@($"/{Event_Id}/activities/delete?id={activity.Id}")" ModifyRef="@($"/{Event_Id}/activities/edit?id={activity.Id}")" menuBarPosition="position:absolute;bottom: -180%;right: 70%;" menuColor="black" />
         </div>
         <div class="ActivityDetails-Nav">
-
+            <button @onclick="@OverviewClick" style="@OverviewBtnStyle">Overview</button>
+            <button @onclick="@DetailsClick" style="@DetailsBtnStyle">Details</button>
+            <button @onclick="@StakeholdersClick" style="@StakeholdersBtnStyle">Stakeholders</button>
+            <button @onclick="@ResultsClick" style="@ResultsBtnStyle">Results</button>
         </div>
         <div class="ActivityDetails-Content">
 
@@ -53,6 +56,16 @@ else {
     [Parameter]
     public string Event_Id { get; set; }
 
+    private string OverviewDisplay { get; set; } = "display:block;";
+    private string DetailsDisplay { get; set; } = "display:none;";
+    private string StakeholdersDisplay { get; set; } = "display:none;";
+    private string ResultsDisplay { get; set; } = "display:none;";
+
+    private string OverviewBtnStyle { get; set; } = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
+    private string DetailsBtnStyle { get; set; } = "border:none;color:#8f8f8f;";
+    private string StakeholdersBtnStyle { get; set; } = "border:none;color:#8f8f8f;";
+    private string ResultsBtnStyle { get; set; } = "border:none;color:#8f8f8f;";
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -63,5 +76,34 @@ else {
             NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
 
         }
+    }
+
+    void OverviewClick()
+    {
+        OverviewBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
+        DetailsBtnStyle = "border:none;color:#8f8f8f;";
+        StakeholdersBtnStyle = "border:none;color:#8f8f8f;";
+        ResultsBtnStyle = "border:none;color:#8f8f8f;";
+    }
+    void DetailsClick()
+    {
+        OverviewBtnStyle = "border:none;color:#8f8f8f;";
+        DetailsBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
+        StakeholdersBtnStyle = "border:none;color:#8f8f8f;";
+        ResultsBtnStyle = "border:none;color:#8f8f8f;";
+    }
+    void StakeholdersClick()
+    {
+        OverviewBtnStyle = "border:none;color:#8f8f8f;";
+        DetailsBtnStyle = "border:none;color:#8f8f8f;";
+        StakeholdersBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
+        ResultsBtnStyle = "border:none;color:#8f8f8f;";
+    }
+    void ResultsClick()
+    {
+        OverviewBtnStyle = "border:none;color:#8f8f8f;";
+        DetailsBtnStyle = "border:none;color:#8f8f8f;";
+        StakeholdersBtnStyle = "border:none;color:#8f8f8f;";
+        ResultsBtnStyle = "border: solid 1px blue;border-width:0 0 2px 0;color:black;";
     }
 }

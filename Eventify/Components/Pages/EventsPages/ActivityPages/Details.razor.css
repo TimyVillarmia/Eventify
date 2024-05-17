@@ -18,7 +18,20 @@
     align-items: center;
     width: 100%; height:auto;
     border: 1px solid blue;
-    border-width: 0 0 2px 0;
+    border-width: 0 0 1px 0;
     padding:1rem 0 1rem 0;
 
+}
+.ActivityDetails-Nav {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+    padding: 2rem 0 0 0;
+}
+.ActivityDetails-Nav button {
+    font-size: 20px;
+    border: none;
+    padding: 8px 2rem;
+    cursor:pointer;
 }
