@@ -35,3 +35,8 @@
     padding: 8px 2rem;
     cursor:pointer;
 }
+.ActivityDetails-Content{
+    width:100%;
+    height:auto;
+    margin:1rem 0 0 0;
+}

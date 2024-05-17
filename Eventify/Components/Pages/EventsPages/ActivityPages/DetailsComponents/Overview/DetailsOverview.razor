@@ -1,0 +1,39 @@
+﻿@using Eventify.Data
+
+<div style="display:flex;flex-direction:column;justify-content:start;align-items:start;width:100%;height:auto;border:1px solid black; padding:2rem; border-radius:10px;">
+    <div style="display:flex;flex-direction:row;justify-content:start;align-items:center;width:100%;height:auto;margin:0 0 1rem 0;">
+        <h3 style="font-size:18px;font-weight:400;">Details Overview</h3>
+    </div>
+    <table style="width:100%;height:auto;margin:0 0 1rem 0;">
+        <tr>
+            <td style="">Date</td>
+            <td style="">@(Activity!.Date.ToLongDateString())</td>
+        </tr>
+        <tr>
+            <td style="">Duration</td>
+            <td style="">@(((TimeSpan)(Activity.EndTime - Activity.StartTime)).TotalMinutes < 60 ? ((TimeSpan)(Activity.EndTime - Activity.StartTime)).TotalMinutes + " Minutes" : ((TimeSpan)(Activity.EndTime - Activity.StartTime)).TotalHours + " Hours")</td>
+        </tr>
+        <tr>
+            <td style="">Event</td>
+            <td style="">EventName</td>
+        </tr>
+        <tr>
+            <td style="">Time</td>
+            <td style="">@Activity.StartTime - @Activity.EndTime</td>
+        </tr>
+        <tr>
+            <td style="">Venue</td>
+            <td style="">@Activity.Venue</td>
+        </tr>
+    </table>
+    <h4 style="font-size:18px;font-weight:400;">Description</h4>
+    <p style="font-size:13px;font-weight:400;">Description</p>
+</div>
+
+@code {
+    [Parameter]
+    public Activity? Activity { get; set; }
+
+    // [Parameter]
+    // public Events? Event { get; set; }
+}
