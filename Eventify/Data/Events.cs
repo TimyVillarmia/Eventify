@@ -32,7 +32,7 @@ namespace Eventify.Data
         public string? ACCESS_CODE { get; set; }
 
         // For One to Many Relatioship
-        public IList<Activity> Activities { get; } = new List<Activity>();
+        public ICollection<Activity> Activities { get; set; }
 
     }
 }
