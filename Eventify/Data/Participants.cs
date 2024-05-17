@@ -22,7 +22,7 @@ namespace Eventify.Data
         public int ActivityID { get; set; }
         public Activity Activity { get; set; }
 
-
+        public ICollection<ParticipantsScore> ParticipantsScores { get; set; }
 
 
     }

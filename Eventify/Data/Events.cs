@@ -31,7 +31,7 @@ namespace Eventify.Data
 
         public string? ACCESS_CODE { get; set; }
 
-        // For One to Many Relatioship
+        // For One to Many Relatioship  
         public ICollection<Activity> Activities { get; set; }
 
     }

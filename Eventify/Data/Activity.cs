@@ -33,6 +33,8 @@ namespace Eventify.Data
 
 
         public ICollection<Participants> Participants { get; set; }
+        public ICollection<Criteria> Criteria { get; set; }
+        public ICollection<Result> Results { get; set; }
 
 
     }
