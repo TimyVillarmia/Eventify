@@ -1,5 +1,192 @@
-﻿<h3>ParticipantsSection</h3>
+﻿@using Eventify.Data
+
+@inject Eventify.Data.ApplicationDbContext DB
+
+
+<div class="ParticipantsSection-Container" style="@style">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Entry#:</th>
+                <th>Participant Name</th>
+                <th>Course</th>
+                <th>Section</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var participant in Participants)
+            {
+                <tr>
+                    <td>@participant.EntryNumber</td>
+                    <td>@participant.Name</td>
+                    <td>@participant.Course</td>
+                    <td>@participant.Section</td>
+                    <td>
+                        <!-- Edit the current forecast -->
+                        <button class="btn btn-primary"
+                                @onclick="(() => EditUser(participant))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (ShowPopup)
+    {
+        <!-- This is the popup to create or edit a user -->
+        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit User</h3>
+                        <!-- Button to close the popup -->
+                        <button type="button" class="close"
+                                @onclick="ClosePopup">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <!-- Edit form for the current user -->
+                    <div class="modal-body">
+                        <EditForm Model="current_participant" method="post" OnValidSubmit="SaveUser" FormName="register">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="text-danger" role="alert" />
+                            <div class="inputbox">
+                                <InputText @bind-Value="current_participant.EntryNumber" aria-required="true" placeholder="Entry number" />
+                            </div>
+                            <div class="inputbox">
+                                <InputText @bind-Value="current_participant.Name" aria-required="true" placeholder="Enter participant's name" />
+                            </div>
+                            <div class="inputbox">
+                                <InputText @bind-Value="current_participant.Course" aria-required="true" placeholder="Enter participant's course" />
+                            </div>
+                            <div class="inputbox">
+                                <InputText @bind-Value="current_participant.Section" aria-required="true" placeholder="Enter participant's section" />
+                            </div>
+                            <button type="submit" class="btn-create">Save</button>
+                            <!-- Only show delete button if not a new record -->
+                            @if (current_participant !=  null)
+                            {
+                                <!-- Button to delete the forecast -->
+                                <button class="btn btn-danger"
+                                        @onclick="DeleteUser">
+                                    Delete
+                                </button>
+                            }
+                        </EditForm>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <button class="btn btn-success" @onclick="AddNewUser">Add User</button>
+</div>
 
 @code {
+
+
+    [Parameter]
+    public string? style { get; set; }
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+
+    public IQueryable<Participants> Participants { get; set; }
+
+    // Property used to add or edit the currently selected user
+    public Participants current_participant { get; set; }
+
+    // To enable showing the Popup
+    bool ShowPopup = false;
+
+    protected override void OnInitialized()
+    {
+        GetParticipants();
+    }
+
+    public void GetParticipants()
+    {
+        Participants = DB.Participants.Where(x => x.ActivityID == Id);
+
+    }
+
+
+    public async Task SaveUser()
+    {
+        // Is this an existing user?
+        if (current_participant.Name != "")
+        {
+            using (var context = DB)
+            {
+                var participant = context.Participants.Single(x => x.Id == current_participant.Id);
+                participant.EntryNumber = current_participant.EntryNumber;
+                participant.Name = current_participant.Name;
+                participant.Course = current_participant.Course;
+                participant.Section = current_participant.Section;
+                context.SaveChanges();
+            }
+  
+        }
+        else
+        {
+            var new_participant = new Participants();
+
+            using (var context = DB)
+            {
+                new_participant.EntryNumber = current_participant.EntryNumber;
+                new_participant.Name = current_participant.Name;
+                new_participant.Course = current_participant.Course;
+                new_participant.Section = current_participant.Section;
+                new_participant.ActivityID = Id;
+                context.Add(new_participant);
+            }
+           
+            // Close the Popup
+            ShowPopup = false;
+            // Refresh Users
+            GetParticipants();
+
+        }
+
+
+    }
+
+    async Task EditUser(Participants participants)
+    {
+        // Set the selected user
+        // as the current user
+        current_participant = participants;
+        // Open the Popup
+        ShowPopup = true;
+    }
+    async Task DeleteUser()
+    {
+
+        // Close the Popup
+        ShowPopup = false;
+
+
+        // Refresh Users
+        GetParticipants();
+    }
+    void ClosePopup()
+    {
+        // Close the Popup
+        ShowPopup = false;
+    }
+
+    void AddNewUser()
+    {
+        // Make new user
+        current_participant = new Participants();
+        // Open the Popup
+        ShowPopup = true;
+    }
+
 
 }
