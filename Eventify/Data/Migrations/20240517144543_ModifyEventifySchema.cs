@@ -116,7 +116,7 @@ namespace Eventify.Migrations
                         column: x => x.ParticipantId,
                         principalTable: "Participants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateIndex(

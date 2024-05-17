@@ -26,7 +26,8 @@ else {
             <button @onclick="@ResultsClick" style="@ResultsBtnStyle">Results</button>
         </div>
         <div class="ActivityDetails-Content">
-            <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Overview.Overview Activity="activity" style="@OverviewDisplay"/>
+            <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Overview.Overview Activity="activity" Event="DB.Events.Single(i => i.Id == int.Parse(Event_Id))" style="@OverviewDisplay"/>
+            <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Stakeholders.Stakeholders Activity="activity" style="@StakeholdersDisplay"/>
         </div>
     </div>
     @* <dl class="row">

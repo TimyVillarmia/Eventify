@@ -8,5 +8,8 @@ namespace Eventify.Data
     {
         public DbSet<Eventify.Data.Events> Events { get; set; } = default!;
         public DbSet<Eventify.Data.Activity> Activity { get; set; } = default!;
+        public DbSet<Eventify.Data.Participants> Participants { get; set; } = default!;
+
+        public DbSet<JudgeActivity> JudgeActivity { get; set; } = default!;
     }
 }
