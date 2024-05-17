@@ -4,6 +4,7 @@ using Eventify.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517144543_ModifyEventifySchema")]
+    partial class ModifyEventifySchema
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,7 +65,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("JudgeActivityID");
 
-                    b.ToTable("Activity", (string)null);
+                    b.ToTable("Activity");
                 });
 
             modelBuilder.Entity("Eventify.Data.ApplicationUser", b =>
@@ -155,7 +158,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("ActivityID");
 
-                    b.ToTable("Criteria", (string)null);
+                    b.ToTable("Criteria");
                 });
 
             modelBuilder.Entity("Eventify.Data.Events", b =>
@@ -192,7 +195,7 @@ namespace Eventify.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Events", (string)null);
+                    b.ToTable("Events");
                 });
 
             modelBuilder.Entity("Eventify.Data.JudgeActivity", b =>
@@ -211,7 +214,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("JudgeActivity", (string)null);
+                    b.ToTable("JudgeActivity");
                 });
 
             modelBuilder.Entity("Eventify.Data.Participants", b =>
@@ -245,7 +248,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("ActivityID");
 
-                    b.ToTable("Participants", (string)null);
+                    b.ToTable("Participants");
                 });
 
             modelBuilder.Entity("Eventify.Data.ParticipantsScore", b =>
@@ -279,7 +282,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("ParticipantId");
 
-                    b.ToTable("ParticipantsScore", (string)null);
+                    b.ToTable("ParticipantsScore");
                 });
 
             modelBuilder.Entity("Eventify.Data.Result", b =>
@@ -305,7 +308,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("ParticipantId");
 
-                    b.ToTable("Result", (string)null);
+                    b.ToTable("Result");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
