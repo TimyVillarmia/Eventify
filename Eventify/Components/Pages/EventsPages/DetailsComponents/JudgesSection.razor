@@ -121,7 +121,7 @@
     // Property used to add or edit the currently selected user
     ApplicationUser objUser = new ApplicationUser();
     // Tracks the selected role for the currently selected user
-    string CurrentUserRole { get; set; } = "Users";
+    string CurrentUserRole { get; set; } = "Judge";
     // Collection to display the existing users
     List<ApplicationUser> ColUsers = new List<ApplicationUser>();
     // Options to display in the roles dropdown when editing a user
@@ -141,6 +141,8 @@
     public void GetUsers()
     {
 
+        identityErrors = null;
+
         // Collection to hold users
         ColUsers = new List<ApplicationUser>();
         // get users from _UserManager
@@ -157,88 +159,86 @@
         }
     }
 
-    private async void UpdateUser()
-    {
-        // Get the user
-        var user = await UserManager.FindByIdAsync(objUser.Id);
-        // Update Email
-        user.Email = objUser.Email;
-        // Update the user
-        await UserManager.UpdateAsync(user);
-
-        // Only update password if the current value
-        // is not the default value
-        if (objUser.PasswordHash != "*****")
-        {
-            
-            
-
-            var resetToken =
-                await UserManager.GeneratePasswordResetTokenAsync(user);
-            var result =
-                await UserManager.ResetPasswordAsync(
-                    user,
-                    resetToken,
-                    objUser.PasswordHash);
-
-
-            if (!result.Succeeded)
-            {
-                identityErrors = result.Errors;
-                // Keep the popup opened
-                return;
-            }
-        }
-        // Handle Roles
-        // Is user in administrator role?
-        var UserResult =
-            await UserManager
-            .IsInRoleAsync(user, ORGANIZER_ROLE);
-        // Is Organizer role selected
-        // but user is not an Organizer?
-        if (
-            (CurrentUserRole == ORGANIZER_ROLE)
-            &
-            (!UserResult))
-        {
-            // Put user in Organizer role
-            await UserManager
-                .AddToRoleAsync(user, ORGANIZER_ROLE);
-        }
-        else
-        {
-            // Is Organizer role not selected
-            // but user is an Administrator?
-            if ((CurrentUserRole != ORGANIZER_ROLE)
-                &
-                (UserResult))
-            {
-                // Remove user from Organizer role
-                await UserManager
-                    .RemoveFromRoleAsync(user, ORGANIZER_ROLE);
-                // Put user in Judge role
-                await UserManager
-                    .AddToRoleAsync(user, JUDGE_ROLE);
-
-            }
-        }
-    }
-
     public async Task SaveUser()
     {
         // Is this an existing user?
         if (objUser.Id != "")
         {
-            UpdateUser();
+            // Get the user
+            var user = await UserManager.FindByIdAsync(objUser.Id);
+
+
+            // Only update password if the current value
+            // is not the default value
+            if (objUser.PasswordHash != "*****")
+            {
+                // Update Email
+                user.Email = objUser.Email;
+                // Update the user
+                await UserManager.UpdateAsync(user);
+
+                var resetToken =
+                    await UserManager.GeneratePasswordResetTokenAsync(user);
+                var result =
+                    await UserManager.ResetPasswordAsync(
+                        user,
+                        resetToken,
+                        objUser.PasswordHash);
+
+
+                if (!result.Succeeded)
+                {
+                    identityErrors = result.Errors;
+                    // Keep the popup opened
+                    return;
+                }
+
+
+            }
+            // Handle Roles
+            // Is user in ORGANIZER_ROLE role?
+            var UserResult =
+                await UserManager
+                .IsInRoleAsync(user, ORGANIZER_ROLE);
+            // Is ORGANIZER_ROLE role selected
+            // but user is not an ORGANIZER_ROLE?
+            if (
+                (CurrentUserRole == ORGANIZER_ROLE)
+                &
+                (!UserResult))
+            {
+                await UserManager
+                    .RemoveFromRoleAsync(user, JUDGE_ROLE);
+                // Put user in ORGANIZER_ROLE role
+                await UserManager
+                    .AddToRoleAsync(user, ORGANIZER_ROLE);
+            }
+            else
+            {
+                // Is ORGANIZER_ROLE role not selected
+                // but user is an ORGANIZER_ROLE?
+                if ((CurrentUserRole != ORGANIZER_ROLE)
+                    &
+                    (UserResult))
+                {
+                    // Remove user from Administrator role
+                    await UserManager
+                        .RemoveFromRoleAsync(user, ORGANIZER_ROLE); 
+                   await UserManager
+                        .AddToRoleAsync(user, JUDGE_ROLE);
+
+                }
+            }
+
         }
         else
         {
-            var user = CreateUser();
+            var new_user = CreateUser();
 
-            await UserStore.SetUserNameAsync(user, objUser.Email, CancellationToken.None);
+            await UserStore.SetUserNameAsync(new_user, objUser.Email, CancellationToken.None);
             var emailStore = GetEmailStore();
-            await emailStore.SetEmailAsync(user, objUser.Email, CancellationToken.None);
-            var result = await UserManager.CreateAsync(user, objUser.PasswordHash);
+            await emailStore.SetEmailAsync(new_user, objUser.Email, CancellationToken.None);
+            var result = await UserManager.CreateAsync(new_user, objUser.PasswordHash);
 
             if (result.Succeeded)
             {
@@ -247,13 +247,13 @@
                 {
                     // Put user in ORGANIZER_ROLE role
                     await UserManager
-                        .AddToRoleAsync(user, ORGANIZER_ROLE);
+                        .AddToRoleAsync(new_user, ORGANIZER_ROLE);
                 }
                 if (CurrentUserRole == JUDGE_ROLE)
                 {
-                    // Put user in ORGANIZER_ROLE role
+                    // Put user in JUDGE_ROLE role
                     await UserManager
-                        .AddToRoleAsync(user, ORGANIZER_ROLE);
+                        .AddToRoleAsync(new_user, JUDGE_ROLE);
                 }
 
             }
@@ -263,17 +263,13 @@
                 return;
             }
 
-            
-
-
-            // Close the Popup
-            ShowPopup = false;
-            // Refresh Users
-            GetUsers();
 
         }
 
-
+        // Close the Popup
+        ShowPopup = false;
+        // Refresh Users
+        GetUsers();
     }
 
     async Task EditUser(ApplicationUser _IdentityUser)
@@ -283,7 +279,7 @@
         objUser = _IdentityUser;
         // Get the user
         var user = await UserManager.FindByIdAsync(objUser.Id);
-        
+
         if (user != null)
         {
             // Is user in administrator role?
@@ -362,6 +358,6 @@
         return (IUserEmailStore<ApplicationUser>)UserStore;
     }
 
-   
+
 
 }
