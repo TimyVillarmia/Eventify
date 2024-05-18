@@ -1,4 +1,5 @@
 ﻿@page "/{Event_Id}/activities/edit"
+@layout Eventify.Components.Layout.ModalLayout
 @inject Eventify.Data.ApplicationDbContext DB
 @using Eventify.Data
 @inject NavigationManager NavigationManager
@@ -6,56 +7,61 @@
 
 <PageTitle>Edit</PageTitle>
 
-<h1>Edit</h1>
 
-<h4>Activity</h4>
-<hr />
-@if (Activity is null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <div class="row">
-        <div class="col-md-4">
-            <EditForm method="post" Model="Activity" OnValidSubmit="UpdateActivity" FormName="edit" Enhance>
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-                <input type="hidden" name="Activity.Id" value="@Activity.Id" />
-                <div class="mb-3">
-                    <label for="name" class="form-label">Name:</label>
-                    <InputText id="name" @bind-Value="Activity.Name" class="form-control" />
-                    <ValidationMessage For="() => Activity.Name" class="text-danger" />
+ <div class="Edit-Container">
+    <div class="Edit-Details">
+        <h1>Edit</h1>
+
+        <h4>Activity</h4>
+        <hr />
+        @if (Activity is null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-md-4">
+                    <EditForm method="post" Model="Activity" OnValidSubmit="UpdateActivity" FormName="edit" Enhance>
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+                        <input type="hidden" name="Activity.Id" value="@Activity.Id" />
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name:</label>
+                            <InputText id="name" @bind-Value="Activity.Name" class="form-control" style="width: 62%;" />
+                            <ValidationMessage For="() => Activity.Name" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="date" class="form-label">Date:</label>
+                            <InputDate id="date" @bind-Value="Activity.Date" class="form-control" style="width: 77.5%; margin-top: 2px;" />
+                            <ValidationMessage For="() => Activity.Date" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="starttime" class="form-label">StartTime:</label>
+                            <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Activity.StartTime" class="form-control" style="width: 67%; margin-top: 2px;" />
+                            <ValidationMessage For="() => Activity.StartTime" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="endtime" class="form-label">EndTime:</label>
+                            <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Activity.EndTime" class="form-control" style="width: 70%; margin-top: 2px;" />
+                            <ValidationMessage For="() => Activity.EndTime" class="text-danger" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="venue" class="form-label">Venue:</label>
+                            <InputText id="venue" @bind-Value="Activity.Venue" class="form-control" style="width: 77%; margin-top: 2px;" />
+                            <ValidationMessage For="() => Activity.Venue" class="text-danger" />
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="width: 30%; margin-top: 6px;">Save</button>
+                        <a href="/activities">Back to List</a>
+                    </EditForm>
                 </div>
-                <div class="mb-3">
-                    <label for="date" class="form-label">Date:</label>
-                    <InputDate id="date" @bind-Value="Activity.Date" class="form-control" />
-                    <ValidationMessage For="() => Activity.Date" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="starttime" class="form-label">StartTime:</label>
-                    <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Activity.StartTime" class="form-control" />
-                    <ValidationMessage For="() => Activity.StartTime" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="endtime" class="form-label">EndTime:</label>
-                    <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Activity.EndTime" class="form-control" />
-                    <ValidationMessage For="() => Activity.EndTime" class="text-danger" />
-                </div>
-                <div class="mb-3">
-                    <label for="venue" class="form-label">Venue:</label>
-                    <InputText id="venue" @bind-Value="Activity.Venue" class="form-control" />
-                    <ValidationMessage For="() => Activity.Venue" class="text-danger" />
-                </div>
-                <button type="submit" class="btn btn-primary">Save</button>
-            </EditForm>
-        </div>
+            </div>
+        }
+
     </div>
-}
-
-<div>
-    <a href="/activities">Back to List</a>
 </div>
+
+
 
 @code {
     [SupplyParameterFromQuery]
