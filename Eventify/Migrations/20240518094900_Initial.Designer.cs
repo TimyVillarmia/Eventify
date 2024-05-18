@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240518060846_migratyon")]
-    partial class migratyon
+    [Migration("20240518094900_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

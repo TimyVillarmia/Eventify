@@ -1,4 +1,5 @@
-﻿@using Eventify.Data
+﻿@using Eventify.Components.Account.Shared
+@using Eventify.Data
 @using Microsoft.AspNetCore.Identity
 @using System.ComponentModel.DataAnnotations
 @using Microsoft.AspNetCore.WebUtilities
@@ -53,12 +54,21 @@
                     </div>
                     <!-- Edit form for the current user -->
                     <div class="modal-body">
+                        <span style="color:red">@Message</span>
                         <EditForm Model="objUser" method="post" OnValidSubmit="SaveUser" FormName="register">
                             <DataAnnotationsValidator />
                             <ValidationSummary class="text-danger" role="alert" />
-                            <div class="Register-inputbox">
-                                <InputText @bind-Value="objUser.UserName" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" />
-                            </div>
+                            @if (objUser.Id != "")
+                            {
+                                <p>@objUser.UserName</p>
+
+                            }
+                            else
+                            {
+                                <div class="Register-inputbox">
+                                    <InputText @bind-Value="objUser.UserName" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" />
+                                </div>
+                            }
                             <div class="Register-inputbox">
                                 <InputText @bind-Value="objUser.Email" class="Register-inputEmail" autocomplete="email" aria-required="true" placeholder="Enter email" />
                             </div>
@@ -147,77 +157,85 @@
         }
     }
 
+    private async void UpdateUser()
+    {
+        // Get the user
+        var user = await UserManager.FindByIdAsync(objUser.Id);
+        // Update Email
+        user.Email = objUser.Email;
+        // Update the user
+        await UserManager.UpdateAsync(user);
+
+        // Only update password if the current value
+        // is not the default value
+        if (objUser.PasswordHash != "*****")
+        {
+            
+            
+
+            var resetToken =
+                await UserManager.GeneratePasswordResetTokenAsync(user);
+            var result =
+                await UserManager.ResetPasswordAsync(
+                    user,
+                    resetToken,
+                    objUser.PasswordHash);
+
+
+            if (!result.Succeeded)
+            {
+                identityErrors = result.Errors;
+                // Keep the popup opened
+                return;
+            }
+        }
+        // Handle Roles
+        // Is user in administrator role?
+        var UserResult =
+            await UserManager
+            .IsInRoleAsync(user, ORGANIZER_ROLE);
+        // Is Organizer role selected
+        // but user is not an Organizer?
+        if (
+            (CurrentUserRole == ORGANIZER_ROLE)
+            &
+            (!UserResult))
+        {
+            // Put user in Organizer role
+            await UserManager
+                .AddToRoleAsync(user, ORGANIZER_ROLE);
+        }
+        else
+        {
+            // Is Organizer role not selected
+            // but user is an Administrator?
+            if ((CurrentUserRole != ORGANIZER_ROLE)
+                &
+                (UserResult))
+            {
+                // Remove user from Organizer role
+                await UserManager
+                    .RemoveFromRoleAsync(user, ORGANIZER_ROLE);
+                // Put user in Judge role
+                await UserManager
+                    .AddToRoleAsync(user, JUDGE_ROLE);
+
+            }
+        }
+    }
+
     public async Task SaveUser()
     {
         // Is this an existing user?
         if (objUser.Id != "")
         {
-            // Get the user
-            var user = await UserManager.FindByIdAsync(objUser.Id);
-            // Update Email
-            user.Email = objUser.Email;
-            // Update the user
-            await UserManager.UpdateAsync(user);
-
-            // Only update password if the current value
-            // is not the default value
-            if (objUser.PasswordHash != "*****")
-            {
-                var resetToken =
-                    await UserManager.GeneratePasswordResetTokenAsync(user);
-                var result =
-                    await UserManager.ResetPasswordAsync(
-                        user,
-                        resetToken,
-                        objUser.PasswordHash);
-
-
-                if (!result.Succeeded)
-                {
-                    identityErrors = result.Errors;
-                    // Keep the popup opened
-                    return;
-                }
-            }
-            // Handle Roles
-            // Is user in administrator role?
-            var UserResult =
-                await UserManager
-                .IsInRoleAsync(user, ORGANIZER_ROLE);
-            // Is Organizer role selected
-            // but user is not an Organizer?
-            if (
-                (CurrentUserRole == ORGANIZER_ROLE)
-                &
-                (!UserResult))
-            {
-                // Put user in Organizer role
-                await UserManager
-                    .AddToRoleAsync(user, ORGANIZER_ROLE);
-            }
-            else
-            {
-                // Is Organizer role not selected
-                // but user is an Administrator?
-                if ((CurrentUserRole != ORGANIZER_ROLE)
-                    &
-                    (UserResult))
-                {
-                    // Remove user from Organizer role
-                    await UserManager
-                        .RemoveFromRoleAsync(user, ORGANIZER_ROLE);
-                    // Put user in Judge role
-                    await UserManager
-                        .AddToRoleAsync(user, JUDGE_ROLE);
-
-                }
-            }
+            UpdateUser();
         }
         else
         {
             var user = CreateUser();
 
-            await UserStore.SetUserNameAsync(user, objUser.UserName, CancellationToken.None);
+            await UserStore.SetUserNameAsync(user, objUser.Email, CancellationToken.None);
             var emailStore = GetEmailStore();
             await emailStore.SetEmailAsync(user, objUser.Email, CancellationToken.None);
             var result = await UserManager.CreateAsync(user, objUser.PasswordHash);
@@ -244,6 +262,8 @@
                 identityErrors = result.Errors;
                 return;
             }
+
+            
 
 
             // Close the Popup
