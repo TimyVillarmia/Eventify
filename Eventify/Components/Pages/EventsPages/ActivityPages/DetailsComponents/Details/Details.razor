@@ -1,5 +1,19 @@
-﻿<h3>Details</h3>
+﻿@using Eventify.Data
+@using Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Details
+
+<div class="DetailsSection-Container" style="@style">
+    <EditDetailsSection Activity="Activity"/>
+</div>
 
 @code {
+    [Parameter]
+    public Activity? Activity { get; set; }
 
+    [Parameter]
+    public Events? Event { get; set; }
+
+    [Parameter]
+    public string? style { get; set; }
 }
+
+
