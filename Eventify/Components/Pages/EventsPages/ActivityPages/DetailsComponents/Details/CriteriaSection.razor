@@ -5,8 +5,11 @@
 
 
 <div class="CriteriaSection-Container" style="width:100%;height:auto;border:1px solid black;border-radius:10px; margin:1rem 0 1rem 0;padding:1rem;background-color:#fffffe;">
-
-    <button class="btn btn-success" @onclick="AddNewCriterion" style="padding: 8px 2rem;border:none;border-radius:6px;background-color:#FFD803;display:flex;flex-direction:row;justify-content:center;align-items:center;margin-left:auto;cursor:pointer;">Add Criterion</button>
+    <div style="width:100%;display:flex;flex-direction:row;justify-content:space-between;align-items:center;">
+        <h2>Criteria</h2>
+        <button class="btn btn-success" @onclick="AddNewCriterion" style="padding: 8px 2rem;border:none;border-radius:6px;background-color:#FFD803;display:flex;flex-direction:row;justify-content:center;align-items:center;margin-left:auto;cursor:pointer;">Add Criterion</button>
+    </div>
+    
 
     @if (ShowPopup)
     {

@@ -8,20 +8,16 @@
 
 
 <div style="width:100%;height:auto;border:1px solid black;display:flex;flex-direction:column;padding:2rem;box-sizing:border-box;">
-    <div style="display:flex;flex-direction:row;">
+    <div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;">
         <h3>Judges</h3>
-        <button>Assign Judges</button>
+        <button @onclick="DoneClicked" style="@display">Done</button>
+        <button @onclick="AddJudgesClicked">Assign Judges</button>
     </div>
-    <div style="width:100%;">
+    <div style="width:100%;overflow:auto;@display">
         <table>
             @{
-                var unassignedJudgesExcept = from user in db.Users
-                                             join userRole in db.UserRoles on user.Id equals userRole.UserId
-                                             join role in db.Roles on userRole.RoleId equals role.Id
-                                             where role.Name == "Judge"
-                                             select user;
 
-                foreach (var judge in unassignedJudgesExcept)
+                foreach (var judge in UnAssignedUsers)
                 {
                     <tr>
                         <td>@judge.Email</td>
@@ -42,10 +38,10 @@
         </table>
     </div>
     <div style="display:flex;flex-direction:column;">
-        @* @foreach (var judge in db.JudgeActivity)
+        @foreach (var judge in JudgeActivities)
         {
-            <h2>@judge.User.Email</h2>
-        } *@
+            <h2>@judge.Email</h2>
+        }
     </div>
 </div>
 
@@ -56,30 +52,52 @@
     [Parameter]
     public Activity? Activity { get; set; }
 
+    string? display { get; set; } = "display:none;";
+
     protected override void OnInitialized()
     {
 
-        // var unassignedJudgesExcept = from userRoles in db.UserRoles
-        //                              join user in db.Users on userRoles.UserId equals user.Id
-        //                              join role in db.Roles on userRoles.RoleId equals role.Id
-        //                              where role.Id == "aab187c4-013b-4ca8-a3d7-89d8651d6d00"
-        //                              select user;
+        ReloadData();
+    }
 
-        var unassignedJudgesExcept = from user in db.Users select user;
+    void ReloadData()
+    {
+        var assignedJudgesExcept = from user in db.Users
+                                   join userRole in db.UserRoles on user.Id equals userRole.UserId
+                                   join role in db.Roles on userRole.RoleId equals role.Id
+                                   join ja in db.JudgeActivity on user.Id equals ja.User.Id
+                                   where role.Name == "Judge" && ja.ActivityID == Activity.Id
+                                   select user;
 
-        UnAssignedUsers = unassignedJudgesExcept.ToList();
+        var allJudges = from user in db.Users
+                        join userRole in db.UserRoles on user.Id equals userRole.UserId
+                        join role in db.Roles on userRole.RoleId equals role.Id
+                        where role.Name == "Judge"
+                        select user;
+
+        JudgeActivities = assignedJudgesExcept.ToList();
+        UnAssignedUsers = allJudges.Except(assignedJudgesExcept).ToList();
     }
 
     void AssignJudge(ApplicationUser judge)
     {
-        // var judgeActivity = new JudgeActivity();
-        // judgeActivity.User = judge;
-        // judgeActivity.Activities.Add(Activity!);
 
-        // db.JudgeActivity.Add(judgeActivity);
-        // db.SaveChanges();
-        
+        var judgeActivity = new JudgeActivity();
+        judgeActivity.User = judge;
+        judgeActivity.ActivityID = Activity.Id;
 
+        db.JudgeActivity.Add(judgeActivity);
+        db.SaveChanges();
+        ReloadData();
+
+    }
+    void AddJudgesClicked()
+    {
+        display = "display:block;";
+    }
+    void DoneClicked()
+    {
+        display = "display:none;";
     }
 
 }
