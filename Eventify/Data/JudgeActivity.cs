@@ -9,8 +9,7 @@ namespace Eventify.Data
         [Key]
         public int ID { get; set; }
         public ApplicationUser User { get; set; }
-
-        public ICollection<Activity> Activities { get; } = new List<Activity>(); // Collection navigation containing dependents
-
+        public int ActivityID { get; set; }
+        public Activity Activity { get; set; }
     }
 }
