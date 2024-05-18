@@ -1,0 +1,72 @@
+﻿@using Eventify.Data
+@inject ApplicationDbContext db
+@using Microsoft.AspNetCore.Identity
+@using System.ComponentModel.DataAnnotations
+@using Microsoft.AspNetCore.WebUtilities
+@inject UserManager<ApplicationUser> UserManager
+@rendermode InteractiveServer
+
+
+<div style="width:100%;height:auto;border:1px solid black;display:flex;flex-direction:column;padding:2rem;box-sizing:border-box;">
+    <div style="display:flex;flex-direction:row;">
+        <h3>Judges</h3>
+        <button>Assign Judges</button>
+    </div>
+    <div style="width:100%;">
+        <table>
+            @foreach(var judge in UnAssignedUsers)
+            {
+                <tr>
+                    <td>@judge.Email</td>
+                    <td>
+                        <button @onclick="() => {
+                            
+                            AssignJudge(judge);
+                            StateHasChanged();
+                            
+                        }">Assign</button>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div style="display:flex;flex-direction:column;">
+        @* @foreach (var judge in db.JudgeActivity)
+        {
+            <h2>@judge.User.Email</h2>
+        } *@
+    </div>
+</div>
+
+@code {
+    List<ApplicationUser> JudgeActivities = new();
+    List<ApplicationUser> UnAssignedUsers = new();
+
+    [Parameter]
+    public Activity? Activity { get; set; }
+
+    protected override void OnInitialized()
+    {
+
+        var unassignedJudgesExcept = from user in db.Users
+                                     join userrole in db.UserRoles on user.Id equals userrole.UserId
+                                     join role in db.Roles on userrole.RoleId equals role.Id
+                                     where role.Name == "Judge"
+                                     select user;
+
+        UnAssignedUsers = unassignedJudgesExcept.ToList();
+    }
+
+    void AssignJudge(ApplicationUser judge)
+    {
+        // var judgeActivity = new JudgeActivity();
+        // judgeActivity.User = judge;
+        // judgeActivity.Activities.Add(Activity!);
+
+        // db.JudgeActivity.Add(judgeActivity);
+        // db.SaveChanges();
+        
+
+    }
+
+}

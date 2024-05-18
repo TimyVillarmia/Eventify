@@ -1,7 +1,8 @@
 ﻿@using Eventify.Data
+@using Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Details
 
-<div style="display:flex;flex-direction:column;justify-content:start;align-items:center; width:100%;height:auto;@style">
-    <DetailsOverview Activity="Activity" Event="Event"/>
+<div class="DetailsSection-Container" style="@style">
+    <EditDetailsSection Activity="Activity"/>
 </div>
 
 @code {
@@ -14,3 +15,5 @@
     [Parameter]
     public string? style { get; set; }
 }
+
+

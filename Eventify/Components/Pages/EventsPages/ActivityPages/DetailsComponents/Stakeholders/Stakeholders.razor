@@ -1,0 +1,17 @@
+﻿@using Eventify.Data
+
+<div style="width:100%;height:auto;@style">
+    <ParticipantsSection />
+    <JudgesSection Activity="Activity" />
+</div>
+
+@code {
+    [Parameter]
+    public string? style { get; set; }
+
+    [Parameter]
+    public Activity? Activity { get; set; }
+
+    [Parameter]
+    public Events? Event { get; set; }
+}
