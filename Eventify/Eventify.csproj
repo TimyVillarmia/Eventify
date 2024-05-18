@@ -31,7 +31,6 @@
 
   <ItemGroup>
     <Folder Include="Components\Pages\EventsPages\ActivityPages\DetailsComponents\Results\" />
-    <Folder Include="Data\Migrations\" />
   </ItemGroup>
 
 </Project>
