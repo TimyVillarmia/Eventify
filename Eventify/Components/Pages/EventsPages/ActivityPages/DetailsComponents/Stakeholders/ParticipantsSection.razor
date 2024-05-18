@@ -4,78 +4,59 @@
 @inject Eventify.Data.ApplicationDbContext DB
 
 
-<div class="ParticipantsSection-Container" style="@style">
+<div class="ParticipantsSection-Container" style="width:100%;height:auto;border:1px solid black;border-radius:10px; margin:1rem 0 1rem 0;padding:1rem;background-color:#fffffe;">
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Entry#:</th>
-                <th>Participant Name</th>
-                <th>Course</th>
-                <th>Section</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var participant in RowParticipants)
-            {
-                <tr>
-                    <td>@participant.EntryNumber</td>
-                    <td>@participant.Name</td>
-                    <td>@participant.Course</td>
-                    <td>@participant.Section</td>
-                    <td>
-                        <!-- Edit the current forecast -->
-                        <button class="btn btn-primary"
-                                @onclick="(() => EditParticipant(participant))">
-                            Edit
-                        </button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <button class="btn btn-success" @onclick="AddNewUser" style="padding: 8px 2rem;border:none;border-radius:6px;background-color:#FFD803;display:flex;flex-direction:row;justify-content:center;align-items:center;margin-left:auto;cursor:pointer;">Add Participant</button>
 
     @if (ShowPopup)
     {
         <!-- This is the popup to create or edit a user -->
-        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal" tabindex="-1" style="display:block; padding:1rem;border:1px solid black;margin:1rem 0 0 0;border-radius:10px;" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Edit User</h3>
+                    <div class="modal-header" style="margin:0 0 1rem 0;display:flex;flex-direction:row;justify-content:space-between;align-items:center;">
+                        <h3 class="modal-title">@action</h3>
                         <!-- Button to close the popup -->
-                        <button type="button" class="close"
+                        <button type="button" class="close" style="background-color:#FFD803;padding:8px;border:none;border-radius:6px;cursor:pointer;"
                                 @onclick="ClosePopup">
-                            <span aria-hidden="true">X</span>
+                            <span aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"><path fill="black" d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6z" /></svg></span>
                         </button>
                     </div>
                     <!-- Edit form for the current user -->
-                    <div class="modal-body">
-                        <EditForm Model="Participant" method="post" OnValidSubmit="SaveParticipant" FormName="register">
+                    <div class="modal-body" style="width:100%;">
+                        <EditForm Model="Participant" method="post" OnValidSubmit="SaveParticipant" FormName="register" style="width:100%;">
                             <DataAnnotationsValidator />
                             <ValidationSummary class="text-danger" role="alert" />
-                            <div class="inputbox">
-                                <InputText @bind-Value="Participant.EntryNumber" aria-required="true" placeholder="Entry number" />
+                            <div style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;">
+                                <div class="inputbox" style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                    <InputText @bind-Value="Participant.EntryNumber" aria-required="true" placeholder="Entry number" style="padding:9px; border-radius:6px;margin:0 0 8px 0;width:100%;max-width:500px;" />
+                                </div>
+                                <div class="inputbox" style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                    <InputText @bind-Value="Participant.Name" aria-required="true" placeholder="Enter participant's name" style="padding:9px; border-radius:6px;margin:0 0 8px 0;width:100%;max-width:500px;" />
+                                </div>
+                                <div class="inputbox" style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                    <InputText @bind-Value="Participant.Course" aria-required="true" placeholder="Enter participant's course" style="padding:9px; border-radius:6px;margin:0 0 8px 0;width:100%;max-width:500px;" />
+                                </div>
+                                <div class="inputbox" style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
+                                    <InputText @bind-Value="Participant.Section" aria-required="true" placeholder="Enter participant's section" style="padding:9px; border-radius:6px;margin:0 0 8px 0;width:100%;max-width:500px;" />
+                                </div>
                             </div>
-                            <div class="inputbox">
-                                <InputText @bind-Value="Participant.Name" aria-required="true" placeholder="Enter participant's name" />
+
+                            <div style="display:flex;flex-direction:row;justify-content:end;align-items:center;margin:1rem 0 0 0;">
+                                @if (Participant.Id != 0)
+                                {
+                                    <!-- Button to delete the forecast -->
+                                    <button class="btn btn-danger" style="background-color:lightcoral;padding:8px;border:none;border-radius:6px;margin:0 auto 0 0;cursor:pointer;"
+                                            @onclick="DeleteParticipant">
+                                        Delete
+                                    </button>
+                                }
+                                <button type="submit" class="btn-create" style="background-color:#2342c0;padding:8px 2rem;border:none;border-radius:6px;color:white;cursor:pointer;">Save</button>
                             </div>
-                            <div class="inputbox">
-                                <InputText @bind-Value="Participant.Course" aria-required="true" placeholder="Enter participant's course" />
-                            </div>
-                            <div class="inputbox">
-                                <InputText @bind-Value="Participant.Section" aria-required="true" placeholder="Enter participant's section" />
-                            </div>
-                            <button type="submit" class="btn-create">Save</button>
+                           
+                            
                             <!-- Only show delete button if not a new record -->
-                            @if (Participant.Id != 0)
-                            {
-                                <!-- Button to delete the forecast -->
-                                <button class="btn btn-danger"
-                                        @onclick="DeleteParticipant">
-                                    Delete
-                                </button>
-                            }
+                            
                         </EditForm>
 
 
@@ -84,14 +65,43 @@
             </div>
         </div>
     }
-    <button class="btn btn-success" @onclick="AddNewUser">Add User</button>
+    <div style="width:100%;overflow:auto;">
+        <table class="table" style="width:100%;margin:0 0 1rem 0;border-spacing: 15px 20px; min-width:600px;">
+            <thead>
+                <tr>
+                    <th style="text-align:left;padding:10px;">Entry#:</th>
+                    <th style="text-align:left;padding:10px;">Participant Name</th>
+                    <th style="text-align:left;padding:10px;">Course</th>
+                    <th style="text-align:left;padding:10px;">Section</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var participant in RowParticipants)
+                {
+                    <tr>
+                        <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@participant.EntryNumber</td>
+                        <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@participant.Name</td>
+                        <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@participant.Course</td>
+                        <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@participant.Section</td>
+                        <td>
+                            <!-- Edit the current forecast -->
+                            <button class="btn btn-primary" style="width:100%;height:40px;border:2px solid #2342C0;border-radius:6px;background-color:transparent;display:flex;flex-direction:row;justify-content:center;align-items:center;cursor:pointer;"
+                                    @onclick="(() => EditParticipant(participant))">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    
+
+    
+    
 </div>
 
 @code {
-
-
-    [Parameter]
-    public string? style { get; set; }
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
@@ -101,7 +111,7 @@
 
     List<Participants> RowParticipants = new List<Participants>();
 
-
+    string? action { get; set; }
 
     // Property used to add or edit the currently selected user
     [SupplyParameterFromForm]
@@ -141,7 +151,7 @@
             Participant.Activity = Activity;
             DB.Participants.Add(Participant);
             await DB.SaveChangesAsync();
-            
+
         }
 
         ShowPopup = false;
@@ -156,6 +166,7 @@
         Participant = participants;
         // Open the Popup
         ShowPopup = true;
+        action = "Edit Participant";
     }
     async Task DeleteParticipant()
     {
@@ -180,6 +191,7 @@
         Participant.Id = 0;
         // Open the Popup
         ShowPopup = true;
+        action = "Add New Participant";
     }
 
 

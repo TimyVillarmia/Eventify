@@ -29,7 +29,7 @@
     align-items: center;
     padding: 2rem 0 0 0;
     box-sizing:border-box;
-    max-width:100vw;
+    max-width:100%;
     overflow-x:auto;
 }
 .ActivityDetails-Nav button {
@@ -42,4 +42,9 @@
     width:100%;
     height:auto;
     margin:1rem 0 0 0;
+}
+@media(max-width:500px){
+    .ActivityDetails-Container {
+        padding: 2rem 8px 2rem 8px;
+    }
 }
