@@ -1,0 +1,71 @@
+﻿@using Eventify.Data
+@rendermode InteractiveServer
+@inject NavigationManager NavigationManager
+
+<div class="event-cardview-container" style="@style">
+    <!--Header-->
+    <section class="event-cardview-header PrimaryVariant-Background">
+        <svg xmlns="http://www.w3.org/2000/svg" width="65" height="65" viewBox="0 0 24 24"><path fill="white" d="M14.5 18q-1.05 0-1.775-.725T12 15.5t.725-1.775T14.5 13t1.775.725T17 15.5t-.725 1.775T14.5 18M5 22q-.825 0-1.412-.587T3 20V6q0-.825.588-1.412T5 4h1V2h2v2h8V2h2v2h1q.825 0 1.413.588T21 6v14q0 .825-.587 1.413T19 22zm0-2h14V10H5z" /></svg>
+        <div class="event-cardview-header-details">
+            <a href="@($"/{Activity.Id}/Participants")" style="text-decoration:none;cursor:pointer;">
+                <h1>@Activity.Name</h1>
+            </a>
+            <h4>@Activity.Date.ToShortDateString()</h4>
+        </div>
+    </section>
+    <!--Header End-->
+    <!--Mid-->
+    <section class="event-cardview-mid">
+        <h3>Details</h3>
+        <div class="event-cardview-timeDetails">
+            <p>Start time: @Activity.StartTime</p>
+            <hr />
+            <p>End time: @Activity.EndTime</p>
+        </div>
+        <p style="margin:7px 0 0 0;">Venue: @Activity.Venue</p>
+    </section>
+    <!--Mid End-->
+    <!--Footer-->
+    <section class="event-cardview-footer">
+        <div class="event-cardview-footer-status">
+            <h4>Status:</h4>
+            <div>
+                Status
+            </div>
+        </div>
+        <a href="@($"/{Activity.Id}/Participants")" target="_blank">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48"><g fill="none" stroke="#6F6F6F" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"><path d="M28 6H42V20" /><path d="M42 29.4737V39C42 40.6569 40.6569 42 39 42H9C7.34315 42 6 40.6569 6 39V9C6 7.34315 7.34315 6 9 6L18 6" /><path d="M25.7998 22.1999L41.0998 6.8999" /></g></svg>
+        </a>
+    </section>
+    <!--Footer End-->
+</div>
+
+@code {
+    [Parameter]
+    public string? style { get; set; } = "";
+
+    [Parameter]
+    public Activity? Activity { get; set; } = new();
+
+    private string? menustyle { get; set; }
+    bool menuHidden = true;
+
+    void menuClick()
+    {
+        if (menuHidden)
+        {
+            menustyle = "display:block;";
+            menuHidden = false;
+        }
+        else
+        {
+            menustyle = "display:none;";
+            menuHidden = true;
+        }
+    }
+
+    void NavigateToDelete()
+    {
+        // NavigationManager.NavigateTo($"events/delete?id={Event!.Id}", forceLoad: true);
+    }
+}
