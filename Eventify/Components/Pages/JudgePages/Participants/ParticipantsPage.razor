@@ -1,0 +1,39 @@
+﻿@page "/{Activity_ID}/Participants"
+@using Eventify.Data
+@inject ApplicationDbContext db
+@layout Eventify.Components.Layout.MainLayout
+
+<PageTitle>Participants</PageTitle>
+
+<div style="width:100%;height:100%;display:flex;flex-direction:column;flex-wrap:wrap; padding:2rem;box-sizing:border-box;">
+    @foreach(var peep in Participants)
+    {
+        <a href="@($"{Activity.Id}/Judging/{peep.Id}")" style="border:1px solid black; padding:2rem;width:auto;height:auto;box-sizing:border-box;max-width:200px;">
+            @peep.EntryNumber
+        </a>
+    }
+</div>
+
+@code{
+    [Parameter]
+    public string? Activity_ID { get; set; }
+    [Parameter]
+    public Activity? Activity { get; set; } = new();
+
+    List<Participants>? Participants = new();
+
+    protected override void OnInitialized()
+    {
+        Activity = db.Activity.Single(i => i.Id == int.Parse(Activity_ID));
+        GetParticipants();
+    }
+
+    void GetParticipants()
+    {
+        var participants = from peeps in db.Participants
+                           where peeps.ActivityID == Activity.Id
+                           select peeps;
+        
+        Participants = participants.ToList();
+    }
+}
