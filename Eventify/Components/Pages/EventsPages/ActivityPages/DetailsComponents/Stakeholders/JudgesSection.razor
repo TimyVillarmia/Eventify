@@ -14,20 +14,31 @@
     </div>
     <div style="width:100%;">
         <table>
-            @foreach(var judge in UnAssignedUsers)
-            {
-                <tr>
-                    <td>@judge.Email</td>
-                    <td>
-                        <button @onclick="() => {
-                            
+            @{
+                var unassignedJudgesExcept = from user in db.Users
+                                             join userRole in db.UserRoles on user.Id equals userRole.UserId
+                                             join role in db.Roles on userRole.RoleId equals role.Id
+                                             where role.Name == "Judge"
+                                             select user;
+
+                foreach (var judge in unassignedJudgesExcept)
+                {
+                    <tr>
+                        <td>@judge.Email</td>
+                        <td>
+                            <button @onclick="() => {
+
                             AssignJudge(judge);
                             StateHasChanged();
-                            
-                        }">Assign</button>
-                    </td>
-                </tr>
+
+                        }">
+                                Assign
+                            </button>
+                        </td>
+                    </tr>
+                }
             }
+            
         </table>
     </div>
     <div style="display:flex;flex-direction:column;">
@@ -48,11 +59,13 @@
     protected override void OnInitialized()
     {
 
-        var unassignedJudgesExcept = from user in db.Users
-                                     join userrole in db.UserRoles on user.Id equals userrole.UserId
-                                     join role in db.Roles on userrole.RoleId equals role.Id
-                                     where role.Name == "Judge"
-                                     select user;
+        // var unassignedJudgesExcept = from userRoles in db.UserRoles
+        //                              join user in db.Users on userRoles.UserId equals user.Id
+        //                              join role in db.Roles on userRoles.RoleId equals role.Id
+        //                              where role.Id == "aab187c4-013b-4ca8-a3d7-89d8651d6d00"
+        //                              select user;
+
+        var unassignedJudgesExcept = from user in db.Users select user;
 
         UnAssignedUsers = unassignedJudgesExcept.ToList();
     }
