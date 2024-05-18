@@ -31,10 +31,10 @@
         </table>
     </div>
     <div style="display:flex;flex-direction:column;">
-        @foreach (var judge in db.JudgeActivity)
+        @* @foreach (var judge in db.JudgeActivity)
         {
             <h2>@judge.User.Email</h2>
-        }
+        } *@
     </div>
 </div>
 
@@ -48,8 +48,13 @@
     protected override void OnInitialized()
     {
 
-        var unassignedJudgesExcept = db.Users.ToList();
-        UnAssignedUsers = unassignedJudgesExcept;
+        var unassignedJudgesExcept = from user in db.Users
+                                     join userrole in db.UserRoles on user.Id equals userrole.UserId
+                                     join role in db.Roles on userrole.RoleId equals role.Id
+                                     where role.Name == "Judge"
+                                     select user;
+
+        UnAssignedUsers = unassignedJudgesExcept.ToList();
     }
 
     void AssignJudge(ApplicationUser judge)
