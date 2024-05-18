@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240517123739_ParticipantSchema")]
-    partial class ParticipantSchema
+    [Migration("20240518094133_migorr")]
+    partial class migorr
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,6 +35,9 @@ namespace Eventify.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<TimeOnly>("EndTime")
                         .HasColumnType("time");
@@ -125,6 +128,34 @@ namespace Eventify.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
+            modelBuilder.Entity("Eventify.Data.Criteria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CriteriaName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("MaxScore")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Weight")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityID");
+
+                    b.ToTable("Criteria");
+                });
+
             modelBuilder.Entity("Eventify.Data.Events", b =>
                 {
                     b.Property<int>("Id")
@@ -162,6 +193,29 @@ namespace Eventify.Migrations
                     b.ToTable("Events");
                 });
 
+            modelBuilder.Entity("Eventify.Data.JudgeActivity", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
+
+                    b.Property<int>("ActivityID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("ActivityID");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("JudgeActivity");
+                });
+
             modelBuilder.Entity("Eventify.Data.Participants", b =>
                 {
                     b.Property<int>("Id")
@@ -194,6 +248,66 @@ namespace Eventify.Migrations
                     b.HasIndex("ActivityID");
 
                     b.ToTable("Participants");
+                });
+
+            modelBuilder.Entity("Eventify.Data.ParticipantsScore", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CriteriaId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JudgeID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JudgedBy")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParticipantId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Score")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CriteriaId");
+
+                    b.HasIndex("JudgeID");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("ParticipantsScores");
+                });
+
+            modelBuilder.Entity("Eventify.Data.Result", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivityId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("OverallScore")
+                        .HasColumnType("float");
+
+                    b.Property<int>("ParticipantId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActivityId");
+
+                    b.HasIndex("ParticipantId");
+
+                    b.ToTable("Results");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -340,6 +454,34 @@ namespace Eventify.Migrations
                     b.Navigation("Event");
                 });
 
+            modelBuilder.Entity("Eventify.Data.Criteria", b =>
+                {
+                    b.HasOne("Eventify.Data.Activity", "Activity")
+                        .WithMany("Criteria")
+                        .HasForeignKey("ActivityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+                });
+
+            modelBuilder.Entity("Eventify.Data.JudgeActivity", b =>
+                {
+                    b.HasOne("Eventify.Data.Activity", "Activity")
+                        .WithMany("Judges")
+                        .HasForeignKey("ActivityID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventify.Data.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Eventify.Data.Participants", b =>
                 {
                     b.HasOne("Eventify.Data.Activity", "Activity")
@@ -349,6 +491,52 @@ namespace Eventify.Migrations
                         .IsRequired();
 
                     b.Navigation("Activity");
+                });
+
+            modelBuilder.Entity("Eventify.Data.ParticipantsScore", b =>
+                {
+                    b.HasOne("Eventify.Data.Criteria", "Criteria")
+                        .WithMany()
+                        .HasForeignKey("CriteriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventify.Data.JudgeActivity", "Judge")
+                        .WithMany()
+                        .HasForeignKey("JudgeID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventify.Data.Participants", "Participant")
+                        .WithMany("ParticipantsScores")
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Criteria");
+
+                    b.Navigation("Judge");
+
+                    b.Navigation("Participant");
+                });
+
+            modelBuilder.Entity("Eventify.Data.Result", b =>
+                {
+                    b.HasOne("Eventify.Data.Activity", "Activity")
+                        .WithMany("Results")
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Eventify.Data.Participants", "Participant")
+                        .WithMany()
+                        .HasForeignKey("ParticipantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Activity");
+
+                    b.Navigation("Participant");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -404,12 +592,23 @@ namespace Eventify.Migrations
 
             modelBuilder.Entity("Eventify.Data.Activity", b =>
                 {
+                    b.Navigation("Criteria");
+
+                    b.Navigation("Judges");
+
                     b.Navigation("Participants");
+
+                    b.Navigation("Results");
                 });
 
             modelBuilder.Entity("Eventify.Data.Events", b =>
                 {
                     b.Navigation("Activities");
+                });
+
+            modelBuilder.Entity("Eventify.Data.Participants", b =>
+                {
+                    b.Navigation("ParticipantsScores");
                 });
 #pragma warning restore 612, 618
         }

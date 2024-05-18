@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventify.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240518052330_ModifyJudgeActivitySchema")]
-    partial class ModifyJudgeActivitySchema
+    [Migration("20240518093206_migarsss")]
+    partial class migarsss
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
