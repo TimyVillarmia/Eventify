@@ -1,5 +1,176 @@
-﻿<h3>CriteriaSection</h3>
+﻿@using Eventify.Data
+@using Microsoft.EntityFrameworkCore
+
+@inject Eventify.Data.ApplicationDbContext DB
+
+
+<div class="ParticipantsSection-Container" style="@style">
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Criterion:</th>
+                <th>Rate</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var criterion in RowCriteria)
+            {
+                <tr>
+                    <td>@criterion.CriteriaName</td>
+                    <td>@criterion.Weight</td>
+                    <td>
+                        <!-- Edit the current forecast -->
+                        <button class="btn btn-primary"
+                                @onclick="(() => EditCriterion(criterion))">
+                            Edit
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (ShowPopup)
+    {
+        <!-- This is the popup to create or edit a user -->
+        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title">Edit User</h3>
+                        <!-- Button to close the popup -->
+                        <button type="button" class="close"
+                                @onclick="ClosePopup">
+                            <span aria-hidden="true">X</span>
+                        </button>
+                    </div>
+                    <!-- Edit form for the current user -->
+                    <div class="modal-body">
+                        <EditForm Model="Criterion" method="post" OnValidSubmit="SaveCriterion" FormName="create">
+                            <ValidationSummary class="text-danger" role="alert" />
+                            <div class="inputbox">
+                                <InputText @bind-Value="Criterion.CriteriaName" aria-required="true" placeholder="Entry Criterion name" />
+                            </div>
+                            <div class="inputbox">
+                                <InputNumber @bind-Value="Criterion.Weight" aria-required="true" placeholder="Enter Weight" />
+                            </div>
+                            <button type="submit" class="btn-create">Save</button>
+                            <!-- Only show delete button if not a new record -->
+                            @if (Criterion.Id != 0)
+                            {
+                                <!-- Button to delete the forecast -->
+                                <button class="btn btn-danger"
+                                        @onclick="DeleteCriterion">
+                                    Delete
+                                </button>
+                            }
+                        </EditForm>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    <button class="btn btn-success" @onclick="AddNewCriterion">Add User</button>
+</div>
 
 @code {
+
+
+    [Parameter]
+    public string? style { get; set; }
+
+    [SupplyParameterFromQuery]
+    public int Id { get; set; }
+
+    [Parameter]
+    public Activity? Activity { get; set; }
+
+    List<Criteria> RowCriteria = new List<Criteria>();
+
+
+
+    // Property used to add or edit the currently selected user
+    [SupplyParameterFromForm]
+    public Criteria? Criterion { get; set; } = new();
+
+    // To enable showing the Popup
+    bool ShowPopup = false;
+
+    protected override void OnInitialized()
+    {
+        GetCriteria();
+        var max = RowCriteria.Sum(x => x.Weight);
+
+    }
+
+    public void GetCriteria()
+    {
+        RowCriteria = new List<Criteria>();
+
+        var criteria = DB.Criteria.Where(x => x.ActivityID == Id);
+        foreach (var criterion in criteria)
+        {
+            RowCriteria.Add(criterion);
+        }
+
+    }
+    public async Task SaveCriterion()
+    {
+
+        // Is this an existing user?
+        if (Criterion.Id != 0)
+        {
+            DB.Criteria.Update(Criterion);
+            await DB.SaveChangesAsync();
+        }
+        else
+        {
+            Criterion.Activity = Activity;
+            Criterion.MaxScore = Criterion.Weight;
+            DB.Criteria.Add(Criterion);
+            await DB.SaveChangesAsync();
+
+        }
+
+        ShowPopup = false;
+        GetCriteria();
+
+    }
+
+    void EditCriterion(Criteria criterion)
+    {
+        // Set the selected user
+        // as the current user
+        Criterion = criterion;
+        // Open the Popup
+        ShowPopup = true;
+    }
+    async Task DeleteCriterion()
+    {
+
+        // Close the Popup
+        ShowPopup = false;
+        DB.Criteria.Remove(Criterion);
+        await DB.SaveChangesAsync();
+
+        // Refresh Users
+        GetCriteria();
+    }
+    void ClosePopup()
+    {
+        // Close the Popup
+        ShowPopup = false;
+    }
+
+    void AddNewCriterion()
+    {
+        Criterion = new Criteria();
+        Criterion.Id = 0;
+        // Open the Popup
+        ShowPopup = true;
+    }
+
 
 }
