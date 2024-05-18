@@ -119,25 +119,16 @@ using (var scope = app.Services.CreateScope())
     if (user == null)
     {
         var organizer = Activator.CreateInstance<ApplicationUser>();
-        var judge = Activator.CreateInstance<ApplicationUser>();
-
         // organizer account
         await UserStore.SetUserNameAsync(organizer, "Admin@eventify.com", CancellationToken.None);
         var emailStore = (IUserEmailStore<ApplicationUser>)UserStore;
         await emailStore.SetEmailAsync(organizer, "Admin@eventify.com", CancellationToken.None);
         var identityResult = await userManager.CreateAsync(organizer, "Admin123!");
 
-        // judge account
-        await UserStore.SetUserNameAsync(judge, "Judge@eventify.com", CancellationToken.None);
-        emailStore = (IUserEmailStore<ApplicationUser>)UserStore;
-        await emailStore.SetEmailAsync(judge, "Admin@eventify.com", CancellationToken.None);
-        identityResult = await userManager.CreateAsync(judge, "Judge123!");
-
         if (identityResult.Succeeded)
         {
             // Put Admin@eventify.com in Organizer role
             await userManager.AddToRoleAsync(organizer, "Organizer");
-            await userManager.AddToRoleAsync(judge, "Judge");
         }
         
     }
