@@ -48,8 +48,16 @@
     protected override void OnInitialized()
     {
 
-        var unassignedJudgesExcept = db.Users.ToList();
-        UnAssignedUsers = unassignedJudgesExcept;
+        var unassignedJudgesExcept = db.Users.Join(db.UserRoles, user => user.Id, role => role.UserId, (user, role) => new
+        {
+            User = user,
+            Role = role
+        });
+
+        foreach(var user in unassignedJudgesExcept)
+        {
+            UnAssignedUsers.Add(user.User);
+        }
     }
 
     void AssignJudge(ApplicationUser judge)
