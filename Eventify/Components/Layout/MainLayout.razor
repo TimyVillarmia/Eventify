@@ -7,7 +7,9 @@
         <MainlayoutNavbar />
     </div>
     <div class="mainlayout-sidebar-container">
-        <MainLayoutSidebar/>
+        <AuthorizeView Roles="Organizer">
+            <MainLayoutSidebar />
+        </AuthorizeView>
     </div>
     <div class="mainlayout-maincontent">
         @Body
