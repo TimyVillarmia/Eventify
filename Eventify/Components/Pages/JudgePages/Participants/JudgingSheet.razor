@@ -1,18 +1,22 @@
-﻿@page "/{ActivityID}/Judging/{ParticipantID}"
+﻿@page "/{ActivityID:int}/Judging/{ParticipantID:int}"
 
 @using Eventify.Data
-@inject ApplicationDbContext db
+@using Eventify.Components.Account
 @using Eventify.Components.Pages.HomeComponents
 @using Microsoft.AspNetCore.Authorization
-@inject NavigationManager NavManager
-@rendermode InteractiveServer
-@using Eventify.Components.Account
-@inject IdentityUserAccessor UserAccessor
+@using Microsoft.AspNetCore.Identity
 
+@rendermode InteractiveServer
+
+@inject NavigationManager NavManager
+@inject IdentityUserAccessor UserAccessor
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject UserManager<ApplicationUser> UserManager
+@inject Eventify.Data.ApplicationDbContext DB
 
 <div class="judgingsheet-container" style="">
     <div class="judgingsheet-header">
-        <img src="activityIcon.png" style=""/>
+        <img src="activityIcon.png" style="" />
         <h1 style="">@(($"{Activity.Name}").ToUpper())</h1>
         <div style="">
             <p>@Activity.Venue</p>
@@ -31,22 +35,13 @@
                 </tr>
                 @foreach (var criteria in ActivityCriteria)
                 {
-                    var partScore = new ParticipantsScore()
-                    {
-                        CriteriaId = criteria.Id,
-                        ParticipantId = Participant.Id,
-                        Judge = JudgeActivity,
-                        Score = 0
-
-                    };
                     <tr>
                         <td style="padding:1rem 2rem;border:1px solid black;">@criteria.CriteriaName</td>
                         <td style="padding:1rem 2rem;border:1px solid black;">@criteria.Weight %</td>
                         <td style="padding:1rem 2rem;border:1px solid black;">
-                            <input type="number" max="@criteria.Weight" @bind="partScore.Score" style="padding:1rem 2rem;border-radius:6px;"/>
+                            <input type="number" max="@criteria.MaxScore" min="0" @bind="ParticipantScores[criteria.Id].Score" style="padding:1rem 2rem;border-radius:6px;" />
                         </td>
                     </tr>
-                    ParticipantScores!.Add(partScore);
                 }
             </table>
         </div>
@@ -55,64 +50,83 @@
             <button @onclick="() => {OnSave();}">Save</button>
         </div>
     </div>
-    
+
 </div>
 
 
 
 @code {
     [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    private Task<AuthenticationState>? authenticationState { get; set; }
 
     ApplicationUser? user { get; set; } = new();
 
-    [Parameter]
-    public string? ActivityID { get; set; }
+    public double currentCriteria;
 
     [Parameter]
-    public string? ParticipantID { get; set; }
+    public int? ActivityID { get; set; }
+
+    [Parameter]
+    public int? ParticipantID { get; set; }
 
     [Parameter]
     public Activity? Activity { get; set; } = new();
 
-    public JudgeActivity? JudgeActivity { get; set; } = new();
 
     [Parameter]
     public Participants? Participant { get; set; } = new();
 
     List<Criteria>? ActivityCriteria { get; set; } = new();
 
-    List<ParticipantsScore>? ParticipantScores { get; set; } = new();
+
+    Dictionary<int, ParticipantsScore> ParticipantScores { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        var authstate = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var current = authstate.User;
+        user = await UserManager.GetUserAsync(current);
+        ParticipantScores.Clear();
+
         GetData();
     }
 
     void GetData()
     {
-        var activity = db.Activity.Single(i => i.Id == int.Parse(ActivityID));
+        var activity = DB.Activity.Single(i => i.Id == ActivityID);
         Activity = activity;
 
-        var participant = db.Participants.Single(i => i.Id == int.Parse(ParticipantID));
+        var participant = DB.Participants.Single(i => i.Id == ParticipantID);
         Participant = participant;
 
-        var criteriaList = db.Criteria.Where(i => i.ActivityID == Activity.Id);
+        var criteriaList = DB.Criteria.Where(i => i.Activity == Activity);
         ActivityCriteria = criteriaList.ToList();
 
-        var judgeActivity = db.JudgeActivity.Single(i => i.ActivityID == Activity.Id && i.User.Id == user.Id);
-        JudgeActivity = judgeActivity;
+        foreach (var criteria in ActivityCriteria)
+        {
+            ParticipantScores?.Add(criteria.Id, new ParticipantsScore
+                {
+                @* Score = 0, null*@
+                Criteria = criteria,
+                Participant = Participant,
+                JudgeId = user.Id
+            });
+        }
     }
 
     void OnSave()
     {
-        foreach(var item in ParticipantScores)
+        foreach (KeyValuePair<int, ParticipantsScore> entry in ParticipantScores)
         {
-            db.ParticipantsScores.Add(item);
-            db.SaveChanges();
+            if (entry.Value.Score != null)
+            {
+                DB.ParticipantsScores.AddRange(entry.Value);
+                DB.SaveChanges();
+
+            }
         }
-        
+
+
     }
 
 }

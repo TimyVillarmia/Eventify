@@ -1,17 +1,16 @@
-﻿<a class="Sidebar-events-button" href="@href?">
+﻿@using Eventify.Data
+
+<a class="Sidebar-events-button" href="@($"events/details?id={Event!.Id}")">
     <div class="EventProfile">
-        <strong>@EventTitle[0]</strong>
+        <strong>@Event.EventName[0]</strong>
         
     </div>
     <div class="EventTitle">
-        @EventTitle
+        @Event.EventName
     </div>
 </a>
 
 @code{
     [Parameter]
-    public string href {get;set;} = "";
-
-    [Parameter]
-    public string EventTitle{get;set;} = "";
+    public Events? Event {get;set;}
 }

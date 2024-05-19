@@ -18,16 +18,26 @@
             </thead>
             <tbody>
                 @{
-                    var results = from scores in db.ParticipantsScores
-                                  join peep in db.Participants on scores.ParticipantId equals peep.Id
-                                  where peep.ActivityID == Activity.Id
-                                  orderby scores.Score ascending
+                    var totalScores = from scores in db.ParticipantsScores
+                                      join peep in db.Participants on scores.ParticipantId equals peep.Id
+                                      where peep.ActivityID == Activity.Id
+                                      group scores by new { peep.Id, peep.EntryNumber, peep.Name, peep.Course } into g
+                                      select new
+                                      {
+                                          ParticipantId = g.Key.Id,
+                                          EntryNumber = g.Key.EntryNumber,
+                                          Name = g.Key.Name,
+                                          Course = g.Key.Course,
+                                          TotalScore = g.Sum(x => x.Score)
+                                      };
+                    var results = from ts in totalScores
+                                  orderby ts.TotalScore descending
                                   select new
                                   {
-                                      EntryNumber = peep.EntryNumber,
-                                      Participant = peep.Name,
-                                      Course = peep.Course,
-                                      Score = scores.Score
+                                      EntryNumber = ts.EntryNumber,
+                                      Participant = ts.Name,
+                                      Course = ts.Course,
+                                      Score = ts.TotalScore
                                   };
 
                     foreach (var result in results)
