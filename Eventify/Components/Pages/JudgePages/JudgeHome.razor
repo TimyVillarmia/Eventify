@@ -1,0 +1,49 @@
+﻿@page "/Judge/Home"
+@inject Eventify.Data.ApplicationDbContext db
+@using Eventify.Components.Account
+@using Eventify.Data
+@using Eventify.Components.Pages.HomeComponents
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager NavManager
+@inject IdentityUserAccessor UserAccessor
+
+<PageTitle>Home-Activities</PageTitle>
+
+<div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
+    <div class="home-container" style="">
+        @foreach (var item in Activities)
+        {
+            <ActivityCardView style="margin: 0 1.5rem 1.5rem 0;" Activity="item" />
+        }
+        @*         @for (int i = 0; i < 5; i++)
+        {
+        <EventCardView style="margin: 0 1.5rem 1.5rem 0;" />
+        } *@
+
+    </div>
+</div>
+
+@code{
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    ApplicationUser? user { get; set; }
+
+    List<Events>? Events = new();
+    List<Activity>? Activities = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        GetActivities(user);
+    }
+    void GetActivities(ApplicationUser user)
+    {
+        var JudgeActivities = from acts in db.Activity
+                              join ja in db.JudgeActivity on acts.Id equals ja.ActivityID
+                              where ja.User.Id == user.Id
+                              select acts;
+
+        Activities = JudgeActivities.ToList();
+    }
+}

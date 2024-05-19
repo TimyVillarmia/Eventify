@@ -1,0 +1,118 @@
+﻿@page "/{ActivityID}/Judging/{ParticipantID}"
+
+@using Eventify.Data
+@inject ApplicationDbContext db
+@using Eventify.Components.Pages.HomeComponents
+@using Microsoft.AspNetCore.Authorization
+@inject NavigationManager NavManager
+@rendermode InteractiveServer
+@using Eventify.Components.Account
+@inject IdentityUserAccessor UserAccessor
+
+
+<div class="judgingsheet-container" style="">
+    <div class="judgingsheet-header">
+        <img src="activityIcon.png" style=""/>
+        <h1 style="">@(($"{Activity.Name}").ToUpper())</h1>
+        <div style="">
+            <p>@Activity.Venue</p>
+            <p>@Activity.StartTime - @Activity.EndTime</p>
+        </div>
+    </div>
+    <div class="second-container" style="">
+        <h2>Participant Entry#: @Participant.EntryNumber</h2>
+        <hr style="width:100%;height:1px;background-color:black;" />
+        <div class="table-container" style="">
+            <table style="">
+                <tr>
+                    <th style="padding:1rem;background-color:#272343;color:white;border:1px solid black;">Criteria</th>
+                    <th style="padding:1rem;background-color:#272343;color:white;border:1px solid black;">Rate</th>
+                    <th style="padding:1rem;background-color:#272343;color:white;border:1px solid black;">Score</th>
+                </tr>
+                @foreach (var criteria in ActivityCriteria)
+                {
+                    var partScore = new ParticipantsScore()
+                    {
+                        CriteriaId = criteria.Id,
+                        ParticipantId = Participant.Id,
+                        Judge = JudgeActivity,
+                        Score = 0
+
+                    };
+                    <tr>
+                        <td style="padding:1rem 2rem;border:1px solid black;">@criteria.CriteriaName</td>
+                        <td style="padding:1rem 2rem;border:1px solid black;">@criteria.Weight %</td>
+                        <td style="padding:1rem 2rem;border:1px solid black;">
+                            <input type="number" max="@criteria.Weight" @bind="partScore.Score" style="padding:1rem 2rem;border-radius:6px;"/>
+                        </td>
+                    </tr>
+                    ParticipantScores!.Add(partScore);
+                }
+            </table>
+        </div>
+        <div style="display:flex;flex-direction:row;justify-content:end;align-items:center;">
+            <button>Cancel</button>
+            <button @onclick="() => {OnSave();}">Save</button>
+        </div>
+    </div>
+    
+</div>
+
+
+
+@code {
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    ApplicationUser? user { get; set; } = new();
+
+    [Parameter]
+    public string? ActivityID { get; set; }
+
+    [Parameter]
+    public string? ParticipantID { get; set; }
+
+    [Parameter]
+    public Activity? Activity { get; set; } = new();
+
+    public JudgeActivity? JudgeActivity { get; set; } = new();
+
+    [Parameter]
+    public Participants? Participant { get; set; } = new();
+
+    List<Criteria>? ActivityCriteria { get; set; } = new();
+
+    List<ParticipantsScore>? ParticipantScores { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        GetData();
+    }
+
+    void GetData()
+    {
+        var activity = db.Activity.Single(i => i.Id == int.Parse(ActivityID));
+        Activity = activity;
+
+        var participant = db.Participants.Single(i => i.Id == int.Parse(ParticipantID));
+        Participant = participant;
+
+        var criteriaList = db.Criteria.Where(i => i.ActivityID == Activity.Id);
+        ActivityCriteria = criteriaList.ToList();
+
+        var judgeActivity = db.JudgeActivity.Single(i => i.ActivityID == Activity.Id && i.User.Id == user.Id);
+        JudgeActivity = judgeActivity;
+    }
+
+    void OnSave()
+    {
+        foreach(var item in ParticipantScores)
+        {
+            db.ParticipantsScores.Add(item);
+            db.SaveChanges();
+        }
+        
+    }
+
+}

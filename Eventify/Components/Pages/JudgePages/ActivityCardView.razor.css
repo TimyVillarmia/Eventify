@@ -1,0 +1,158 @@
+﻿.event-cardview-container {
+    display: grid;
+    grid-template-rows: repeat(3, auto);
+    box-sizing: border-box;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+    width: auto;
+    height: auto;
+    background-color: #fffffe;
+}
+
+/*HEADER STYLES*/
+.event-cardview-header {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    padding: 12px 1rem;
+    background-color: #2342c0;
+}
+
+.event-cardview-header-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+    .event-cardview-header-details h1, h4 {
+        color: #fffffe;
+    }
+
+    .event-cardview-header-details h4 {
+        font-weight: 400;
+    }
+
+.event-cardview-menu {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    width: auto;
+    height: 40px;
+    margin-left: auto;
+    align-content: center;
+    cursor: pointer;
+}
+
+.event-cardview-menu-container {
+    position: relative;
+    width: auto;
+    height: auto;
+    margin-left: auto;
+    overflow: visible;
+}
+
+.event-cardview-menubar {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    background-color: #fffffe;
+    align-items: start;
+    width: auto;
+    height: auto;
+    position: absolute;
+    bottom: -60%;
+    left: -280%;
+    border-radius: 7px;
+    overflow: hidden;
+    display: none;
+}
+
+    .event-cardview-menubar button {
+        padding: 8px 2rem;
+        width: 100%;
+        height: auto;
+        border: none;
+        display: flex;
+        flex-direction: row;
+    }
+
+        .event-cardview-menubar button:hover {
+            background-color: lightgray;
+            cursor: pointer;
+        }
+/*HEADER STYLES END*/
+/*MID SECTION STYLES*/
+.event-cardview-mid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+    padding: 1rem 1rem 3rem 1rem;
+}
+
+    .event-cardview-mid h3 {
+        font-weight: 400;
+        color: #363636;
+        margin: 0 0 10px 0;
+    }
+
+.event-cardview-timeDetails {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0 0 0;
+}
+
+    .event-cardview-timeDetails hr {
+        width: 1px;
+        height: 100%;
+        background-color: #545454;
+        border: none;
+        margin: 0 2rem;
+    }
+
+.event-cardview-mid p {
+    color: #545454;
+    font-size: 13px;
+    margin: 0 0 0 0;
+}
+/*MID SECTION STYLES END*/
+/*FOOTER STYLES*/
+.event-cardview-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    border: solid 1px #545454;
+    border-width: 1px 0 0 0;
+}
+
+.event-cardview-footer-status {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+    .event-cardview-footer-status h4 {
+        font-weight: 400;
+        color: #363636;
+    }
+
+    .event-cardview-footer-status div {
+        padding: 5px;
+        background-color: yellow;
+        border-radius: 7px;
+        margin: 0 0 0 10px;
+    }
+/*FOOTER STYLES END*/
+
+@media(max-width:500px) {
+    .event-cardview-container {
+        width: 100%;
+    }
+}
