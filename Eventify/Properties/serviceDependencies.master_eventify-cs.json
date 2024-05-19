@@ -6,6 +6,10 @@
       "type": "mssql.onprem",
       "connectionId": "ConnectionStrings:DefaultConnection",
       "dynamicId": null
+    },
+    "identityapp1": {
+      "connectionInfo": "App registration: eventify, Tenant: Default Directory (timyvillarmiagmail.onmicrosoft.com - Microsoft Entra ID)",
+      "type": "identityapp.default"
     }
   }
 }

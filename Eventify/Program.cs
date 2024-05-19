@@ -53,7 +53,8 @@ builder.Services.AddAuthentication(options =>
         googleoptions.ClientId = configuration["Google:client_id"];
         googleoptions.ClientSecret = configuration["Google:client_secret"];
     })
-    .AddIdentityCookies();
+    .AddIdentityCookies()
+.AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
 builder.Services.AddAuthentication()
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
@@ -77,6 +78,8 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, EmailSender>();
 builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; })
     .AddMicrosoftIdentityConsentHandler();
+
+builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme);
 
 builder.Services.AddControllersWithViews()
 .AddMicrosoftIdentityUI();
@@ -117,9 +120,6 @@ using (var scope = app.Services.CreateScope())
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
     var UserStore = scope.ServiceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-
-    context.Database.EnsureCreated();
 
     foreach (var role in roles)
     {
