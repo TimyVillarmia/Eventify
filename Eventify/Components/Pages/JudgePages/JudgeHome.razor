@@ -2,10 +2,9 @@
 @inject Eventify.Data.ApplicationDbContext db
 @using Eventify.Components.Account
 @using Eventify.Data
-@using Eventify.Components.Pages.HomeComponents
 @using Microsoft.AspNetCore.Authorization
-@inject NavigationManager NavManager
 @inject IdentityUserAccessor UserAccessor
+@attribute [Authorize]
 
 <PageTitle>Home-Activities</PageTitle>
 
@@ -27,10 +26,11 @@
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    ApplicationUser? user { get; set; }
+    [Parameter]
+    public ApplicationUser? user { get; set; }
 
-    List<Events>? Events = new();
-    List<Activity>? Activities = new();
+    List<Events>? Events { get; set; } = new();
+    List<Activity>? Activities { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {

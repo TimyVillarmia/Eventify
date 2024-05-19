@@ -2,6 +2,9 @@
 
 @using Eventify.Components.Layout.SideBarComponents
 @inject NavigationManager NavigationManager
+@using Eventify.Data
+@using Eventify.Components.Pages
+@inject ApplicationDbContext db
 
 @rendermode InteractiveServer
 
@@ -26,7 +29,10 @@
             <span class="mainlayout-sidebar-buttonlabel">Events</span>
             
         </a>
-        <SidebarEventsButton EventTitle="CCS Day"/>         
+        @foreach(var Event in Events)
+        {
+            <SidebarEventsButton Event="Event" />
+        }
     </div>
     <div class="mainlayout-sidebar-section mainlayout-sidebar-last-section" style="@display">
         <a class="mainlayout-sidebar-buttons">
@@ -57,6 +63,8 @@
 
     bool isInvisible = true;
 
+    public List<Events>? Events { get; set; } = new();
+    Home home = new Home();
 
     protected override void OnInitialized()
     {
@@ -68,6 +76,8 @@
     {
         currentUrl = NavigationManager.ToBaseRelativePath(e.Location);
         StateHasChanged();
+
+        Events = home.Events;
     }
 
     public void Dispose()

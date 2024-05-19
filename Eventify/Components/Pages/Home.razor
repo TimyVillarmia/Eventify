@@ -2,6 +2,7 @@
 @layout Eventify.Components.Layout.MainLayout
 @inject Eventify.Data.ApplicationDbContext db
 @using Eventify.Components.Account
+@using Eventify.Components.Layout
 @using Eventify.Data
 @using Eventify.Components.Pages.HomeComponents
 @using Microsoft.AspNetCore.Authorization
@@ -12,21 +13,22 @@
 
 <PageTitle>Home</PageTitle>
 
-<div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
-    <div class="home-container" style="">
-        @foreach (var Event in Events)
-        {
+<AuthorizeView Roles="Organizer">
+    <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
+        <div class="home-container" style="">
+            @foreach (var Event in Events)
+            {
 
-            <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
-            
-        }
-        @*         @for (int i = 0; i < 5; i++)
-        {
-        <EventCardView style="margin: 0 1.5rem 1.5rem 0;" />
-        } *@
+                <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
 
-    </div>
-    <a href="/events/create" style="position:fixed;
+            }
+            @*         @for (int i = 0; i < 5; i++)
+            {
+            <EventCardView style="margin: 0 1.5rem 1.5rem 0;" />
+            } *@
+
+        </div>
+        <a href="/events/create" style="position:fixed;
                                     bottom:4rem;
                                     right:1rem;
                                     display:flex;
@@ -38,16 +40,21 @@
                                     padding: 1rem;
                                     box-sizing:border-box;
                                     box-shadow: 0px 4px 6px rgba(0,0,0,0.4)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24"><path fill="black" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" /></svg>
-    </a>
-</div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="40px" height="40px" viewBox="0 0 24 24"><path fill="black" d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z" /></svg>
+        </a>
+    </div>
+</AuthorizeView>
+<AuthorizeView Roles="Judge">
+    <Eventify.Components.Pages.JudgePages.JudgeHome />
+</AuthorizeView>
+
 @code{
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
     ApplicationUser? user { get; set; }
 
-    List<Events>? Events = new();
+    public List<Events>? Events { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
