@@ -1,3 +1,8 @@
 {
-  "dependencies": {}
+  "dependencies": {
+    "identityapp1": {
+      "connectionInfo": "App registration: eventify, Tenant: Default Directory (timyvillarmiagmail.onmicrosoft.com - Microsoft Entra ID)",
+      "type": "identityapp.default"
+    }
+  }
 }

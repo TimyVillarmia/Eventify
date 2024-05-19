@@ -1,4 +1,4 @@
-﻿using Eventify.Components;
+using Eventify.Components;
 using Eventify.Components.Account;
 using Eventify.Data;
 using Eventify.Services;
@@ -7,6 +7,12 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -47,7 +53,8 @@ builder.Services.AddAuthentication(options =>
         googleoptions.ClientId = configuration["Google:client_id"];
         googleoptions.ClientSecret = configuration["Google:client_secret"];
     })
-    .AddIdentityCookies();
+    .AddIdentityCookies()
+.AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -65,7 +72,16 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddDefaultTokenProviders();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, EmailSender>();
-builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
+builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; })
+    .AddMicrosoftIdentityConsentHandler();
+
+builder.Services.AddControllersWithViews()
+.AddMicrosoftIdentityUI();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy;
+});
 
 var app = builder.Build();
 
