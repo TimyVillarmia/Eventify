@@ -7,22 +7,22 @@
 @rendermode InteractiveServer
 
 
-<div style="width:100%;height:auto;border:1px solid black;display:flex;flex-direction:column;padding:2rem;box-sizing:border-box;">
+<div style="width:100%;height:auto;border:1px solid black;display:flex;flex-direction:column;padding:1rem;box-sizing:border-box;background-color:white;border-radius:10px;">
     <div style="display:flex;flex-direction:row;justify-content:space-between;width:100%;">
-        <h3>Judges</h3>
-        <button @onclick="DoneClicked" style="@display">Done</button>
-        <button @onclick="AddJudgesClicked">Assign Judges</button>
+        <h2>Judges</h2>
+        <button @onclick="DoneClicked" style="margin:0 1rem 0 auto;padding:8px 2rem; border:none;background-color:#2342C0;color:white;border-radius:6px;cursor:pointer;@display">Done</button>
+        <button @onclick="AddJudgesClicked" style="padding:8px 2rem; border:none;background-color:#FFD803;color:black;border-radius:6px;cursor:pointer;">Assign Judges</button>
     </div>
-    <div style="width:100%;overflow:auto;@display">
-        <table>
+    <div style="width:100%;overflow:auto;margin:2rem 0 2rem 0;border:1px solid black;padding:1rem;border-radius:10px;@display">
+        <table style="width:100%;">
             @{
 
                 foreach (var judge in UnAssignedUsers)
                 {
                     <tr>
-                        <td>@judge.Email</td>
-                        <td>
-                            <button @onclick="() => {
+                        <td style="padding:8px 0 8px 1rem;border:1px solid gray;border-radius:6px;box-sizing:border-box;">@judge.Email</td>
+                        <td style="text-align:right;">
+                            <button style="width:100%;height:35px;border:1px solid #2342C0;background-color:transparent;border-radius:6px;color:#2342C0;font-weight:bold;cursor:pointer;" @onclick="() => {
 
                             AssignJudge(judge);
                             StateHasChanged();
@@ -37,11 +37,24 @@
             
         </table>
     </div>
-    <div style="display:flex;flex-direction:column;">
-        @foreach (var judge in JudgeActivities)
-        {
-            <h2>@judge.Email</h2>
-        }
+    <div style="display:flex;flex-direction:column;margin:2rem 0 2rem 0;">
+        <table>
+            @foreach (var judge in JudgeActivities)
+            {
+                <tr>
+                    <td style="padding:8px 0 8px 1rem;border:1px solid gray;border-radius:6px;box-sizing:border-box;">@judge.Email</td>
+                    <td style="text-align:right;@display">
+                        <button style="width:100%;height:35px;border:none;background-color:#FFD803;border-radius:6px;color:black;font-weight:bold;cursor:pointer;" @onclick="() => {
+                            UnAssign(judge);
+                            StateHasChanged();
+                        }">
+                            Remove
+                        </button>
+                    </td>
+                </tr>
+            }
+        </table>
+        
     </div>
 </div>
 
@@ -90,6 +103,13 @@
         db.SaveChanges();
         ReloadData();
 
+    }
+    void UnAssign(ApplicationUser judge)
+    {
+        var ja = db.JudgeActivity.Single(i => i.User.Id == judge.Id && i.ActivityID == Activity.Id);
+        db.JudgeActivity.Remove(ja);
+        db.SaveChanges();
+        ReloadData();
     }
     void AddJudgesClicked()
     {
