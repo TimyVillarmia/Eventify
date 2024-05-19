@@ -39,15 +39,15 @@
                         <td style="padding:1rem 2rem;border:1px solid black;">@criteria.CriteriaName</td>
                         <td style="padding:1rem 2rem;border:1px solid black;">@criteria.Weight %</td>
                         <td style="padding:1rem 2rem;border:1px solid black;">
-                            <input type="number" max="@criteria.MaxScore" min="0" @bind="ParticipantScores[criteria.Id].Score" style="padding:1rem 2rem;border-radius:6px;" />
+                            <input type="number" min="0" max="@criteria.MaxScore" @bind="ParticipantScores[criteria.Id].Score" style="padding:1rem 2rem;border-radius:6px;" />
                         </td>
                     </tr>
                 }
             </table>
         </div>
         <div style="display:flex;flex-direction:row;justify-content:end;align-items:center;">
-            <button>Cancel</button>
-            <button @onclick="() => {OnSave();}">Save</button>
+            <button @onclick="GoBack">Cancel</button>
+            <button @onclick="() => {OnSave();}" type="submit">Save</button>
         </div>
     </div>
 
@@ -93,6 +93,7 @@
 
     void GetData()
     {
+
         var activity = DB.Activity.Single(i => i.Id == ActivityID);
         Activity = activity;
 
@@ -102,30 +103,65 @@
         var criteriaList = DB.Criteria.Where(i => i.Activity == Activity);
         ActivityCriteria = criteriaList.ToList();
 
-        foreach (var criteria in ActivityCriteria)
-        {
-            ParticipantScores?.Add(criteria.Id, new ParticipantsScore
-                {
-                @* Score = 0, null*@
-                Criteria = criteria,
-                Participant = Participant,
-                JudgeId = user.Id
-            });
-        }
-    }
+        var hasScores = DB.ParticipantsScores.Where(p => p.Participant == Participant).Any();
+        var previous_scores = DB.ParticipantsScores.Where(p => p.Participant == Participant);
 
-    void OnSave()
-    {
-        foreach (KeyValuePair<int, ParticipantsScore> entry in ParticipantScores)
+        // if participants has previous scores
+        if (hasScores)
         {
-            if (entry.Value.Score != null)
+            foreach (var criteria in ActivityCriteria)
             {
-                DB.ParticipantsScores.AddRange(entry.Value);
-                DB.SaveChanges();
-
+                // get the previous score
+                ParticipantScores?.Add(criteria.Id, previous_scores.First(c => c.CriteriaId == criteria.Id));
+            }
+        }
+        else
+        {
+            foreach (var criteria in ActivityCriteria)
+            {
+                // otherwise, create new scores
+                ParticipantScores?.Add(criteria.Id, new ParticipantsScore
+                    {
+                        // Score = 0,
+                        CriteriaId = criteria.Id,
+                        Participant = Participant,
+                        JudgeId = user.Id
+                    });
             }
         }
 
+
+    }
+
+    async Task OnSave()
+    {
+        // check if participant has already scores
+        var hasScores = DB.ParticipantsScores.Where(p => p.Participant == Participant).Any();
+
+        foreach (KeyValuePair<int, ParticipantsScore> entry in ParticipantScores)
+        {
+            // if participant has previous scores, update
+            if (hasScores)
+            {
+                DB.ParticipantsScores.Update(entry.Value);
+            }
+            else
+            {
+                // otherwise, add
+                DB.ParticipantsScores.Add(entry.Value);
+            }
+
+        }
+
+
+        await DB.SaveChangesAsync();
+
+        GoBack();
+    }
+
+    void GoBack()
+    {
+        NavManager.NavigateTo($"/{ActivityID}/Participants");
 
     }
 
