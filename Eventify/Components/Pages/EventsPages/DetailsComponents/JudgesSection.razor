@@ -11,9 +11,9 @@
 
 <div class="JudgesSection-Container" style="@style">
 
-    <table class="table">
+    <table class="table" style="width:100%;display:flex;flex-direction:column;justify-content:space-between;">
         <thead>
-            <tr>
+            <tr style="width:90%;display:flex;flex-direction:row;justify-content:space-between;">
                 <th>Id</th>
                 <th>User Name</th>
                 <th>Email</th>
@@ -22,12 +22,10 @@
         <tbody>
             @foreach (var user in ColUsers)
             {
-                <tr>
+                <tr style="display:flex;flex-direction:row;justify-content:space-between;width:100%;">
                     <td>@user.Id.Substring(0, 5) ...</td>
                     <td>@user.UserName</td>
-                    <td>@user.Email</td>
-                    <td>
-                        <!-- Edit the current forecast -->
+                    <td>@user.Email
                         <button class="btn btn-primary"
                                 @onclick="(() => EditUser(user))">
                             Edit
@@ -41,21 +39,21 @@
     @if (ShowPopup)
     {
         <!-- This is the popup to create or edit a user -->
-        <div class="modal" tabindex="-1" style="display:block" role="dialog">
+        <div class="modal" tabindex="-1" style="display:block; padding:1rem;border:1px solid black;margin:1rem 0 0 0;border-radius:10px;" role="dialog">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h3 class="modal-title">Edit User</h3>
+                    <div class="modal-header" style="margin:0 0 1rem 0;display:flex;flex-direction:row;justify-content:space-between;align-items:center;">
+                        <h3 class="modal-title" style="font-size: 30px;">Edit User</h3>
                         <!-- Button to close the popup -->
-                        <button type="button" class="close"
+                        <button type="button" class="close" style="background-color:#FFD803;padding:8px;border:none;border-radius:6px;cursor:pointer;"
                                 @onclick="ClosePopup">
                             <span aria-hidden="true">X</span>
                         </button>
                     </div>
                     <!-- Edit form for the current user -->
-                    <div class="modal-body">
+                    <div class="modal-body" style="width:100%;">
                         <span style="color:red">@Message</span>
-                        <EditForm Model="objUser" method="post" OnValidSubmit="SaveUser" FormName="register">
+                        <EditForm Model="objUser" method="post" OnValidSubmit="SaveUser" FormName="register" style="display: flex;flex-direction: column;justify-content: center;align-items: center;width: 100%;">
                             <DataAnnotationsValidator />
                             <ValidationSummary class="text-danger" role="alert" />
                             @if (objUser.Id != "")
@@ -65,32 +63,32 @@
                             }
                             else
                             {
-                                <div class="Register-inputbox">
+                                <div class="Register-inputbox" style="margin-top:5px;">
                                     <InputText @bind-Value="objUser.UserName" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" />
                                 </div>
                             }
-                            <div class="Register-inputbox">
+                            <div class="Register-inputbox" style="margin-top:5px;">
                                 <InputText @bind-Value="objUser.Email" class="Register-inputEmail" autocomplete="email" aria-required="true" placeholder="Enter email" />
                             </div>
-                            <div class="Register-inputbox">
+                            <div class="Register-inputbox" style="margin-top:5px;">
                                 <InputText type="password" @bind-Value="objUser.PasswordHash" class="form-control" autocomplete="current-password" aria-required="true" placeholder="Enter password" />
                             </div>
-                            <div class="Register-inputbox">
-                                <InputSelect @bind-Value="@CurrentUserRole" class="form-control">
+                            <div class="Register-inputbox" style="margin-top:5px;">
+                                <InputSelect @bind-Value="@CurrentUserRole" class="form-control" style="margin-bottom: 10px; cursor:pointer;">
                                     @foreach (var option in Options)
                                     {
-                                        <option value="@option">
+                                        <option value="@option" >
                                             @option
                                         </option>
                                     }
                                 </InputSelect>
                             </div>
-                            <button type="submit" class="btn-register">Save</button>
+                            <button type="submit" class="btn-register" style="width: 10%; margin-bottom: 5px;cursor:pointer;">Save</button>
                             <!-- Only show delete button if not a new record -->
                             @if (objUser.Id != "")
                             {
                                 <!-- Button to delete the forecast -->
-                                <button class="btn btn-danger"
+                                <button class="btn btn-danger" style="width: 10%; cursor:pointer;"
                                         @onclick="DeleteUser">
                                     Delete
                                 </button>
