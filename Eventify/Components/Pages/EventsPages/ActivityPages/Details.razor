@@ -29,6 +29,7 @@ else {
             <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Overview.Overview Activity="activity" Event="DB.Events.Single(i => i.Id == int.Parse(Event_Id))" style="@OverviewDisplay"/>
             <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Stakeholders.Stakeholders Activity="activity" style="@StakeholdersDisplay"/>
             <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Details.Details Activity="activity" Event="DB.Events.Single(i => i.Id == int.Parse(Event_Id))" style="@DetailsDisplay" />
+            <Eventify.Components.Pages.EventsPages.ActivityPages.DetailsComponents.Results.ActivityResultsSection Activity="activity" style="@ResultsDisplay"/>
         </div>
     </div>
     @* <dl class="row">
