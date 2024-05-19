@@ -53,8 +53,11 @@ builder.Services.AddAuthentication(options =>
         googleoptions.ClientId = configuration["Google:client_id"];
         googleoptions.ClientSecret = configuration["Google:client_secret"];
     })
-    .AddIdentityCookies()
-.AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+    .AddIdentityCookies();
+
+builder.Services.AddAuthentication()
+    .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+
 
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
