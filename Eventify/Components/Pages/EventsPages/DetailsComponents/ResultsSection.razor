@@ -1,8 +1,72 @@
-﻿<div style="@style">
-    <h1>results</h1>
+﻿@using Eventify.Data
+@inject ApplicationDbContext db
+
+<div class="EventResults-Container" style="@style">
+    <div class="EventResults-TopSection">
+        <h3>Overall Results:</h3>
+        <button style="background-color:#FFD803;border:none;padding:8px 2rem;border-radius:6px;cursor:pointer;">Export PDF</button>
+    </div>
+    <div class="TableResults-Container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Activity Name</th>
+                    <th>Entry Number</th>
+                    <th>Champion</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var maxScores = from acts in db.Activity
+                                    join peep in db.Participants on acts.Id equals peep.Activity.Id
+                                    join scores in db.ParticipantsScores on peep.Id equals scores.ParticipantId
+                                    where acts.EventID == Event.Id
+                                    group scores by new { acts.Id, acts.Name } into activityGroup
+                                    select new
+                                    {
+                                        activityGroup.Key.Id,
+                                        activityGroup.Key.Name,
+                                        MaxScore = activityGroup.Max(g => g.Score)
+                                    };
+
+                    // Step 2: Join back to get the participants with the maximum scores
+                    var results = from maxScore in maxScores
+                                  join acts in db.Activity on maxScore.Id equals acts.Id
+                                  join peep in db.Participants on acts.Id equals peep.Activity.Id
+                                  join scores in db.ParticipantsScores on peep.Id equals scores.ParticipantId
+                                  where scores.Score == maxScore.MaxScore
+                                  select new
+                                  {
+                                      ActivityName = acts.Name,
+                                      EntryNumber = peep.EntryNumber,
+                                      Champion = peep.Name,
+                                      Score = scores.Score
+                                  };
+
+                    foreach (var result in results)
+                    {
+
+                        <tr>
+                            <td>@result.ActivityName</td>
+                            <td>@result.EntryNumber</td>
+                            <td>@result.Champion</td>
+                            <td>@result.Score</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+            
+        </table>
+    </div>
 </div>
 
 @code {
     [Parameter]
     public string? style { get; set; }
+
+    [Parameter]
+    public Events? Event { get; set; }
+
+
 }

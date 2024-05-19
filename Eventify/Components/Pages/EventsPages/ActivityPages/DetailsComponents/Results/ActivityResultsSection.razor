@@ -1,0 +1,62 @@
+﻿@using Eventify.Data
+@inject ApplicationDbContext db
+
+<div class="EventResults-Container" style="@style">
+    <div class="EventResults-TopSection">
+        <h3>Overall Results:</h3>
+        <button style="background-color:#FFD803;border:none;padding:8px 2rem;border-radius:6px;cursor:pointer;">Export PDF</button>
+    </div>
+    <div class="TableResults-Container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Entry #</th>
+                    <th>Participant</th>
+                    <th>Course</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{
+                    var results = from scores in db.ParticipantsScores
+                                  join peep in db.Participants on scores.ParticipantId equals peep.Id
+                                  where peep.ActivityID == Activity.Id
+                                  orderby scores.Score ascending
+                                  select new
+                                  {
+                                      EntryNumber = peep.EntryNumber,
+                                      Participant = peep.Name,
+                                      Course = peep.Course,
+                                      Score = scores.Score
+                                  };
+
+                    foreach (var result in results)
+                    {
+
+                        <tr>
+                            <td>@result.EntryNumber</td>
+                            <td>@result.Participant</td>
+                            <td>@result.Course</td>
+                            <td>@result.Score</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string? style { get; set; }
+
+    [Parameter]
+    public Events? Event { get; set; }
+
+    [Parameter]
+    public Activity? Activity { get; set; }
+
+
+}
+
