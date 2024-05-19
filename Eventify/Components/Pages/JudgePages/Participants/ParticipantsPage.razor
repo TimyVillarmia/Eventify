@@ -1,4 +1,4 @@
-﻿@page "/{Activity_ID}/Participants"
+﻿@page "/{Activity_ID:int}/Participants"
 @using Eventify.Data
 @inject ApplicationDbContext db
 @layout Eventify.Components.Layout.MainLayout
@@ -16,7 +16,7 @@
 
 @code{
     [Parameter]
-    public string? Activity_ID { get; set; }
+    public int? Activity_ID { get; set; }
     [Parameter]
     public Activity? Activity { get; set; } = new();
 
@@ -24,7 +24,7 @@
 
     protected override void OnInitialized()
     {
-        Activity = db.Activity.Single(i => i.Id == int.Parse(Activity_ID));
+        Activity = db.Activity.Single(i => i.Id == Activity_ID);
         GetParticipants();
     }
 
