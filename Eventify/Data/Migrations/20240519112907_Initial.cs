@@ -279,24 +279,23 @@ namespace Eventify.Migrations
                     Score = table.Column<double>(type: "float", nullable: false),
                     CriteriaId = table.Column<int>(type: "int", nullable: false),
                     ParticipantId = table.Column<int>(type: "int", nullable: false),
-                    JudgedBy = table.Column<int>(type: "int", nullable: false),
-                    JudgeID = table.Column<int>(type: "int", nullable: false)
+                    JudgeId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ParticipantsScores", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ParticipantsScores_AspNetUsers_JudgeId",
+                        column: x => x.JudgeId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_ParticipantsScores_Criteria_CriteriaId",
                         column: x => x.CriteriaId,
                         principalTable: "Criteria",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ParticipantsScores_JudgeActivity_JudgeID",
-                        column: x => x.JudgeID,
-                        principalTable: "JudgeActivity",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
                         name: "FK_ParticipantsScores_Participants_ParticipantId",
                         column: x => x.ParticipantId,
@@ -402,9 +401,9 @@ namespace Eventify.Migrations
                 column: "CriteriaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ParticipantsScores_JudgeID",
+                name: "IX_ParticipantsScores_JudgeId",
                 table: "ParticipantsScores",
-                column: "JudgeID");
+                column: "JudgeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ParticipantsScores_ParticipantId",
@@ -441,6 +440,9 @@ namespace Eventify.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "JudgeActivity");
+
+            migrationBuilder.DropTable(
                 name: "ParticipantsScores");
 
             migrationBuilder.DropTable(
@@ -450,16 +452,13 @@ namespace Eventify.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
                 name: "Criteria");
 
             migrationBuilder.DropTable(
-                name: "JudgeActivity");
-
-            migrationBuilder.DropTable(
                 name: "Participants");
-
-            migrationBuilder.DropTable(
-                name: "AspNetUsers");
 
             migrationBuilder.DropTable(
                 name: "Activity");
