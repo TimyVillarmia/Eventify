@@ -39,7 +39,15 @@
 
         if (authenticationState.User.Identity.IsAuthenticated)
         {
-            NavigationManager.NavigateTo("/home");
+            if (authenticationState.User.IsInRole("Organizer"))
+            {
+                NavigationManager.NavigateTo("/home");
+
+            }
+            else
+            {
+                NavigationManager.NavigateTo("/Judge/Home");
+            }
         }
 
         // rest of the code

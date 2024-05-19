@@ -258,11 +258,9 @@ namespace Eventify.Migrations
                     b.Property<int>("CriteriaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("JudgeID")
-                        .HasColumnType("int");
-
-                    b.Property<int>("JudgedBy")
-                        .HasColumnType("int");
+                    b.Property<string>("JudgeId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("ParticipantId")
                         .HasColumnType("int");
@@ -274,7 +272,7 @@ namespace Eventify.Migrations
 
                     b.HasIndex("CriteriaId");
 
-                    b.HasIndex("JudgeID");
+                    b.HasIndex("JudgeId");
 
                     b.HasIndex("ParticipantId");
 
@@ -498,9 +496,9 @@ namespace Eventify.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Eventify.Data.JudgeActivity", "Judge")
+                    b.HasOne("Eventify.Data.ApplicationUser", "Judge")
                         .WithMany()
-                        .HasForeignKey("JudgeID")
+                        .HasForeignKey("JudgeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
