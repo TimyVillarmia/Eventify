@@ -10,11 +10,9 @@ namespace Eventify.Data
         public double Score { get; set; }
         public int CriteriaId { get; set; }
         public int ParticipantId { get; set; }
-        public int JudgedBy { get; set; }
-
-
+        public string JudgeId { get; set; }
         public Criteria Criteria { get; set; }
         public Participants Participant { get; set; }
-        public JudgeActivity Judge { get; set; }
+        public ApplicationUser Judge { get; set; }
     }
 }
