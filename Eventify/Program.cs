@@ -92,49 +92,49 @@ app.MapRazorComponents<App>()
 // Add additional endpoints required by the Identity /Account Razor components.
 app.MapAdditionalIdentityEndpoints();
 
-using (var scope = app.Services.CreateScope())
-{
-    string[] roles = ["Organizer", "Judge"];
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
-    var UserStore = scope.ServiceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
-    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+//using (var scope = app.Services.CreateScope())
+//{
+//    string[] roles = ["Organizer", "Judge"];
+//    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+//    var UserStore = scope.ServiceProvider.GetRequiredService<IUserStore<ApplicationUser>>();
+//    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-    context.Database.EnsureCreated();
+//    context.Database.EnsureCreated();
 
-    foreach (var role in roles)
-    {
-        if (!await roleManager.RoleExistsAsync(role))
-        {
-            IdentityRole roleRole = new IdentityRole(role);
-            await roleManager.CreateAsync(roleRole);
-        }
-    }
+//    foreach (var role in roles)
+//    {
+//        if (!await roleManager.RoleExistsAsync(role))
+//        {
+//            IdentityRole roleRole = new IdentityRole(role);
+//            await roleManager.CreateAsync(roleRole);
+//        }
+//    }
 
 
-    // This part of the code is only for development
-    // Will Remove Aftre Deployment
-    // Ensure a user named Admin@eventify.com is an Administrator
-    var user = await userManager.FindByEmailAsync("Admin@eventify.com");
-    if (user == null)
-    {
-        var organizer = Activator.CreateInstance<ApplicationUser>();
-        // organizer account
-        await UserStore.SetUserNameAsync(organizer, "Admin@eventify.com", CancellationToken.None);
-        var emailStore = (IUserEmailStore<ApplicationUser>)UserStore;
-        await emailStore.SetEmailAsync(organizer, "Admin@eventify.com", CancellationToken.None);
-        var identityResult = await userManager.CreateAsync(organizer, "Admin123!");
+//    // This part of the code is only for development
+//    // Will Remove Aftre Deployment
+//    // Ensure a user named Admin@eventify.com is an Administrator
+//    var user = await userManager.FindByEmailAsync("Admin@eventify.com");
+//    if (user == null)
+//    {
+//        var organizer = Activator.CreateInstance<ApplicationUser>();
+//        // organizer account
+//        await UserStore.SetUserNameAsync(organizer, "Admin@eventify.com", CancellationToken.None);
+//        var emailStore = (IUserEmailStore<ApplicationUser>)UserStore;
+//        await emailStore.SetEmailAsync(organizer, "Admin@eventify.com", CancellationToken.None);
+//        var identityResult = await userManager.CreateAsync(organizer, "Admin123!");
 
-        if (identityResult.Succeeded)
-        {
-            // Put Admin@eventify.com in Organizer role
-            await userManager.AddToRoleAsync(organizer, "Organizer");
-        }
+//        if (identityResult.Succeeded)
+//        {
+//            // Put Admin@eventify.com in Organizer role
+//            await userManager.AddToRoleAsync(organizer, "Organizer");
+//        }
         
-    }
+//    }
 
-    //DbInitializer.Initialize(context);
+//    //DbInitializer.Initialize(context);
 
-}
+//}
 
 app.Run();
