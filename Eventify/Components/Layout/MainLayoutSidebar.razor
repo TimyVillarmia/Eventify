@@ -39,16 +39,16 @@
             <svg xmlns="http://www.w3.org/2000/svg" class="sidebar-button-icon" style="" width="30" height="30" viewBox="0 0 48 48"><g fill="none" stroke="black" stroke-width="4"><path stroke-linecap="round" stroke-linejoin="round" d="M42 24V9a3 3 0 0 0-3-3H9a3 3 0 0 0-3 3v30a3 3 0 0 0 3 3h15" /><circle cx="32" cy="32" r="6" /><path stroke-linecap="round" stroke-linejoin="round" d="m37 36l5 4M14 16h20m-20 8h8" /></g></svg>
             <span class="mainlayout-sidebar-buttonlabel">History</span>
         </a>
-        <div class="mainlayout-sidebar-section mainlayout-sidebar-last-section" style="@display">
-            <form action="Account/Logout" method="post">
-                <AntiforgeryToken />
-                <input type="hidden" name="ReturnUrl" value="@currentUrl" />
-                <button type="submit" class="nav-link">
-                    <span class="mainlayout-sidebar-buttonlabel" aria-hidden="true"></span> Logout
-                </button>
-            </form>
-        </div>
+       
     </div>
+    <form action="Account/Logout" method="post" style="margin:auto 0 0 0;@display" class="mainlayout-sidebar-section mainlayout-sidebar-last-section">
+        <AntiforgeryToken />
+        <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+        <button type="submit" class="mainlayout-sidebar-buttons" style="border:none;background-color:transparent;">
+            <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 1rem 0 0;" width="30" height="30" viewBox="0 0 24 24"><path fill="black" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2a9.985 9.985 0 0 1 8 4h-2.71a8 8 0 1 0 .001 12h2.71A9.985 9.985 0 0 1 12 22m7-6v-3h-8v-2h8V8l5 4z" /></svg>
+            <span class="mainlayout-sidebar-buttonlabel" aria-hidden="true"></span> Logout
+        </button>
+    </form>
 </div>
 
 
