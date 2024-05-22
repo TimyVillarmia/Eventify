@@ -45,24 +45,36 @@
     </div>
 </AuthorizeView>
 <AuthorizeView Roles="Judge">
-    <Eventify.Components.Pages.JudgePages.JudgeHome />
+    <Eventify.Components.Pages.JudgePages.JudgeHome user="user" JudgeActivities="JudgeActivities"/>
 </AuthorizeView>
 
 @code{
     [CascadingParameter]
     private HttpContext HttpContext { get; set; } = default!;
 
-    ApplicationUser? user { get; set; }
+    ApplicationUser? user { get; set; } = new();
 
     public List<Events>? Events { get; set; } = new();
+
+    public List<Activity>? JudgeActivities { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        GetEvents();
+        await GetJudgeActivitiesAsync(user);
+        await GetEvents();
     }
-    void GetEvents()
+    async Task GetEvents()
     {
         Events = db.Events.ToList();
+    }
+    async Task GetJudgeActivitiesAsync(ApplicationUser user)
+    {
+        var judgeActivities = from acts in db.Activity
+                              join ja in db.JudgeActivity on acts.Id equals ja.ActivityID
+                              where ja.User.Id == user.Id
+                              select acts;
+
+        JudgeActivities = judgeActivities.ToList();
     }
 }

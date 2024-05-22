@@ -10,7 +10,7 @@
 
 <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
     <div class="home-container" style="">
-        @foreach (var item in Activities)
+        @foreach (var item in JudgeActivities)
         {
             <ActivityCardView style="margin: 0 1.5rem 1.5rem 0;" Activity="item" />
         }
@@ -23,27 +23,29 @@
 </div>
 
 @code{
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    // [CascadingParameter]
+    // private HttpContext HttpContext { get; set; } = default!;
 
     [Parameter]
-    public ApplicationUser? user { get; set; }
+    public ApplicationUser? user { get; set; } = new();
 
     List<Events>? Events { get; set; } = new();
-    List<Activity>? Activities { get; set; } = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        GetActivities(user);
-    }
-    void GetActivities(ApplicationUser user)
-    {
-        var JudgeActivities = from acts in db.Activity
-                              join ja in db.JudgeActivity on acts.Id equals ja.ActivityID
-                              where ja.User.Id == user.Id
-                              select acts;
+    [Parameter]
+    public List<Activity>? JudgeActivities { get; set; } = new();
 
-        Activities = JudgeActivities.ToList();
-    }
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     //user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+    //     await GetJudgeActivitiesAsync(user);
+    // }
+    // async Task GetJudgeActivitiesAsync(ApplicationUser user)
+    // {
+    //     var judgeActivities = from acts in db.Activity
+    //                           join ja in db.JudgeActivity on acts.Id equals ja.ActivityID
+    //                           where ja.User.Id == user.Id
+    //                           select acts;
+
+    //     JudgeActivities = judgeActivities.ToList();
+    // }
 }
