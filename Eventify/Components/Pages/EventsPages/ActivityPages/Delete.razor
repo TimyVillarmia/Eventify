@@ -43,12 +43,12 @@
             </dl>
 
 
-            <EditForm method="post" Model="activity" OnValidSubmit="DeleteActivity" FormName="delete" Enhance>
+            
                     <div class="create-events-formButtons">
                         <a href="@($"events/details?id={Event_Id}")" class="creat-events-cancelbutton">Cancel</a>
-                        <button type="submit" class="creat-events-savebutton" disabled="@(activity is null)">Confirm</button>
+                        <button @onclick="DeleteActivity" class="creat-events-savebutton" disabled="@(activity is null)">Confirm</button>
                    </div> 
-            </EditForm>
+            
         }
     </div>
 </div>
@@ -79,5 +79,5 @@
         DB.Activity.Remove(activity!);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
-        }
+    }
 }

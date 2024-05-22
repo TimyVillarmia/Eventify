@@ -1,6 +1,7 @@
 ﻿@using Eventify.Data
 @rendermode InteractiveServer
 @inject NavigationManager NavigationManager
+@inject ApplicationDbContext db
 
 <div class="event-cardview-container" style="@style">
     <!--Header-->
@@ -30,7 +31,7 @@
     <section class="event-cardview-footer">
         <div class="event-cardview-footer-status">
             <h4>Status:</h4>
-            <div>
+            <div style="@statusStyle">
                 @Event.Status
             </div>
         </div>
@@ -50,6 +51,55 @@
 
     private string? menustyle {get;set;}
     bool menuHidden = true;
+    bool eventStatCorrect = true;
+    string statusStyle = "";
+
+    protected override void OnInitialized()
+    {
+        var date = DateTime.Now;
+        if(Event.Date > date && Event.Status == "Scheduled" ||
+           Event.Date == date && Event.Status == "Ongoing" ||
+           Event.Date < date && Event.Status == "Completed")
+        {
+            eventStatCorrect = true;
+        }
+        else
+        {
+            string status = "";
+
+            if (DateTime.Now < Event.Date)
+            {
+                status = "Scheduled";
+            }
+            else if (DateTime.Now >= Event.Date)
+            {
+                status = "Ongoing";
+            }
+            else if (DateTime.Now > Event.Date)
+            {
+                status = "Completed";
+            }
+
+            Event.Status = status;
+            db.Events.Update(Event);
+            db.SaveChanges();
+            StateHasChanged();
+        }
+
+        switch (Event.Status)
+        {
+            case "Scheduled":
+                statusStyle = "background-color:#FFD803;color:black;";
+                break;
+            case "Ongoing":
+                statusStyle = "background-color:green;color:white;";
+                break;
+            case "Completed":
+                statusStyle = "background-color:#2342C0;color:black;";
+                break;
+        }
+
+    }
 
     void menuClick(){
         if (menuHidden)

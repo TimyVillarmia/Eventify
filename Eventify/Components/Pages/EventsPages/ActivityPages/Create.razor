@@ -40,7 +40,9 @@
         <div style="display:flex;flex-direction:row;align-items:center;justify-content:end;width:100%;box-sizing:border-box;margin:1rem 0 0 0;">
             <a href="@($"events/details?id={Event_Id}")" type="button" style="border:none; color: #000000;padding: 0 1rem;font-size: 20px;background-color: transparent;
     cursor: pointer;text-decoration:none;">Cancel</a>
-            <button type="submit" style="border:none; color: #2342C0;padding: 0 1rem;font-size: 20px;background-color: transparent;cursor: pointer;text-decoration:none;">Save</button>
+            <button type="submit" style="border:none; color: #2342C0;padding: 0 1rem;font-size: 20px;background-color: transparent;cursor: pointer;text-decoration:none;">
+                Save
+             </button>
         </div>
     </EditForm>
 
@@ -55,17 +57,24 @@
     [Parameter]
     public string? Event_Id { get; set; }
 
+    Events? Event { get; set; }
+
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    protected override void OnInitialized()
+    {
+        Event = DB.Events.Single(i => i.Id == Int32.Parse(Event_Id));
+    }
     public async Task AddActivity()
     {
         Activity.Event = DB.Events.FirstOrDefault(x => x.Id == Int32.Parse(Event_Id));
         DB.Activity.Add(Activity);
         await DB.SaveChangesAsync();
-        NavigationManager.NavigateTo($"events/details?id={Event_Id}", forceLoad: true);
+
+        await Cancel();
     }
 
-    void Cancel()
+    async Task Cancel()
     {
-        NavigationManager.NavigateTo($"events/details?id={int.Parse(Event_Id)}");
+        NavigationManager.NavigateTo($"/events/details?id={Event!.Id}");
     }
 }
