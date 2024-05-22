@@ -46,8 +46,8 @@
             </table>
         </div>
         <div style="display:flex;flex-direction:row;justify-content:end;align-items:center;">
-            <button @onclick="GoBack">Cancel</button>
-            <button @onclick="() => {OnSave();}" type="submit">Save</button>
+            <button @onclick="GoBack" style="padding:8px 2rem;border:none;background:transparent;color:#272343;cursor:pointer;">Cancel</button>
+            <button @onclick="() => {OnSave();}" type="submit" style="padding:8px 2rem;border:none;background:transparent;color:#4263eb;cursor:pointer;">Save</button>
         </div>
     </div>
 
@@ -144,11 +144,13 @@
             if (hasScores)
             {
                 DB.ParticipantsScores.Update(entry.Value);
+                NavManager.NavigateTo($"/{ActivityID}/Participants");
             }
             else
             {
                 // otherwise, add
                 DB.ParticipantsScores.Add(entry.Value);
+                NavManager.NavigateTo($"/{ActivityID}/Participants");
             }
 
         }

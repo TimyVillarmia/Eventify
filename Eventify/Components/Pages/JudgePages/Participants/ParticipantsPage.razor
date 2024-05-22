@@ -15,13 +15,30 @@
         </div>
     </div>
     <div style="width:100%;height:auto;display:flex;flex-direction:row;flex-wrap:wrap;padding:2rem;box-sizing:border-box;">
-        @foreach (var peep in Participants)
-        {
-            <a href="@($"{Activity.Id}/Judging/{peep.Id}")" style="display:flex;flex-direction:row;justify-content:center;align-items:center;border:1px solid black; padding:2rem;display:inline-block;margin:0 1rem 1rem 0;">
-                <img src="participantIcon.png"/>
-                <span>@peep.EntryNumber</span>
-            </a>
+        @{
+            
+
+            foreach (var peep in Participants)
+            {
+                string isJudged = "";
+                string display = "display:none;";
+
+                if (db.ParticipantsScores.Where(p => p.Participant == peep).Any())
+                {
+                    isJudged = "Done";
+                    display = "display:block;";
+                }
+
+                <a href="@($"{Activity.Id}/Judging/{peep.Id}")" style="text-decoration:none;color:black;">
+                    <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;border:1px solid black; padding:2rem;margin:0 1rem 1rem 0;border-radius:10px;">
+                        <img src="participantIcon.png" style="margin:0 9px 0 0;" />
+                        <h3 style="margin:0 10px 0 0;">Entry#: @peep.EntryNumber</h3>
+                        <div style="font-size:10px;padding:5px;background-color:green;border-radius:5px;color:white;@display">@isJudged</div>
+                    </div>
+                </a>
+            }
         }
+
     </div>
 </div>
 
@@ -37,6 +54,7 @@
     {
         Activity = db.Activity.Single(i => i.Id == Activity_ID);
         GetParticipants();
+        
     }
 
     void GetParticipants()

@@ -18,33 +18,33 @@
             </thead>
             <tbody>
                 @{
-                    var maxScores = from acts in db.Activity
-                                    join peep in db.Participants on acts.Id equals peep.Activity.Id
-                                    join scores in db.ParticipantsScores on peep.Id equals scores.ParticipantId
-                                    where acts.EventID == Event.Id
-                                    group scores by new { acts.Id, acts.Name } into activityGroup
-                                    select new
-                                    {
-                                        activityGroup.Key.Id,
-                                        activityGroup.Key.Name,
-                                        MaxScore = activityGroup.Max(g => g.Score)
-                                    };
 
                     // Step 2: Join back to get the participants with the maximum scores
-                    var results = from maxScore in maxScores
-                                  join acts in db.Activity on maxScore.Id equals acts.Id
-                                  join peep in db.Participants on acts.Id equals peep.Activity.Id
-                                  join scores in db.ParticipantsScores on peep.Id equals scores.ParticipantId
-                                  where scores.Score == maxScore.MaxScore
+                    var results = from participantScores in db.ParticipantsScores
+                                  join participants in db.Participants on participantScores.Participant.Id equals participants.Id
+                                  join activity in db.Activity on participants.Activity.Id equals activity.Id
+                                  join ev in db.Events on activity.Event.Id equals ev.Id
+                                  group new { participants, participantScores} by new {activity.Id, participants.EntryNumber, participants.Name, participantScores.Score } into g
                                   select new
                                   {
-                                      ActivityName = acts.Name,
-                                      EntryNumber = peep.EntryNumber,
-                                      Champion = peep.Name,
-                                      Score = scores.Score
+                                      ActivityId = g.Key.Id,
+                                      EntryNumber = g.Key.EntryNumber,
+                                      Champion = g.Key.Name,
+                                      Score = g.Sum(x => x.participantScores.Score)
                                   };
 
-                    foreach (var result in results)
+                    var finalresult = from items in results
+                                      join activity in db.Activity on items.ActivityId equals activity.Id
+                                      select new
+                                      {
+                                          ActivityName = activity.Name,
+                                          EntryNumber = items.EntryNumber,
+                                          Champion = items.Champion,
+                                          Score = items.Score
+                                          
+                                      };
+
+                    foreach (var result in finalresult)
                     {
 
                         <tr>
