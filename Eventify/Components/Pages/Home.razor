@@ -16,7 +16,7 @@
 <AuthorizeView Roles="Organizer">
     <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
         <div class="home-container" style="">
-            @foreach (var Event in Events)
+            @foreach (var Event in db.Events)
             {
 
                 <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
@@ -45,24 +45,36 @@
     </div>
 </AuthorizeView>
 <AuthorizeView Roles="Judge">
-    <Eventify.Components.Pages.JudgePages.JudgeHome />
+    <Eventify.Components.Pages.JudgePages.JudgeHome Activities="Activities"/>
 </AuthorizeView>
 
 @code{
-    [CascadingParameter]
-    private HttpContext HttpContext { get; set; } = default!;
+    //[CascadingParameter]
+    //private HttpContext HttpContext { get; set; } = default!;
 
-    ApplicationUser? user { get; set; }
+    //ApplicationUser? user { get; set; }
 
     public List<Events>? Events { get; set; } = new();
 
+    public List<Activity>? Activities { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
-        GetEvents();
+        //user = await UserAccessor.GetRequiredUserAsync(HttpContext);
+        //await GetEvents();
+        //await GetActivities(user);
     }
-    void GetEvents()
-    {
-        Events = db.Events.ToList();
-    }
+    // async Task GetEvents()
+    // {
+    //     Events = db.Events.ToList();
+    // }
+    // async Task GetActivities(ApplicationUser user)
+    // {
+    //     var JudgeActivities = from acts in db.Activity
+    //                           join ja in db.JudgeActivity on acts.Id equals ja.ActivityID
+    //                           where ja.User.Id == user.Id
+    //                           select acts;
+
+    //     Activities = JudgeActivities.ToList();
+    // }
 }

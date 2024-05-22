@@ -1,9 +1,10 @@
-﻿@page "/Judge/Home"
+﻿@page "/Judge/home"
 @inject Eventify.Data.ApplicationDbContext db
 @using Eventify.Components.Account
 @using Eventify.Data
 @using Microsoft.AspNetCore.Authorization
 @inject IdentityUserAccessor UserAccessor
+
 @attribute [Authorize]
 
 <PageTitle>Home-Activities</PageTitle>
@@ -30,7 +31,9 @@
     public ApplicationUser? user { get; set; }
 
     List<Events>? Events { get; set; } = new();
-    List<Activity>? Activities { get; set; } = new();
+
+    [Parameter]
+    public List<Activity>? Activities { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
