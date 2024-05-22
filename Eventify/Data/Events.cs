@@ -1,6 +1,7 @@
 ﻿using Eventify.DataAnnotations;
 using Humanizer.Localisation;
 using Microsoft.Extensions.Hosting;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static System.Runtime.InteropServices.JavaScript.JSType;
@@ -14,7 +15,6 @@ namespace Eventify.Data
         [Required]
         public string? EventName { get; set; }
 
-        [Required]
         public string? Status { get; set; }
 
         [DataType(DataType.Date), Required, CustomDateAttribute]

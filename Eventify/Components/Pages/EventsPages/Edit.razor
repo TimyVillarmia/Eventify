@@ -30,11 +30,11 @@
                         <InputText id="eventname" @bind-Value="Events.EventName" class="form-control" style="width: 100%; padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
                             <ValidationMessage For="() => Events.EventName" class="text-danger" />
                         </div>
-                        <div class="mb-3">
+                        @* <div class="mb-3">
                             <label for="status" class="form-label">Status:</label>
                         <InputText id="status" @bind-Value="Events.Status" class="form-control" style="width: 100%; padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
                             <ValidationMessage For="() => Events.Status" class="text-danger" />
-                        </div>
+                        </div> *@
                     <div class="DateTime-Picker field" style="margin-top: 1rem;">
                         <div style="margin:0 1rem 0 0;">
                                 <label for="date" class="form-label">Date:</label>

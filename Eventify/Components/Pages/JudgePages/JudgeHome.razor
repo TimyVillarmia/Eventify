@@ -44,7 +44,8 @@
     {
         var JudgeActivities = from acts in db.Activity
                               join ja in db.JudgeActivity on acts.Id equals ja.ActivityID
-                              where ja.User.Id == user.Id
+                              join events in db.Events on acts.Event.Id equals events.Id
+                              where ja.User.Id == user.Id && events.Status != "Completed"
                               select acts;
 
         Activities = JudgeActivities.ToList();

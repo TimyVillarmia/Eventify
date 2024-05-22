@@ -81,15 +81,27 @@
     {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
 
+        
 
+        string status = "";
+
+        if (DateTime.Now < Events.Date)
+        {
+            status = "Scheduled";
+        }
+        else if (DateTime.Now >= Events.Date)
+        {
+            status = "Ongoing";
+        }
+        else if (DateTime.Now > Events.Date)
+        {
+            status = "Completed";
+        }
+
+        Events.Status = status;
         Events.ACCESS_CODE = AccessCode.CreateAccessCode();
-
         DB.Events.Add(Events);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("/home");
-    }
-    void cancelCreation()
-    {
-
     }
 }
