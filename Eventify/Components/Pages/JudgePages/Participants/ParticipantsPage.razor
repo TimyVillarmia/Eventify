@@ -2,6 +2,9 @@
 @using Eventify.Data
 @inject ApplicationDbContext db
 @layout Eventify.Components.Layout.MainLayout
+@using Eventify.Components.Account
+@using Microsoft.AspNetCore.Authorization
+@inject IdentityUserAccessor UserAccessor
 
 <PageTitle>Participants</PageTitle>
 
@@ -48,11 +51,18 @@
     [Parameter]
     public Activity? Activity { get; set; } = new();
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [Parameter]
+    public ApplicationUser? user { get; set; }
+
     List<Participants>? Participants = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Activity = db.Activity.Single(i => i.Id == Activity_ID);
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         GetParticipants();
         
     }

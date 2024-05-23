@@ -17,7 +17,7 @@
             <InputText id="name" @bind-Value="Activity.Name" class="form-control" style="width:100%;padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
             <ValidationMessage For="() => Activity.Name" class="text-danger" />
         </div>
-        <div class="mb-3" style="display:flex;flex-direction:column;justify-content:start;align-items:start;width:100%;margin:0 0 1rem 0;">
+        <div class="mb-3" style="display:flex;flex-direction:column;justify-content:start;align-items:start;width:100%;margin:0 0 1rem 0;display:none;">
             <label for="date" class="form-label">Date:</label>
             <InputDate id="date" @bind-Value="Activity.Date" class="form-control" style="width:100%;padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
             <ValidationMessage For="() => Activity.Date" class="text-danger" />
