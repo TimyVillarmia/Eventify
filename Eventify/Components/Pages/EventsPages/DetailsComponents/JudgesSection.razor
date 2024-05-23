@@ -35,7 +35,7 @@
                         <EditForm Model="objUser" method="post" OnValidSubmit="SaveUser" FormName="register" style="width:100%;">
                             <DataAnnotationsValidator />
                             <ValidationSummary class="text-danger" role="alert" />
-                            @if (objUser.Id != "")
+                            @* @if (objUser.Id != "")
                             {
                                 <p>@objUser.UserName</p>
 
@@ -45,7 +45,7 @@
                                 <div class="Register-inputbox" style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
                                     <InputText @bind-Value="objUser.UserName" class="Register-inputUsername" autocomplete="username" aria-required="true" placeholder="Enter Username" style="padding:9px; border-radius:6px;margin:0 0 8px 0;width:100%;max-width:500px;" />
                                 </div>
-                            }
+                            } *@
                             <div class="Register-inputbox" style="width:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;">
                                 <InputText @bind-Value="objUser.Email" class="Register-inputEmail" autocomplete="email" aria-required="true" placeholder="Enter email" style="padding:9px; border-radius:6px;margin:0 0 8px 0;width:100%;max-width:500px;" />
                             </div>
@@ -99,7 +99,7 @@
                 {
                     <tr>
                         <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@user.Id.Substring(0, 5) ...</td>
-                        <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@user.UserName</td>
+                        @* <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">@user.UserName</td> *@
                         <td style="text-align:left;padding:10px;border:1px solid black;border-radius:10px;">
                             @user.Email
                         </td>
@@ -166,7 +166,7 @@
                 Id = x.Id,
                 UserName = x.UserName,
                 Email = x.Email,
-                PasswordHash = "*****"
+                PasswordHash = ""
             });
         foreach (var item in user)
         {
@@ -343,7 +343,7 @@
     {
         // Make new user
         objUser = CreateUser();
-        objUser.PasswordHash = "*****";
+        objUser.PasswordHash = "";
         // Set Id to blank so we know it is a new record
         objUser.Id = "";
         // Open the Popup

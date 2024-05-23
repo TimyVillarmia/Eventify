@@ -63,6 +63,7 @@
     protected override void OnInitialized()
     {
         Event = DB.Events.Single(i => i.Id == Int32.Parse(Event_Id));
+        Activity.Date = Event.Date;
     }
     public async Task AddActivity()
     {
