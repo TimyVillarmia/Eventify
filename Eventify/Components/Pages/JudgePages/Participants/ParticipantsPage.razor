@@ -20,13 +20,19 @@
     <div style="width:100%;height:auto;display:flex;flex-direction:row;flex-wrap:wrap;padding:2rem;box-sizing:border-box;">
         @{
             
+            
 
             foreach (var peep in Participants)
             {
                 string isJudged = "";
                 string display = "display:none;";
 
-                if (db.ParticipantsScores.Where(p => p.Participant == peep).Any())
+                var judged = from parts in db.Participants
+                             join partscores in db.ParticipantsScores on parts.Id equals partscores.Participant.Id
+                             where parts.Id == peep.Id && partscores.JudgeId == user.Id
+                             select parts;
+
+                if (judged.Any())
                 {
                     isJudged = "Done";
                     display = "display:block;";

@@ -103,7 +103,7 @@
         var criteriaList = DB.Criteria.Where(i => i.Activity == Activity);
         ActivityCriteria = criteriaList.ToList();
 
-        var hasScores = DB.ParticipantsScores.Where(p => p.Participant == Participant).Any();
+        var hasScores = DB.ParticipantsScores.Where(p => p.Participant == Participant && p.JudgeId == user.Id).Any();
         var previous_scores = DB.ParticipantsScores.Where(p => p.Participant == Participant);
 
         // if participants has previous scores
