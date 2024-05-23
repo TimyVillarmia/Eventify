@@ -1,6 +1,6 @@
 ﻿@using Eventify.Data
 
-<a class="Sidebar-events-button" href="@($"events/details?id={Event!.Id}")">
+<a @onclick="() => {StateHasChanged();}" class="Sidebar-events-button" href="@($"/events/details?id={Event!.Id}")">
     <div class="EventProfile">
         <strong>@Event.EventName[0]</strong>
         
