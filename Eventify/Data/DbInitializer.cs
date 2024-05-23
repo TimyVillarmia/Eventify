@@ -18,9 +18,9 @@ namespace Eventify.Data
 
             var activities = new Activity[]
             {
-                new Activity{EventID=1, Name="Esports",Date=DateTime.Parse("2024-09-01"), StartTime=TimeOnly.Parse("12:00"), EndTime=TimeOnly.Parse("17:00"), Venue="ACT 3rd Floor"}
-                //new Activity{EventID=1, Name="Programming",Date=DateTime.Parse("2024-09-01"), StartTime=TimeOnly.Parse("12:00"), EndTime=TimeOnly.Parse("17:00"), Venue="ACT 3rd Floor"},
-                //new Activity{EventID=1, Name="Graphic Design",Date=DateTime.Parse("2024-09-01"), StartTime=TimeOnly.Parse("12:00"), EndTime=TimeOnly.Parse("17:00"), Venue="ACT 3rd Floor"},
+                new Activity{EventID=1, Name="Esports",Date=DateTime.Parse("2024-09-01"), StartTime=TimeOnly.Parse("12:00"), EndTime=TimeOnly.Parse("17:00"), Venue="ACT 3rd Floor"},
+                new Activity{EventID=1, Name="Programming",Date=DateTime.Parse("2024-09-01"), StartTime=TimeOnly.Parse("12:00"), EndTime=TimeOnly.Parse("17:00"), Venue="ACT 3rd Floor"},
+                new Activity{EventID=1, Name="Graphic Design",Date=DateTime.Parse("2024-09-01"), StartTime=TimeOnly.Parse("12:00"), EndTime=TimeOnly.Parse("17:00"), Venue="ACT 3rd Floor"},
             };
 
             context.Activity.AddRange(activities);
@@ -40,10 +40,6 @@ namespace Eventify.Data
 
             context.Participants.AddRange(participants);
             context.SaveChanges();
-
-
-
-
         }
     }
 }

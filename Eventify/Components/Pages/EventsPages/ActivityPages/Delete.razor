@@ -43,11 +43,13 @@
             </dl>
 
 
-            
-                    <div class="create-events-formButtons">
-                        <a href="@($"events/details?id={Event_Id}")" class="creat-events-cancelbutton">Cancel</a>
-                        <button @onclick="DeleteActivity" class="creat-events-savebutton" disabled="@(activity is null)">Confirm</button>
-                   </div> 
+            <EditForm method="post" Model="activity" OnValidSubmit="DeleteActivity" FormName="delete" Enhance>
+                <div class="create-events-formButtons">
+                    <a href="@($"events/details?id={Event_Id}")" class="creat-events-cancelbutton">Cancel</a>
+                    <button type="submit" @onclick="Back" class="creat-events-savebutton" disabled="@(activity is null)">Confirm</button>
+                </div>
+            </EditForm>
+                    
             
         }
     </div>
@@ -60,7 +62,7 @@
 
     [SupplyParameterFromQuery]
     public int Id { get; set; }
-    
+
     [Parameter]
     public string Event_Id { get; set; }
 
@@ -78,6 +80,10 @@
     {
         DB.Activity.Remove(activity!);
         await DB.SaveChangesAsync();
+        NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+    }
+    void Back()
+    {
         NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
     }
 }
