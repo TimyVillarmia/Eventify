@@ -17,7 +17,7 @@ namespace Eventify.Data
 
         public string? Status { get; set; }
 
-        [DataType(DataType.Date), Required, CustomDateAttribute]
+        [DataType(DataType.Date), Required]
         public DateTime Date { get; set; } = DateTime.Now.Date;
 
         [DataType(DataType.Time) , Required]
