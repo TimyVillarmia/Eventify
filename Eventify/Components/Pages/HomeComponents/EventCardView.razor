@@ -71,7 +71,7 @@
             {
                 status = "Scheduled";
             }
-            else if (DateTime.Now >= Event.Date)
+            else if (DateTime.Now == Event.Date)
             {
                 status = "Ongoing";
             }
@@ -95,7 +95,7 @@
                 statusStyle = "background-color:green;color:white;";
                 break;
             case "Completed":
-                statusStyle = "background-color:#2342C0;color:black;";
+                statusStyle = "background-color:#2342C0;color:white;";
                 break;
         }
 

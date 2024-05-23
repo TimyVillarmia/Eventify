@@ -19,39 +19,49 @@
             <tbody>
                 @{
 
-                    // Step 2: Join back to get the participants with the maximum scores
-                    var results = from participantScores in db.ParticipantsScores
-                                  join participants in db.Participants on participantScores.Participant.Id equals participants.Id
-                                  join activity in db.Activity on participants.Activity.Id equals activity.Id
-                                  join ev in db.Events on activity.Event.Id equals ev.Id
-                                  group new { participants, participantScores} by new {activity.Id, participants.EntryNumber, participants.Name, participantScores.Score } into g
-                                  select new
-                                  {
-                                      ActivityId = g.Key.Id,
-                                      EntryNumber = g.Key.EntryNumber,
-                                      Champion = g.Key.Name,
-                                      Score = g.Sum(x => x.participantScores.Score)
-                                  };
+                    var query = from partscores in db.ParticipantsScores
+                                join parts in db.Participants on partscores.Participant.Id equals parts.Id
+                                join activity in db.Activity on parts.Activity.Id equals activity.Id
+                                join judges in db.Users on partscores.Judge.Id equals judges.Id
+                                where activity.Event.Id == Event.Id
+                                group partscores by new { ParticipantId = parts.Id, ParticipantName = parts.Name, parts.EntryNumber, Activity = activity.Name } into g
+                                select new
+                                {
+                                    g.Key.ParticipantId,
+                                    g.Key.EntryNumber,
+                                    g.Key.ParticipantName,
+                                    g.Key.Activity,
+                                    TotalScore = g.Sum(x => x.Score)
+                                };
 
-                    var finalresult = from items in results
-                                      join activity in db.Activity on items.ActivityId equals activity.Id
-                                      select new
-                                      {
-                                          ActivityName = activity.Name,
-                                          EntryNumber = items.EntryNumber,
-                                          Champion = items.Champion,
-                                          Score = items.Score
-                                          
-                                      };
-
-                    foreach (var result in finalresult)
+                    var result = query
+                    .GroupBy(x => new { x.ParticipantId, x.EntryNumber, x.ParticipantName, x.Activity })
+                    .Select(g => new
                     {
+                        ParticipantId = g.Key.ParticipantId,
+                        EntryNumber = g.Key.EntryNumber,
+                        Champion = g.Key.ParticipantName,
+                        Activity = g.Key.Activity,
+                        Scores = g.Select(x => new {x.TotalScore }).ToList(),
+                        AverageScore = g.Average(x => x.TotalScore)
+                    });
+                    var winnersByActivity = from champ in result
+                                            group champ by new { champ.Activity, champ.EntryNumber, champ.Champion, champ.AverageScore } into g
+                                            select new
+                                            {
+                                                g.Key.Activity,
+                                                g.Key.EntryNumber,
+                                                g.Key.Champion,
+                                                Topscore = g.Key.AverageScore
+                                            };
 
+                    foreach (var results in result)
+                    {
                         <tr>
-                            <td>@result.ActivityName</td>
-                            <td>@result.EntryNumber</td>
-                            <td>@result.Champion</td>
-                            <td>@result.Score</td>
+                            <td>@results.Activity</td>
+                            <td>@results.EntryNumber</td>
+                            <td>@results.Champion</td>
+                            <td>@results.AverageScore</td>
                         </tr>
                     }
                 }

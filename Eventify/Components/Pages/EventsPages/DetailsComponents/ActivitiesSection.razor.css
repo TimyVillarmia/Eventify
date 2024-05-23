@@ -26,8 +26,12 @@ table tr:nth-child(odd) {
     background-color: #E9E9E9;
     padding: 10px 10px;
 }
-td{
-    border:none;
+td {
+    border: none;
+    text-align: center;
+}
+td:last-child {
+    
 }
 
 @media(max-width:600px){
