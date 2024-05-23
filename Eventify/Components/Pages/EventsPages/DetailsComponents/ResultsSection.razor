@@ -24,7 +24,7 @@
                                 join activity in db.Activity on parts.Activity.Id equals activity.Id
                                 join judges in db.Users on partscores.Judge.Id equals judges.Id
                                 where activity.Event.Id == Event.Id
-                                group partscores by new { ParticipantId = parts.Id, ParticipantName = parts.Name, parts.EntryNumber, Activity = activity.Name } into g
+                                group partscores by new { Activity = activity.Name, ParticipantId = parts.Id, JudgeId = judges.Id, ParticipantName = parts.Name, parts.EntryNumber } into g
                                 select new
                                 {
                                     g.Key.ParticipantId,
@@ -42,18 +42,10 @@
                         EntryNumber = g.Key.EntryNumber,
                         Champion = g.Key.ParticipantName,
                         Activity = g.Key.Activity,
-                        Scores = g.Select(x => new {x.TotalScore }).ToList(),
                         AverageScore = g.Average(x => x.TotalScore)
-                    });
-                    var winnersByActivity = from champ in result
-                                            group champ by new { champ.Activity, champ.EntryNumber, champ.Champion, champ.AverageScore } into g
-                                            select new
-                                            {
-                                                g.Key.Activity,
-                                                g.Key.EntryNumber,
-                                                g.Key.Champion,
-                                                Topscore = g.Key.AverageScore
-                                            };
+                    })
+                    .GroupBy(x => x.Activity)
+                    .Select(g => g.OrderByDescending(x => x.AverageScore).FirstOrDefault());
 
                     foreach (var results in result)
                     {

@@ -58,7 +58,7 @@
     {
         var date = DateTime.Now;
         if(Event.Date > date && Event.Status == "Scheduled" ||
-           Event.Date == date && Event.Status == "Ongoing" ||
+           Event.Date >= date && Event.Status == "Ongoing" ||
            Event.Date < date && Event.Status == "Completed")
         {
             eventStatCorrect = true;
@@ -71,7 +71,7 @@
             {
                 status = "Scheduled";
             }
-            else if (DateTime.Now == Event.Date)
+            else if (DateTime.Now >= Event.Date)
             {
                 status = "Ongoing";
             }
