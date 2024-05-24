@@ -16,7 +16,7 @@
 <AuthorizeView Roles="Organizer">
     <div style="display:flex;flex-direction:column;width:100%;height:100%;justify-content:start;align-items:start;">
         <div class="home-container" style="">
-            @foreach (var Event in db.Events)
+            @foreach (var Event in db.Events.OrderByDescending(i => i.Date))
             {
                 <EventCardView style="margin: 0 1.5rem 1.5rem 0;" Event="Event" />
 
