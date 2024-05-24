@@ -17,7 +17,7 @@
             <InputText id="name" @bind-Value="Activity.Name" class="form-control" style="width:100%;padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
             <ValidationMessage For="() => Activity.Name" class="text-danger" />
         </div>
-        <div class="mb-3" style="display:flex;flex-direction:column;justify-content:start;align-items:start;width:100%;margin:0 0 1rem 0;">
+        <div class="mb-3" style="display:flex;flex-direction:column;justify-content:start;align-items:start;width:100%;margin:0 0 1rem 0;display:none;">
             <label for="date" class="form-label">Date:</label>
             <InputDate id="date" @bind-Value="Activity.Date" class="form-control" style="width:100%;padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
             <ValidationMessage For="() => Activity.Date" class="text-danger" />
@@ -38,12 +38,11 @@
             <ValidationMessage For="() => Activity.Venue" class="text-danger" />
         </div>
         <div style="display:flex;flex-direction:row;align-items:center;justify-content:end;width:100%;box-sizing:border-box;margin:1rem 0 0 0;">
-            <a href="@($"events/details?id={Event_Id}")" type="button" style="border:none; color: #000000;padding: 0 1rem;font-size: 20px;background-color: transparent;
+            <a href="@($"")" type="button" style="border:none; color: #000000;padding: 0 1rem;font-size: 20px;background-color: transparent;
     cursor: pointer;text-decoration:none;">Cancel</a>
-            <button type="submit" style="border:none; color: #2342C0;padding: 0 1rem;font-size: 20px;background-color: transparent;
-    cursor: pointer;text-decoration:none;">
+            <button type="submit" style="border:none; color: #2342C0;padding: 0 1rem;font-size: 20px;background-color: transparent;cursor: pointer;text-decoration:none;">
                 Save
-            </button>
+             </button>
         </div>
     </EditForm>
 
@@ -58,17 +57,33 @@
     [Parameter]
     public string? Event_Id { get; set; }
 
+    Events? Event { get; set; }
+
     // To protect from overposting attacks, see https://aka.ms/RazorPagesCRUD
+    protected override void OnInitialized()
+    {
+        Event = DB.Events.Single(i => i.Id == Int32.Parse(Event_Id));
+        Activity.Date = Event.Date;
+        if (Activity is null)
+        {
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        }
+    }
     public async Task AddActivity()
     {
         Activity.Event = DB.Events.FirstOrDefault(x => x.Id == Int32.Parse(Event_Id));
         DB.Activity.Add(Activity);
         await DB.SaveChangesAsync();
-        NavigationManager.NavigateTo($"events/details?id={Event_Id}", forceLoad: true);
+        if (Activity is null)
+        {
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        }
+
+        await Cancel();
     }
 
-    void Cancel()
+    async Task Cancel()
     {
-        NavigationManager.NavigateTo($"events/details?id={int.Parse(Event_Id)}");
+        NavigationManager.NavigateTo($"/events/details?id={Event!.Id}");
     }
 }

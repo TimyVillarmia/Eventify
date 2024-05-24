@@ -13,8 +13,14 @@
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject UserManager<ApplicationUser> UserManager
 @inject Eventify.Data.ApplicationDbContext DB
+@inject IdentityUserAccessor UserAccessor
+
+@attribute [Authorize]
 
 <div class="judgingsheet-container" style="">
+    <div style="width:100%;overflow-x:auto;display:flex;flex-direction:row;justify-content:start;align-items:center;margin:0 0 1rem 0;">
+        <a style="text-decoration-line:none;" target="_parent" href="@($"/home")">Home</a><span style="margin:0 9px 0 9px;">/</span><a style="text-decoration-line:none;" target="_parent" href="@($"/{ActivityID}/Participants")">Participants</a><span style="margin:0 9px 0 9px;">/</span><a style="text-decoration-line:none;" target="_parent" href="@($"/{ActivityID}/Judging/{ParticipantID}")">@Participant.EntryNumber</a>
+    </div>
     <div class="judgingsheet-header">
         <img src="activityIcon.png" style="" />
         <h1 style="">@(($"{Activity.Name}").ToUpper())</h1>
@@ -46,8 +52,8 @@
             </table>
         </div>
         <div style="display:flex;flex-direction:row;justify-content:end;align-items:center;">
-            <button @onclick="GoBack">Cancel</button>
-            <button @onclick="() => {OnSave();}" type="submit">Save</button>
+            <button @onclick="GoBack" style="padding:8px 2rem;border:none;background:transparent;color:#272343;cursor:pointer;">Cancel</button>
+            <button @onclick="() => {OnSave();}" type="submit" style="padding:8px 2rem;border:none;background:transparent;color:#4263eb;cursor:pointer;">Save</button>
         </div>
     </div>
 
@@ -103,7 +109,7 @@
         var criteriaList = DB.Criteria.Where(i => i.Activity == Activity);
         ActivityCriteria = criteriaList.ToList();
 
-        var hasScores = DB.ParticipantsScores.Where(p => p.Participant == Participant).Any();
+        var hasScores = DB.ParticipantsScores.Where(p => p.Participant == Participant && p.JudgeId == user.Id).Any();
         var previous_scores = DB.ParticipantsScores.Where(p => p.Participant == Participant);
 
         // if participants has previous scores
@@ -144,11 +150,13 @@
             if (hasScores)
             {
                 DB.ParticipantsScores.Update(entry.Value);
+                NavManager.NavigateTo($"/{ActivityID}/Participants");
             }
             else
             {
                 // otherwise, add
                 DB.ParticipantsScores.Add(entry.Value);
+                NavManager.NavigateTo($"/{ActivityID}/Participants");
             }
 
         }

@@ -18,40 +18,42 @@
             </thead>
             <tbody>
                 @{
-                    var maxScores = from acts in db.Activity
-                                    join peep in db.Participants on acts.Id equals peep.Activity.Id
-                                    join scores in db.ParticipantsScores on peep.Id equals scores.ParticipantId
-                                    where acts.EventID == Event.Id
-                                    group scores by new { acts.Id, acts.Name } into activityGroup
-                                    select new
-                                    {
-                                        activityGroup.Key.Id,
-                                        activityGroup.Key.Name,
-                                        MaxScore = activityGroup.Max(g => g.Score)
-                                    };
 
-                    // Step 2: Join back to get the participants with the maximum scores
-                    var results = from maxScore in maxScores
-                                  join acts in db.Activity on maxScore.Id equals acts.Id
-                                  join peep in db.Participants on acts.Id equals peep.Activity.Id
-                                  join scores in db.ParticipantsScores on peep.Id equals scores.ParticipantId
-                                  where scores.Score == maxScore.MaxScore
-                                  select new
-                                  {
-                                      ActivityName = acts.Name,
-                                      EntryNumber = peep.EntryNumber,
-                                      Champion = peep.Name,
-                                      Score = scores.Score
-                                  };
+                    var query = from partscores in db.ParticipantsScores
+                                join parts in db.Participants on partscores.Participant.Id equals parts.Id
+                                join activity in db.Activity on parts.Activity.Id equals activity.Id
+                                join judges in db.Users on partscores.Judge.Id equals judges.Id
+                                where activity.Event.Id == Event.Id
+                                group partscores by new { Activity = activity.Name, ParticipantId = parts.Id, JudgeId = judges.Id, ParticipantName = parts.Name, parts.EntryNumber } into g
+                                select new
+                                {
+                                    g.Key.ParticipantId,
+                                    g.Key.EntryNumber,
+                                    g.Key.ParticipantName,
+                                    g.Key.Activity,
+                                    TotalScore = g.Sum(x => x.Score)
+                                };
 
-                    foreach (var result in results)
+                    var result = query
+                    .GroupBy(x => new { x.ParticipantId, x.EntryNumber, x.ParticipantName, x.Activity })
+                    .Select(g => new
                     {
+                        ParticipantId = g.Key.ParticipantId,
+                        EntryNumber = g.Key.EntryNumber,
+                        Champion = g.Key.ParticipantName,
+                        Activity = g.Key.Activity,
+                        AverageScore = g.Average(x => x.TotalScore)
+                    })
+                    .GroupBy(x => x.Activity)
+                    .Select(g => g.OrderByDescending(x => x.AverageScore).FirstOrDefault());
 
+                    foreach (var results in result)
+                    {
                         <tr>
-                            <td>@result.ActivityName</td>
-                            <td>@result.EntryNumber</td>
-                            <td>@result.Champion</td>
-                            <td>@result.Score</td>
+                            <td>@results.Activity</td>
+                            <td>@results.EntryNumber</td>
+                            <td>@results.Champion</td>
+                            <td>@results.AverageScore</td>
                         </tr>
                     }
                 }

@@ -8,57 +8,66 @@
 <PageTitle>Edit</PageTitle>
 
 
- <div class="Edit-Container">
-    <div class="Edit-Details">
-        <h1>Edit</h1>
 
-        <h4>Activity</h4>
-        <hr />
+ <div class="Edit-Container-wrapper">
+
+    <h1 style="margin:0 0 10px 0;">Modify Content</h1>
+
         @if (Activity is null)
         {
             <p><em>Loading...</em></p>
         }
         else
         {
-            <div class="row">
+        <div class="Edit-Container-Form-Container">
                 <div class="col-md-4">
-                    <EditForm method="post" Model="Activity" OnValidSubmit="UpdateActivity" FormName="edit" Enhance>
+                <EditForm method="post" Model="Activity" OnValidSubmit="UpdateActivity" FormName="edit" Enhance style="width:100%;">
                         <DataAnnotationsValidator />
                         <ValidationSummary />
                         <input type="hidden" name="Activity.Id" value="@Activity.Id" />
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Name:</label>
-                            <InputText id="name" @bind-Value="Activity.Name" class="form-control" style="width: 62%;" />
+                    <div class="ActivityNameInput-Container field">
+                            <label for="name" class="form-label">Activity Name:</label>
+                        <InputText id="name" @bind-Value="Activity.Name" class="form-control" style="width: 100%; padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
                             <ValidationMessage For="() => Activity.Name" class="text-danger" />
                         </div>
-                        <div class="mb-3">
+                    <div class="DateTime-Picker field">
+                        <div style="margin:0 1rem 0 0;">
                             <label for="date" class="form-label">Date:</label>
-                            <InputDate id="date" @bind-Value="Activity.Date" class="form-control" style="width: 77.5%; margin-top: 2px;" />
+                            <InputDate id="date" @bind-Value="Activity.Date" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;width:100%;margin-right:1rem" />
                             <ValidationMessage For="() => Activity.Date" class="text-danger" />
                         </div>
-                        <div class="mb-3">
-                            <label for="starttime" class="form-label">StartTime:</label>
-                            <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Activity.StartTime" class="form-control" style="width: 67%; margin-top: 2px;" />
-                            <ValidationMessage For="() => Activity.StartTime" class="text-danger" />
+                        <div class="TimePickers">
+                            <div class="mb-3" style="display:flex;flex-direction:column;margin:0 1rem 0 0;">
+                                <label for="starttime" class="form-label">StartTime:</label>
+                                <InputDate Type="InputDateType.Time" id="starttime" @bind-Value="Activity.StartTime" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px; " />
+                                <ValidationMessage For="() => Activity.StartTime" class="text-danger" />
+                            </div>
+                            <div class="mb-3" style="display:flex;flex-direction:column;">
+                                <label for="endtime" class="form-label">EndTime:</label>
+                                <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Activity.EndTime" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
+                                <ValidationMessage For="() => Activity.EndTime" class="text-danger" />
+                            </div>
                         </div>
-                        <div class="mb-3">
-                            <label for="endtime" class="form-label">EndTime:</label>
-                            <InputDate Type="InputDateType.Time" id="endtime" @bind-Value="Activity.EndTime" class="form-control" style="width: 70%; margin-top: 2px;" />
-                            <ValidationMessage For="() => Activity.EndTime" class="text-danger" />
-                        </div>
-                        <div class="mb-3">
+                    </div>
+                    
+                    
+                    <div class="Event-Venue field" style="display:flex;flex-direction:column;">
                             <label for="venue" class="form-label">Venue:</label>
-                            <InputText id="venue" @bind-Value="Activity.Venue" class="form-control" style="width: 77%; margin-top: 2px;" />
+                        <InputText id="venue" @bind-Value="Activity.Venue" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
                             <ValidationMessage For="() => Activity.Venue" class="text-danger" />
-                        </div>
-                        <button type="submit" class="btn btn-primary" style="width: 30%; margin-top: 6px;">Save</button>
-                        <a href="/activities">Back to List</a>
+                    </div>
+                    <div class="create-events-formButtons">
+                        <a href="@($"{Event_Id}/activities/details?id={Activity.Id}")" class="creat-events-cancelbutton">Cancel</a>
+                        <button type="submit" class="">Save</button>
+                    </div>
+                        
+                    
                     </EditForm>
                 </div>
             </div>
         }
 
-    </div>
+    
 </div>
 
 
@@ -79,7 +88,7 @@
 
         if (Activity is null)
         {
-            NavigationManager.NavigateTo("notfound");
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
         }
     }
 
@@ -92,20 +101,21 @@
         try
         {
             await DB.SaveChangesAsync();
+            
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!ActivityExists(Activity!.Id))
             {
-                NavigationManager.NavigateTo("notfound");
+                NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
             }
             else
             {
                 throw;
             }
         }
-
         NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        
     }
 
     bool ActivityExists(int id)

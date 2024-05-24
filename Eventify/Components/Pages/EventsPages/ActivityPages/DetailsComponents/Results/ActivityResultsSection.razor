@@ -7,53 +7,132 @@
         <button style="background-color:#FFD803;border:none;padding:8px 2rem;border-radius:6px;cursor:pointer;">Export PDF</button>
     </div>
     <div class="TableResults-Container">
-        <table>
-            <thead>
-                <tr>
-                    <th>Entry #</th>
-                    <th>Participant</th>
-                    <th>Course</th>
-                    <th>Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                @{
-                    var totalScores = from scores in db.ParticipantsScores
-                                      join peep in db.Participants on scores.ParticipantId equals peep.Id
-                                      where peep.ActivityID == Activity.Id
-                                      group scores by new { peep.Id, peep.EntryNumber, peep.Name, peep.Course } into g
-                                      select new
-                                      {
-                                          ParticipantId = g.Key.Id,
-                                          EntryNumber = g.Key.EntryNumber,
-                                          Name = g.Key.Name,
-                                          Course = g.Key.Course,
-                                          TotalScore = g.Sum(x => x.Score)
-                                      };
-                    var results = from ts in totalScores
-                                  orderby ts.TotalScore descending
-                                  select new
-                                  {
-                                      EntryNumber = ts.EntryNumber,
-                                      Participant = ts.Name,
-                                      Course = ts.Course,
-                                      Score = ts.TotalScore
-                                  };
+        @{
+            var query = from partscores in db.ParticipantsScores
+                        join parts in db.Participants on partscores.Participant.Id equals parts.Id
+                        join activity in db.Activity on parts.Activity.Id equals activity.Id
+                        join judges in db.Users on partscores.Judge.Id equals judges.Id
+                        where activity.Id == Activity.Id
+                        group partscores by new { ParticipantId = parts.Id, ParticipantName = parts.Name, JudgeId = judges.Id, JudgeName = judges.Email, parts.EntryNumber } into g
+                        select new
+                        {
+                            g.Key.ParticipantId,
+                            g.Key.EntryNumber,
+                            g.Key.ParticipantName,
+                            g.Key.JudgeId,
+                            g.Key.JudgeName,
+                            TotalScore = g.Sum(x => x.Score)
+                        };
 
-                    foreach (var result in results)
-                    {
+            var result = query
+            .GroupBy(x => new { x.ParticipantId,x.EntryNumber ,x.ParticipantName })
+            .Select(g => new
+            {
+                ParticipantId = g.Key.ParticipantId,
+                EntryNumber = g.Key.EntryNumber,
+                ParticipantName = g.Key.ParticipantName,
+                Scores = g.Select(x => new { x.JudgeName, x.TotalScore }).ToList(),
+                AverageScore = g.Average(x => x.TotalScore)
+            }).OrderByDescending(i => i.AverageScore).ToList();
+            <table>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th colspan="@JudgeCount" style="text-align:center;background-color:#d9d9d9;">Judge Scores</th>
+                    </tr>
+                    <tr>
+                        <th style="font-weight:bold;">Entry #</th>
+                        <th style="font-weight:bold;">Participant Name</th>
+                        @{
+                            var judgers = db.Users.Join(db.JudgeActivity, i => i.Id, p => p.User.Id, (user, judgeActivity) => new
+                            {
+                                user.Email,
+                                ActivityID = judgeActivity.Activity.Id
+                            }).Where(j => j.ActivityID == Activity.Id);
 
-                        <tr>
-                            <td>@result.EntryNumber</td>
-                            <td>@result.Participant</td>
-                            <td>@result.Course</td>
-                            <td>@result.Score</td>
-                        </tr>
+                            JudgeCount = judgers.ToList().Count();
+
+                            for(int i = 0; i <= JudgeCount - 1; i++)
+                            {
+                                <th style="font-weight:bold;background-color:#d9d9d9;">@judgers.ToList()[i].Email.Substring(0, @judgers.ToList()[i].Email.IndexOf("@"))</th>
+                            }
+                        }
+
+                        <th style="font-weight:bold;">Average Score</th>
+                        <!--GetData-->
+                        @{
+                            // var judges = from users in db.Users
+                            //              join ja in db.JudgeActivity on users.Id equals ja.User.Id
+                            //              where ja.Activity.Id == Activity.Id
+                            //              select users;
+                            // foreach (var judge in judges)
+                            // {
+                            //     <th>@judge.Email</th>
+                            // }
+                        }
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @{
+                        /*
+                        // var totalScores = from scores in db.ParticipantsScores
+                        //                   join peep in db.Participants on scores.ParticipantId equals peep.Id
+                        //                   where peep.ActivityID == Activity.Id
+                        //                   group scores by new { peep.Id, peep.EntryNumber, peep.Name, peep.Course } into g
+                        //                   select new
+                        //                   {
+                        //                       ParticipantId = g.Key.Id,
+                        //                       EntryNumber = g.Key.EntryNumber,
+                        //                       Name = g.Key.Name,
+                        //                       Course = g.Key.Course,
+                        //                       TotalScore = g.Sum(x => x.Score)
+                        //                   };
+                        // var results = from ts in totalScores
+                        //               orderby ts.TotalScore descending
+                        //               select new
+                        //               {
+                        //                   EntryNumber = ts.EntryNumber,
+                        //                   Participant = ts.Name,
+                        //                   Course = ts.Course,
+                        //                   Score = ts.TotalScore
+                        //               };
+
+                        // foreach (var result in results)
+                        // {
+
+                        //     <tr>
+                        //         <td>@result.EntryNumber</td>
+                        //         <td>@result.Participant</td>
+                        //         <td>@result.Course</td>
+                        //         <td>@result.Score</td>
+                        //     </tr>
+                        // }
+                        */
+                        foreach(var parts in result)
+                        {
+                            <tr>
+                                <td>@parts.EntryNumber</td>
+                                <td>@parts.ParticipantName</td>
+                                @{
+
+                                    foreach(var i in parts.Scores)
+                                    {
+                                        <td>@i.TotalScore</td>
+                                    }
+                                    <td>@parts.AverageScore</td>
+                                }
+                            </tr>
+                        }
+
                     }
-                }
-            </tbody>
+                </tbody>
 
-        </table>
+            </table>
+        }
+        
     </div>
 </div>
 
@@ -67,6 +146,7 @@
     [Parameter]
     public Activity? Activity { get; set; }
 
+    int? JudgeCount { get; set; } = 0;
 
 }
 

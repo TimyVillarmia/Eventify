@@ -2,16 +2,57 @@
 @using Eventify.Data
 @inject ApplicationDbContext db
 @layout Eventify.Components.Layout.MainLayout
+@using Eventify.Components.Account
+@inject IdentityUserAccessor UserAccessor
+@using Microsoft.AspNetCore.Authorization
 
+@attribute [Authorize]
 <PageTitle>Participants</PageTitle>
 
-<div style="width:100%;height:100%;display:flex;flex-direction:column;flex-wrap:wrap; padding:2rem;box-sizing:border-box;">
-    @foreach(var peep in Participants)
-    {
-        <a href="@($"{Activity.Id}/Judging/{peep.Id}")" style="border:1px solid black; padding:2rem;width:auto;height:auto;box-sizing:border-box;max-width:200px;">
-            @peep.EntryNumber
-        </a>
-    }
+<div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:start;align-items:start;padding:2rem;box-sizing:border-box;">
+    <div style="width:100%;overflow-x:auto;display:flex;flex-direction:row;justify-content:start;align-items:center;margin:0 0 1rem 0;">
+        <a style="text-decoration-line:none;" target="_parent" href="@($"/home")">Home</a><span style="margin:0 9px 0 9px;">/</span><a style="text-decoration-line:none;" target="_parent" href="@($"/{Activity_ID}/Participants")">Participants</a>
+    </div>
+    <div class="judgingsheet-header">
+        <img src="activityIcon.png" style="" />
+        <h1 style="">@(($"{Activity.Name}").ToUpper())</h1>
+        <div style="">
+            <p>@Activity.Venue</p>
+            <p>@Activity.StartTime - @Activity.EndTime</p>
+        </div>
+    </div>
+    <div style="width:100%;height:auto;display:flex;flex-direction:row;flex-wrap:wrap;padding:2rem;box-sizing:border-box;">
+        @{
+            
+            
+
+            foreach (var peep in Participants)
+            {
+                string isJudged = "";
+                string display = "display:none;";
+
+                var judged = from parts in db.Participants
+                             join partscores in db.ParticipantsScores on parts.Id equals partscores.Participant.Id
+                             where parts.Id == peep.Id && partscores.JudgeId == user.Id
+                             select parts;
+
+                if (judged.Any())
+                {
+                    isJudged = "Done";
+                    display = "display:block;";
+                }
+
+                <a href="@($"{Activity.Id}/Judging/{peep.Id}")" style="text-decoration:none;color:black;">
+                    <div style="display:flex;flex-direction:row;justify-content:center;align-items:center;border:1px solid black; padding:2rem;margin:0 1rem 1rem 0;border-radius:10px;">
+                        <img src="participantIcon.png" style="margin:0 9px 0 0;" />
+                        <h3 style="margin:0 10px 0 0;">Entry#: @peep.EntryNumber</h3>
+                        <div style="font-size:10px;padding:5px;background-color:green;border-radius:5px;color:white;@display">@isJudged</div>
+                    </div>
+                </a>
+            }
+        }
+
+    </div>
 </div>
 
 @code{
@@ -20,12 +61,20 @@
     [Parameter]
     public Activity? Activity { get; set; } = new();
 
+    [CascadingParameter]
+    private HttpContext HttpContext { get; set; } = default!;
+
+    [Parameter]
+    public ApplicationUser? user { get; set; }
+
     List<Participants>? Participants = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         Activity = db.Activity.Single(i => i.Id == Activity_ID);
+        user = await UserAccessor.GetRequiredUserAsync(HttpContext);
         GetParticipants();
+        
     }
 
     void GetParticipants()

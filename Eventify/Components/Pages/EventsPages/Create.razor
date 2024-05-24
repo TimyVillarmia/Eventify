@@ -45,19 +45,7 @@
                         <ValidationMessage For="() => Events.EndTime" class="text-danger" />
                     </div>
                 </div>
-
             </div>
-            <div class="Event-Status field" style="display:flex;flex-direction:column;">
-                <label for="status" class="form-label">Status:</label>
-                <InputText id="status" @bind-Value="Events.Status" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
-                @*                 <select style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;">
-                <option value="option1">Option 1</option>
-                <option value="option2">Option 2</option>
-                <option value="option3">Option 3</option>
-                </select> *@
-                <ValidationMessage For="() => Events.Status" class="text-danger" />
-            </div>
-
             <div class="Event-Venue field" style="display:flex;flex-direction:column;">
                 <label for="venue" class="form-label">Venue:</label>
                 <InputText id="venue" @bind-Value="Events.Venue" class="form-control" style="padding: 1rem 9px;box-sizing:border-box;border-radius:10px; border-width:1px;" />
@@ -93,15 +81,27 @@
     {
         user = await UserAccessor.GetRequiredUserAsync(HttpContext);
 
+        
 
+        string status = "";
+
+        if (DateTime.Now < Events.Date)
+        {
+            status = "Scheduled";
+        }
+        else if (DateTime.Now >= Events.Date)
+        {
+            status = "Ongoing";
+        }
+        else if (DateTime.Now > Events.Date)
+        {
+            status = "Completed";
+        }
+
+        Events.Status = status;
         Events.ACCESS_CODE = AccessCode.CreateAccessCode();
-
         DB.Events.Add(Events);
         await DB.SaveChangesAsync();
         NavigationManager.NavigateTo("/home");
-    }
-    void cancelCreation()
-    {
-
     }
 }

@@ -8,6 +8,7 @@
     flex-direction:column;
     justify-content:start;
     align-items:center;
+    
 }
 .event-cardview-menu {
     background-color: transparent;
@@ -19,17 +20,18 @@
     align-content: center;
     cursor: pointer;
 }
-.event-cardview-menubar{
-    display:flex;
+.event-cardview-menubar {
+    display: flex;
     flex-direction: column;
-    justify-content:start;
+    justify-content: start;
     background-color: #fffffe;
-    align-items:start;
-    width:auto;
-    height:auto;
+    align-items: start;
+    width: auto;
+    height: auto;
     border-radius: 7px;
-    overflow:hidden;
-    display:none;
+    overflow: hidden;
+    display: none;
+    box-shadow: 4px 4px 6px rgba(0,0,0,0.5);
 }
 .event-cardview-menubar button{
     padding: 8px 2rem;

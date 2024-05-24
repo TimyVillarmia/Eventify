@@ -4,6 +4,9 @@
 @using Eventify.Data
 @inject NavigationManager NavigationManager
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 <PageTitle>Details</PageTitle>
 
@@ -14,6 +17,9 @@
 }
 else {
     <div class="ActivityDetails-Container">
+        <div style="width:100%;overflow-x:auto;display:flex;flex-direction:row;justify-content:start;align-items:center;margin:0 0 1rem 0;">
+            <a style="text-decoration-line:none;" target="_parent" href="@($"/events/details?id={Event.Id}")">@Event.EventName</a> <span style="margin:0 9px 0 9px;">/</span> <a style="text-decoration-line:none;" target="_parent" href="@($"{Event.Id}/activities/details?id={activity.Id}")">@activity.Name</a>
+        </div>
         <div class="ActivityDetails-Header">
             <img src="activityIcon.png" style="width:48px;height:auto;margin:0 1rem 0 0;"/>
             <h3 style="font-size:32px;font-weight:400;">@activity.Name!.ToUpper()</h3>
@@ -59,6 +65,8 @@ else {
     [Parameter]
     public string Event_Id { get; set; }
 
+    Events Event { get; set; } = new();
+
     private string OverviewDisplay { get; set; } = "display:block;";
     private string DetailsDisplay { get; set; } = "display:none;";
     private string StakeholdersDisplay { get; set; } = "display:none;";
@@ -78,6 +86,8 @@ else {
         {
             NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
         }
+
+        Event = DB.Events.Single(i => i.Id == int.Parse(Event_Id));
     }
 
     void OverviewClick()
