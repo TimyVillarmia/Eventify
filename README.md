@@ -23,11 +23,34 @@ The Eventify platform is created to manage events and provide judges  with a str
 
 ### Installation
 
-1. **Clone the repository:**
+You have two options for cloning this repository: using the command line (CMD) or Visual Studio's GUI.
+
+#### Option 1: Command Line (CMD)
+
+1. **Open your command prompt or terminal.**
+
+2. **Navigate to the directory** where you want to store the project:
+
+   ```bash
+   cd [path-to-your-desired-directory]
+   ```
+   
+3. **Clone the Repository:**
+
+   ```bash
+   git clone https://github.com/KomSai-ACT/Eventify.git
+   ```
+#### Option 2: Visual Studio GUI
+1. Open Visual Studio.
+2. From the start window, choose "Clone a repository."
+3. In the "Repository location" field, paste the repository URL:
    
    ```bash
-   git clone https://github.com/KomSai-ACT/Eventify
+   https://github.com/KomSai-ACT/Eventify.git
    ```
+   
+4. In the "Local path" field, choose or create the directory where you want to save the project.
+5. Click the "Clone" button.
 
 
 ## Features
