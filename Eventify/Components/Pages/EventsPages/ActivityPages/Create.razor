@@ -64,12 +64,20 @@
     {
         Event = DB.Events.Single(i => i.Id == Int32.Parse(Event_Id));
         Activity.Date = Event.Date;
+        if (Activity is null)
+        {
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        }
     }
     public async Task AddActivity()
     {
         Activity.Event = DB.Events.FirstOrDefault(x => x.Id == Int32.Parse(Event_Id));
         DB.Activity.Add(Activity);
         await DB.SaveChangesAsync();
+        if (Activity is null)
+        {
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        }
 
         await Cancel();
     }

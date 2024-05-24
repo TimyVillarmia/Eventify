@@ -1,4 +1,9 @@
 ﻿@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
 
 <div class="mainlayout-navbar" style="">
     <div class="mainlayout-invisible-object"></div>
@@ -28,17 +33,35 @@
             </button>
         </form>
     </AuthorizeView>
+    @if (isUserWithNoRoles)
+    {
+        <NavLink class="nav-link" href="">
+
+            <img class="mainlayout-logo" src="LogoWhite.png" />
+        </NavLink>
+        <form action="Account/Logout" method="post" style="display:flex;flex-direction:row;justify-content:center;align-items:center;">
+            <AntiforgeryToken />
+            <input type="hidden" name="ReturnUrl" value="@currentUrl" />
+            <button type="submit" class="mainlayout-sidebar-buttons" style="border:none;background-color:transparent;color:white;display:flex;flex-direction:row;justify-content:center;align-items:center;cursor:pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="margin:0 1rem 0 0;" width="30" height="30" viewBox="0 0 24 24"><path fill="white" d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2a9.985 9.985 0 0 1 8 4h-2.71a8 8 0 1 0 .001 12h2.71A9.985 9.985 0 0 1 12 22m7-6v-3h-8v-2h8V8l5 4z" /></svg>
+                <span class="mainlayout-sidebar-buttonlabel" aria-hidden="true"></span> Logout
+            </button>
+        </form>
+    }
 </div>
 @code{
     private string? currentUrl;
 
-
+    private bool isUserWithNoRoles;
    
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         currentUrl = NavigationManager.ToBaseRelativePath(NavigationManager.Uri);
         NavigationManager.LocationChanged += OnLocationChanged;
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        isUserWithNoRoles = user.Identity.IsAuthenticated && !user.IsInRole("Organizer") && !user.IsInRole("Judge");
         
     }
 

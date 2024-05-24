@@ -57,8 +57,8 @@
                             <ValidationMessage For="() => Activity.Venue" class="text-danger" />
                     </div>
                     <div class="create-events-formButtons">
-                        <a href="@($"events/details?id={Event_Id}")" class="creat-events-cancelbutton">Cancel</a>
-                        <button type="submit" class="creat-events-savebutton">Save</button>
+                        <a href="@($"{Event_Id}/activities/details?id={Activity.Id}")" class="creat-events-cancelbutton">Cancel</a>
+                        <button type="submit" class="">Save</button>
                     </div>
                         
                     
@@ -88,7 +88,7 @@
 
         if (Activity is null)
         {
-            NavigationManager.NavigateTo("notfound");
+            NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
         }
     }
 
@@ -101,20 +101,21 @@
         try
         {
             await DB.SaveChangesAsync();
+            
         }
         catch (DbUpdateConcurrencyException)
         {
             if (!ActivityExists(Activity!.Id))
             {
-                NavigationManager.NavigateTo("notfound");
+                NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
             }
             else
             {
                 throw;
             }
         }
-
         NavigationManager.NavigateTo($"/events/details?id={Event_Id}");
+        
     }
 
     bool ActivityExists(int id)
