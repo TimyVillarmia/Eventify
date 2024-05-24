@@ -15,6 +15,9 @@
 @inject Eventify.Data.ApplicationDbContext DB
 
 <div class="judgingsheet-container" style="">
+    <div style="width:100%;overflow-x:auto;display:flex;flex-direction:row;justify-content:start;align-items:center;margin:0 0 1rem 0;">
+        <a style="text-decoration-line:none;" target="_parent" href="@($"/home")">Home</a><span style="margin:0 9px 0 9px;">/</span><a style="text-decoration-line:none;" target="_parent" href="@($"/{ActivityID}/Participants")">Participants</a><span style="margin:0 9px 0 9px;">/</span><a style="text-decoration-line:none;" target="_parent" href="@($"/{ActivityID}/Judging/{ParticipantID}")">@Participant.EntryNumber</a>
+    </div>
     <div class="judgingsheet-header">
         <img src="activityIcon.png" style="" />
         <h1 style="">@(($"{Activity.Name}").ToUpper())</h1>

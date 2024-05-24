@@ -9,6 +9,9 @@
 <PageTitle>Participants</PageTitle>
 
 <div style="width:100%;height:100%;display:flex;flex-direction:column;justify-content:start;align-items:start;padding:2rem;box-sizing:border-box;">
+    <div style="width:100%;overflow-x:auto;display:flex;flex-direction:row;justify-content:start;align-items:center;margin:0 0 1rem 0;">
+        <a style="text-decoration-line:none;" target="_parent" href="@($"/home")">Home</a><span style="margin:0 9px 0 9px;">/</span><a style="text-decoration-line:none;" target="_parent" href="@($"/{Activity_ID}/Participants")">Participants</a>
+    </div>
     <div class="judgingsheet-header">
         <img src="activityIcon.png" style="" />
         <h1 style="">@(($"{Activity.Name}").ToUpper())</h1>
