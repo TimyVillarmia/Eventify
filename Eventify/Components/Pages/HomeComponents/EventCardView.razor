@@ -56,36 +56,25 @@
 
     protected override void OnInitialized()
     {
-        var date = DateTime.Now;
-        if(Event.Date > date && Event.Status == "Scheduled" ||
-           Event.Date >= date && Event.Status == "Ongoing" ||
-           Event.Date < date && Event.Status == "Completed")
+        string status = "";
+
+        if (DateTime.Today < Event.Date)
         {
-            eventStatCorrect = true;
+            status = "Scheduled";
         }
-        else
+        else if (DateTime.Today == Event.Date)
         {
-            string status = "";
-
-            if (DateTime.Now < Event.Date)
-            {
-                status = "Scheduled";
-            }
-            else if (DateTime.Now >= Event.Date)
-            {
-                status = "Ongoing";
-            }
-            else if (DateTime.Now > Event.Date)
-            {
-                status = "Completed";
-            }
-
-            Event.Status = status;
-            db.Events.Update(Event);
-            db.SaveChanges();
-            StateHasChanged();
+            status = "Ongoing";
+        }
+        else if (DateTime.Today > Event.Date)
+        {
+            status = "Completed";
         }
 
+        Event.Status = status;
+        // db.Events.Update(Event);
+        // db.SaveChanges();
+        StateHasChanged();
         switch (Event.Status)
         {
             case "Scheduled":
@@ -116,5 +105,18 @@
 
     void NavigateToDelete(){
         NavigationManager.NavigateTo($"events/delete?id={Event!.Id}", forceLoad: true);
+    }
+    void CheckEventStat(){
+        var date = DateTime.Now;
+        if (Event.Date > date && Event.Status == "Scheduled" ||
+           Event.Date == date && Event.Status == "Ongoing" ||
+           Event.Date < date && Event.Status == "Completed")
+        {
+            eventStatCorrect = false;
+        }
+        else
+        {
+            eventStatCorrect = false;
+        }
     }
 }
