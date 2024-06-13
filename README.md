@@ -38,7 +38,7 @@ You have two options for cloning this repository: using the command line (CMD) o
 3. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/KomSai-ACT/Eventify.git
+   git clone https://github.com/TimyVillarmia/Eventify.git
    ```
 #### Option 2: Visual Studio GUI
 1. Open Visual Studio.
@@ -46,7 +46,7 @@ You have two options for cloning this repository: using the command line (CMD) o
 3. In the "Repository location" field, paste the repository URL:
    
    ```bash
-   https://github.com/KomSai-ACT/Eventify.git
+   https://github.com/TimyVillarmia/Eventify.git
    ```
    
 4. In the "Local path" field, choose or create the directory where you want to save the project.
